@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { formatEther } from "viem";
+import { useConnect, useConnectors, useDisconnect, useConnection } from "wagmi";
 import { useStaking } from "../hooks/useStaking";
 
 const Spinner = () => (
@@ -33,6 +34,22 @@ interface StakingDashboardProps {
 export const StakingDashboard = ({
   contractAddress,
 }: StakingDashboardProps) => {
+  const { address, isConnected } = useConnection();
+
+  const connectors = useConnectors();
+
+  const {
+    connectAsync,
+    isPending: isConnecting,
+    error: connectError,
+  } = useConnect();
+
+  const {
+    disconnectAsync,
+    isPending: isDisconnecting,
+    error: disconnectError,
+  } = useDisconnect();
+
   const {
     stakedBalance,
     earnedRewards,
@@ -52,12 +69,56 @@ export const StakingDashboard = ({
   const canClaimRewards = Boolean(earnedRewards && earnedRewards > 0n);
   const canWithdraw = Boolean(stakedBalance && stakedBalance > 0n);
 
+  const shortAddress = address
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
+    : "";
+
+  const handleConnectWallet = async () => {
+    try {
+      const metaMaskConnector =
+        connectors.find((connector) =>
+          connector.name.toLowerCase().includes("metamask"),
+        ) ?? connectors[0];
+
+      if (!metaMaskConnector) {
+        alert("MetaMask connector was not found.");
+        return;
+      }
+
+      const result = await connectAsync({
+        connector: metaMaskConnector,
+        chainId: 11155111,
+      });
+
+      console.log("Wallet connected:", result);
+    } catch (connectionError) {
+      console.error("Wallet connection failed:", connectionError);
+
+      alert(
+        connectionError instanceof Error
+          ? connectionError.message
+          : "Wallet connection failed. Check browser console.",
+      );
+    }
+  };
+
+  const handleDisconnectWallet = async () => {
+    try {
+      await disconnectAsync();
+    } catch (disconnectError) {
+      console.error("Wallet disconnect failed:", disconnectError);
+    }
+  };
+
   const handleStake = async () => {
     if (!canStake) return;
 
     await stake(stakeAmount);
     setStakeAmount("");
   };
+
+  const combinedError =
+    error ?? connectError?.message ?? disconnectError?.message ?? null;
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 text-gray-100 font-sans">
@@ -66,15 +127,44 @@ export const StakingDashboard = ({
           ETH Staking
         </h2>
 
-        {isLoading && (
-          <div className="flex items-center text-sm text-indigo-400 font-medium">
-            <Spinner />
-            Processing...
-          </div>
+        {isConnected ? (
+          <button
+            type="button"
+            onClick={handleDisconnectWallet}
+            disabled={isDisconnecting}
+            className="text-sm bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-xl px-4 py-2 text-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isDisconnecting ? "Disconnecting..." : shortAddress}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleConnectWallet}
+            disabled={isConnecting}
+            className="flex items-center justify-center text-sm bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl px-4 py-2 text-white font-medium transition-colors"
+          >
+            {isConnecting ? (
+              <>
+                <Spinner />
+                Connecting...
+              </>
+            ) : (
+              "Connect Wallet"
+            )}
+          </button>
         )}
       </div>
 
-      {error && (
+      {isLoading && (
+        <div className="mb-6 p-4 bg-indigo-500/10 border border-indigo-500/30 rounded-xl flex items-center gap-3">
+          <Spinner />
+          <span className="text-indigo-300 text-sm">
+            Processing transaction...
+          </span>
+        </div>
+      )}
+
+      {combinedError && (
         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-3">
           <svg
             className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5"
@@ -91,7 +181,7 @@ export const StakingDashboard = ({
             />
           </svg>
 
-          <span className="text-red-400 text-sm">{error}</span>
+          <span className="text-red-400 text-sm">{combinedError}</span>
         </div>
       )}
 
@@ -125,7 +215,7 @@ export const StakingDashboard = ({
               id="stakeAmount"
               type="number"
               min="0"
-              step="0.01"
+              step="0.001"
               value={stakeAmount}
               onChange={(event) => setStakeAmount(event.target.value)}
               disabled={isLoading}
