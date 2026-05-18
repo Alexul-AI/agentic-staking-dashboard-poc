@@ -219,13 +219,13 @@ contracts/StakingContract.sol
 Deployed contract:
 
 ```text
-0x79406FB2c52108ff36C4bB801c0Cd5215Cf40183
+0xbB31245F4842FE90041B378CDac9Fe1c37701067
 ```
 
 Explorer:
 
 ```text
-https://sepolia.etherscan.io/address/0x79406FB2c52108ff36C4bB801c0Cd5215Cf40183
+https://sepolia.etherscan.io/address/0xbB31245F4842FE90041B378CDac9Fe1c37701067
 ```
 
 Responsibilities of the smart contract layer:

@@ -13,11 +13,25 @@ contract StakingContract {
 
     address public owner;
 
+    bool private locked;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can perform this action");
+        _;
+    }
+
+    modifier nonReentrant() {
+        require(!locked, "Reentrant call detected");
+        locked = true;
+        _;
+        locked = false;
+    }
+
     constructor() {
         owner = msg.sender;
     }
 
-    function stake() public payable {
+    function stake() public payable nonReentrant {
         require(msg.value > 0, "Stake amount must be greater than zero");
 
         updateReward(msg.sender);
@@ -26,7 +40,7 @@ contract StakingContract {
         totalStaked += msg.value;
     }
 
-    function withdraw() public {
+    function withdraw() public nonReentrant {
         updateReward(msg.sender);
 
         uint256 amount = stakes[msg.sender];
@@ -39,7 +53,7 @@ contract StakingContract {
         require(success, "ETH transfer failed");
     }
 
-    function claimReward() public {
+    function claimReward() public nonReentrant {
         updateReward(msg.sender);
 
         uint256 reward = rewards[msg.sender];
@@ -78,8 +92,7 @@ contract StakingContract {
         require(msg.value > 0, "Funding amount must be greater than zero");
     }
 
-    function setRewardRate(uint256 newRewardRatePercentPerDay) public {
-        require(msg.sender == owner, "Only owner can change reward rate");
+    function setRewardRate(uint256 newRewardRatePercentPerDay) public onlyOwner {
         require(newRewardRatePercentPerDay <= 10, "Reward rate too high");
 
         rewardRatePercentPerDay = newRewardRatePercentPerDay;

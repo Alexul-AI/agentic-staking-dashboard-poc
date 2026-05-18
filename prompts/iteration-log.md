@@ -70,13 +70,13 @@ The Solidity staking contract was deployed through Remix IDE to the Ethereum Sep
 Deployed contract:
 
 ```text
-0x79406FB2c52108ff36C4bB801c0Cd5215Cf40183
+0xbB31245F4842FE90041B378CDac9Fe1c37701067
 ```
 
 Explorer:
 
 ```text
-https://sepolia.etherscan.io/address/0x79406FB2c52108ff36C4bB801c0Cd5215Cf40183
+https://sepolia.etherscan.io/address/0xbB31245F4842FE90041B378CDac9Fe1c37701067
 ```
 
 ## Issue 7 — Missing Wallet Connection Flow
@@ -165,7 +165,7 @@ The frontend, wallet connection, deployed contract integration, stake flow, and 
 Current deployed contract:
 
 ```text
-0x79406FB2c52108ff36C4bB801c0Cd5215Cf40183
+0xbB31245F4842FE90041B378CDac9Fe1c37701067
 ```
 
 ## Next Steps
