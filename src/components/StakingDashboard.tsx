@@ -306,11 +306,46 @@ export const StakingDashboard = ({
         </div>
 
         {decision && (
-          <div className="mt-4 p-4 bg-indigo-900/30 border border-indigo-500/50 rounded-xl">
-            <p className="text-indigo-300 text-sm font-semibold">
-              AI Action: {decision.action}
-            </p>
-            <p className="text-gray-400 text-sm mt-1">{decision.reasoning}</p>
+          <div className="mt-4 p-4 bg-indigo-900/30 border border-indigo-500/50 rounded-xl space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-indigo-300 text-sm font-semibold">
+                AI Action: {decision.action}
+              </p>
+
+              <span className="text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-200 border border-indigo-400/30">
+                Confidence: {decision.confidence}
+              </span>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">
+                Reasoning
+              </p>
+              <p className="text-gray-300 text-sm">{decision.reasoning}</p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">
+                Recommended Next Step
+              </p>
+              <p className="text-gray-300 text-sm">
+                {decision.recommendedNextStep}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">
+                Execution
+              </p>
+              <p className="text-gray-300 text-sm">{decision.executionHint}</p>
+            </div>
+
+            <div className="pt-3 border-t border-indigo-500/20">
+              <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">
+                Risk Note
+              </p>
+              <p className="text-gray-400 text-xs">{decision.riskNote}</p>
+            </div>
           </div>
         )}
       </div>
