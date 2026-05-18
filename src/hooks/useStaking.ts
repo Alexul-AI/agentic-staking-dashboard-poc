@@ -50,6 +50,7 @@ interface UseStakingReturn {
   earnedRewards: bigint | undefined;
   isLoading: boolean;
   error: string | null;
+  txHash: `0x${string}` | undefined;
   stake: (amountEth: string) => Promise<void>;
   withdraw: () => Promise<void>;
   claimReward: () => Promise<void>;
@@ -259,6 +260,7 @@ export const useStaking = (
     earnedRewards,
     isLoading,
     error,
+    txHash,
     stake,
     withdraw,
     claimReward,

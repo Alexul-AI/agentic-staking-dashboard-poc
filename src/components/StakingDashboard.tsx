@@ -32,6 +32,8 @@ interface StakingDashboardProps {
   contractAddress: `0x${string}`;
 }
 
+const SEPOLIA_ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
+
 export const StakingDashboard = ({
   contractAddress,
 }: StakingDashboardProps) => {
@@ -55,6 +57,7 @@ export const StakingDashboard = ({
     earnedRewards,
     isLoading,
     error,
+    txHash,
     stake,
     withdraw,
     claimReward,
@@ -74,6 +77,11 @@ export const StakingDashboard = ({
   const shortAddress = address
     ? `${address.slice(0, 6)}...${address.slice(-4)}`
     : "";
+
+  const contractUrl = `${SEPOLIA_ETHERSCAN_BASE_URL}/address/${contractAddress}`;
+  const lastTransactionUrl = txHash
+    ? `${SEPOLIA_ETHERSCAN_BASE_URL}/tx/${txHash}`
+    : null;
 
   const handleConnectWallet = async () => {
     try {
@@ -211,6 +219,36 @@ export const StakingDashboard = ({
           <p className="text-xl font-semibold tracking-wide text-green-400 truncate">
             {formattedRewards}
           </p>
+        </div>
+      </div>
+
+      <div className="mb-8 rounded-xl border border-gray-800 bg-gray-950/70 p-4">
+        <p className="text-sm text-gray-400 mb-3">On-chain References</p>
+
+        <div className="flex flex-col gap-2 text-sm">
+          <a
+            href={contractUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-indigo-300 hover:text-indigo-200 underline underline-offset-4"
+          >
+            View staking contract on Sepolia Etherscan
+          </a>
+
+          {lastTransactionUrl ? (
+            <a
+              href={lastTransactionUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-green-300 hover:text-green-200 underline underline-offset-4"
+            >
+              View last transaction on Sepolia Etherscan
+            </a>
+          ) : (
+            <p className="text-gray-500">
+              No transaction submitted in this session yet.
+            </p>
+          )}
         </div>
       </div>
 
