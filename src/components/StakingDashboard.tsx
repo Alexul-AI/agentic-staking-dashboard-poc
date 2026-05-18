@@ -2,6 +2,7 @@ import { useState } from "react";
 import { formatEther } from "viem";
 import { useConnect, useConnectors, useDisconnect, useConnection } from "wagmi";
 import { useStaking } from "../hooks/useStaking";
+import { useDeFiAgent } from "../hooks/useDeFiAgent";
 
 const Spinner = () => (
   <svg
@@ -35,17 +36,16 @@ export const StakingDashboard = ({
   contractAddress,
 }: StakingDashboardProps) => {
   const { address, isConnected } = useConnection();
-
   const connectors = useConnectors();
 
   const {
-    connectAsync,
+    mutateAsync: connectWalletAsync,
     isPending: isConnecting,
     error: connectError,
   } = useConnect();
 
   const {
-    disconnectAsync,
+    mutateAsync: disconnectWalletAsync,
     isPending: isDisconnecting,
     error: disconnectError,
   } = useDisconnect();
@@ -59,6 +59,8 @@ export const StakingDashboard = ({
     withdraw,
     claimReward,
   } = useStaking(contractAddress);
+
+  const { analyzePosition, isAnalyzing, decision } = useDeFiAgent();
 
   const [stakeAmount, setStakeAmount] = useState("");
 
@@ -85,7 +87,7 @@ export const StakingDashboard = ({
         return;
       }
 
-      const result = await connectAsync({
+      const result = await connectWalletAsync({
         connector: metaMaskConnector,
         chainId: 11155111,
       });
@@ -104,7 +106,7 @@ export const StakingDashboard = ({
 
   const handleDisconnectWallet = async () => {
     try {
-      await disconnectAsync();
+      await disconnectWalletAsync();
     } catch (disconnectError) {
       console.error("Wallet disconnect failed:", disconnectError);
     }
@@ -115,6 +117,17 @@ export const StakingDashboard = ({
 
     await stake(stakeAmount);
     setStakeAmount("");
+  };
+
+  const handleAgentAnalyze = async () => {
+    const agentDecision = await analyzePosition(
+      formattedStaked,
+      formattedRewards,
+    );
+
+    if (agentDecision) {
+      console.log("Agent decision:", agentDecision);
+    }
   };
 
   const combinedError =
@@ -193,9 +206,9 @@ export const StakingDashboard = ({
           </p>
         </div>
 
-        <div className="bg-gray-800/50 p-5 rounded-xl border border-gray-700/50 backdrop-blur-sm">
+        <div className="bg-gray-800/50 p-5 rounded-xl border border-gray-700/50 backdrop-blur-sm overflow-hidden">
           <p className="text-sm text-gray-400 mb-1">Earned Rewards</p>
-          <p className="text-xl font-semibold tracking-wide text-green-400">
+          <p className="text-xl font-semibold tracking-wide text-green-400 truncate">
             {formattedRewards}
           </p>
         </div>
@@ -249,12 +262,12 @@ export const StakingDashboard = ({
       <div className="border-t border-gray-800 pt-6">
         <p className="text-sm text-gray-400 mb-4">Position Management</p>
 
-        <div className="flex gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <button
             type="button"
             onClick={claimReward}
             disabled={isLoading || !canClaimRewards}
-            className="flex-1 flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-xl border border-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-xl border border-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
@@ -268,9 +281,18 @@ export const StakingDashboard = ({
 
           <button
             type="button"
+            onClick={handleAgentAnalyze}
+            disabled={isLoading || isAnalyzing}
+            className="flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isAnalyzing ? "Analyzing..." : "🤖 AI Auto-Pilot"}
+          </button>
+
+          <button
+            type="button"
             onClick={withdraw}
             disabled={isLoading || !canWithdraw}
-            className="flex-1 flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium py-3 px-4 rounded-xl border border-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium py-3 px-4 rounded-xl border border-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
@@ -282,6 +304,15 @@ export const StakingDashboard = ({
             )}
           </button>
         </div>
+
+        {decision && (
+          <div className="mt-4 p-4 bg-indigo-900/30 border border-indigo-500/50 rounded-xl">
+            <p className="text-indigo-300 text-sm font-semibold">
+              AI Action: {decision.action}
+            </p>
+            <p className="text-gray-400 text-sm mt-1">{decision.reasoning}</p>
+          </div>
+        )}
       </div>
     </div>
   );
