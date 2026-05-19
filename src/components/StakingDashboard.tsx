@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { formatEther } from "viem";
-import { useConnect, useConnectors, useDisconnect, useConnection } from "wagmi";
+import {
+  useChainId,
+  useConnect,
+  useConnectors,
+  useDisconnect,
+  useConnection,
+  useSwitchChain,
+} from "wagmi";
+import { sepolia } from "wagmi/chains";
 import { useStaking } from "../hooks/useStaking";
 import { useDeFiAgent } from "../hooks/useDeFiAgent";
+
+const SEPOLIA_ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
 
 const Spinner = () => (
   <svg
@@ -32,12 +42,11 @@ interface StakingDashboardProps {
   contractAddress: `0x${string}`;
 }
 
-const SEPOLIA_ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
-
 export const StakingDashboard = ({
   contractAddress,
 }: StakingDashboardProps) => {
   const { address, isConnected } = useConnection();
+  const chainId = useChainId();
   const connectors = useConnectors();
 
   const {
@@ -51,6 +60,12 @@ export const StakingDashboard = ({
     isPending: isDisconnecting,
     error: disconnectError,
   } = useDisconnect();
+
+  const {
+    mutateAsync: switchChainAsync,
+    isPending: isSwitchingNetwork,
+    error: switchChainError,
+  } = useSwitchChain();
 
   const {
     stakedBalance,
@@ -70,15 +85,25 @@ export const StakingDashboard = ({
   const formattedStaked = stakedBalance ? formatEther(stakedBalance) : "0.0";
   const formattedRewards = earnedRewards ? formatEther(earnedRewards) : "0.0";
 
-  const canStake = Boolean(stakeAmount) && Number(stakeAmount) > 0;
-  const canClaimRewards = Boolean(earnedRewards && earnedRewards > 0n);
-  const canWithdraw = Boolean(stakedBalance && stakedBalance > 0n);
+  const isSepolia = chainId === sepolia.id;
+  const isWrongNetwork = isConnected && !isSepolia;
+  const canExecuteTransaction = isConnected && isSepolia;
+
+  const canStake =
+    canExecuteTransaction && Boolean(stakeAmount) && Number(stakeAmount) > 0;
+
+  const canClaimRewards =
+    canExecuteTransaction && Boolean(earnedRewards && earnedRewards > 0n);
+
+  const canWithdraw =
+    canExecuteTransaction && Boolean(stakedBalance && stakedBalance > 0n);
 
   const shortAddress = address
     ? `${address.slice(0, 6)}...${address.slice(-4)}`
     : "";
 
   const contractUrl = `${SEPOLIA_ETHERSCAN_BASE_URL}/address/${contractAddress}`;
+
   const lastTransactionUrl = txHash
     ? `${SEPOLIA_ETHERSCAN_BASE_URL}/tx/${txHash}`
     : null;
@@ -97,7 +122,7 @@ export const StakingDashboard = ({
 
       const result = await connectWalletAsync({
         connector: metaMaskConnector,
-        chainId: 11155111,
+        chainId: sepolia.id,
       });
 
       console.log("Wallet connected:", result);
@@ -120,6 +145,20 @@ export const StakingDashboard = ({
     }
   };
 
+  const handleSwitchToSepolia = async () => {
+    try {
+      await switchChainAsync({ chainId: sepolia.id });
+    } catch (networkError) {
+      console.error("Failed to switch network:", networkError);
+
+      alert(
+        networkError instanceof Error
+          ? networkError.message
+          : "Failed to switch to Sepolia. Check MetaMask.",
+      );
+    }
+  };
+
   const handleStake = async () => {
     if (!canStake) return;
 
@@ -139,7 +178,11 @@ export const StakingDashboard = ({
   };
 
   const combinedError =
-    error ?? connectError?.message ?? disconnectError?.message ?? null;
+    error ??
+    connectError?.message ??
+    disconnectError?.message ??
+    switchChainError?.message ??
+    null;
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 text-gray-100 font-sans">
@@ -175,6 +218,47 @@ export const StakingDashboard = ({
           </button>
         )}
       </div>
+
+      {isWrongNetwork && (
+        <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
+          <div className="flex items-start gap-3">
+            <svg
+              className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+              />
+            </svg>
+
+            <div className="flex-1">
+              <p className="text-yellow-200 font-semibold text-sm">
+                Wrong network
+              </p>
+              <p className="text-yellow-100/80 text-sm mt-1">
+                This dashboard is connected to a Sepolia staking contract.
+                Please switch MetaMask to Ethereum Sepolia before sending
+                transactions.
+              </p>
+
+              <button
+                type="button"
+                onClick={handleSwitchToSepolia}
+                disabled={isSwitchingNetwork}
+                className="mt-3 inline-flex items-center justify-center bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-100 border border-yellow-400/30 rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSwitchingNetwork ? "Switching..." : "Switch to Sepolia"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isLoading && (
         <div className="mb-6 p-4 bg-indigo-500/10 border border-indigo-500/30 rounded-xl flex items-center gap-3">
@@ -269,7 +353,7 @@ export const StakingDashboard = ({
               step="0.001"
               value={stakeAmount}
               onChange={(event) => setStakeAmount(event.target.value)}
-              disabled={isLoading}
+              disabled={isLoading || isWrongNetwork}
               placeholder="0.00"
               className="w-full bg-gray-950 text-white border border-gray-700 rounded-xl py-3 px-4 pr-14 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all disabled:opacity-50"
             />
@@ -295,6 +379,12 @@ export const StakingDashboard = ({
             )}
           </button>
         </div>
+
+        {isWrongNetwork && (
+          <p className="text-xs text-yellow-200/80 mt-2">
+            Staking is disabled until the wallet is connected to Sepolia.
+          </p>
+        )}
       </div>
 
       <div className="border-t border-gray-800 pt-6">
@@ -342,6 +432,13 @@ export const StakingDashboard = ({
             )}
           </button>
         </div>
+
+        {isWrongNetwork && (
+          <p className="text-xs text-yellow-200/80 mt-3">
+            Claim and withdraw actions are disabled until the wallet is
+            connected to Sepolia.
+          </p>
+        )}
 
         {decision && (
           <div className="mt-4 p-4 bg-indigo-900/30 border border-indigo-500/50 rounded-xl space-y-3">
