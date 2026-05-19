@@ -117,7 +117,8 @@ prompts/
   defi-context.md
 
 docs/
-  ARCHITECTURE.md
+  [`Architecture`](docs/ARCHITECTURE.md)
+  [`Case Study`](docs/CASE_STUDY.md)
 ```
 
 ---
