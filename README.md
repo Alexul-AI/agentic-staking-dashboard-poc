@@ -22,6 +22,28 @@ The goal is not only to build a staking dashboard, but to show how AI-assisted w
 
 ---
 
+---
+
+## Demo Preview
+
+### Connected Dashboard
+
+![Connected Dashboard](docs/assets/dashboard-connected.png)
+
+### MetaMask Transaction Confirmation
+
+![MetaMask Transaction](docs/assets/metamask-transaction.png)
+
+### Sepolia Etherscan Transaction
+
+![Sepolia Etherscan Transaction](docs/assets/etherscan-transaction.png)
+
+### AI Auto-Pilot Recommendation
+
+![AI Recommendation](docs/assets/ai-recommendation.png)
+
+---
+
 ## Problem
 
 In Web3 projects, connecting Solidity smart contracts to frontend applications is often repetitive, slow, and error-prone.
