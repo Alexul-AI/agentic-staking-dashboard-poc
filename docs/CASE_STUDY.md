@@ -16,15 +16,15 @@ Web3 teams often face a repetitive and error-prone process when connecting Solid
 
 Common tasks include:
 
-- understanding contract functions
-- building ABI-based frontend integration
-- connecting wallets
-- handling pending transactions
-- waiting for confirmations
-- displaying user-friendly errors
-- linking transactions to explorers
-- creating usable UI components
-- documenting safety boundaries
+- Understanding contract functions
+- Building ABI-based frontend integration
+- Connecting wallets
+- Handling pending transactions
+- Waiting for confirmations
+- Displaying user-friendly errors
+- Linking transactions to explorers
+- Creating usable UI components
+- Documenting safety boundaries
 
 This creates friction between smart contract development and actual dApp usability.
 
@@ -36,12 +36,12 @@ This PoC demonstrates a Solidity-to-UI workflow where a staking smart contract i
 
 The dashboard allows the user to:
 
-- connect MetaMask
-- stake Sepolia ETH
-- withdraw staked ETH
-- view staking and rewards state
-- inspect contract and transaction activity on Sepolia Etherscan
-- run a safe mock DeFi agent recommendation layer
+- Connect MetaMask
+- Stake Sepolia ETH
+- Withdraw staked ETH
+- View staking and rewards state
+- Inspect contract and transaction activity on Sepolia Etherscan
+- Run a safe mock DeFi agent recommendation layer
 
 The AI agent layer does not execute wallet actions automatically. It provides an explainable recommendation and leaves execution under user control through MetaMask.
 
@@ -64,7 +64,10 @@ The operator workflow included:
 9. Adding Etherscan transparency.
 10. Adding an explainable mock DeFi agent layer.
 11. Hardening the smart contract with a reentrancy guard.
-12. Documenting the architecture and safety boundaries.
+12. Adding dashboard screenshots.
+13. Adding architecture documentation.
+14. Adding an architecture diagram.
+15. Documenting the architecture and safety boundaries.
 
 ---
 
@@ -82,6 +85,10 @@ Solidity Staking Contract
   → Agentic Recommendation Layer
 ```
 
+The full architecture diagram is available in:
+
+[`docs/architecture-diagram.md`](architecture-diagram.md)
+
 ---
 
 ## 6. What Was Validated
@@ -90,14 +97,14 @@ The following flows were tested:
 
 - MetaMask wallet connection
 - Sepolia contract deployment
-- staking transaction
-- transaction pending state
-- transaction confirmation
-- on-chain balance update
-- withdraw transaction
+- Staking transaction
+- Transaction pending state
+- Transaction confirmation
+- On-chain balance update
+- Withdraw transaction
 - Etherscan transaction link
-- mock DeFi agent recommendation rendering
-- human-approved execution pattern
+- Mock DeFi agent recommendation rendering
+- Human-approved execution pattern
 
 ---
 
@@ -107,14 +114,14 @@ The project intentionally avoids unsafe automation.
 
 Current boundaries:
 
-- no private keys are stored
-- no seed phrase is requested
-- no API key is exposed in frontend
-- all blockchain writes require MetaMask confirmation
-- the AI agent is recommendation-only
-- the project runs on Sepolia testnet
-- no real financial advice is provided
-- no autonomous fund management is implemented
+- No private keys are stored
+- No seed phrase is requested
+- No API key is exposed in frontend
+- All blockchain writes require MetaMask confirmation
+- The AI agent is recommendation-only
+- The project runs on Sepolia testnet
+- No real financial advice is provided
+- No autonomous fund management is implemented
 
 The intended safety model is:
 
@@ -130,29 +137,49 @@ For a Web3 startup, DAO, or protocol team, this workflow demonstrates how an AI 
 
 Potential value:
 
-- faster Solidity-to-frontend integration
-- standardized wallet UX
-- reusable contract interaction hooks
-- explainable DeFi decision support
-- safer human-in-the-loop execution
-- better transaction transparency
-- portfolio-ready Web3 automation workflows
+- Faster Solidity-to-frontend integration
+- Standardized wallet UX
+- Reusable contract interaction hooks
+- Explainable DeFi decision support
+- Safer human-in-the-loop execution
+- Better transaction transparency
+- Portfolio-ready Web3 automation workflows
 
 The value is not only the dashboard itself, but the repeatable process behind it.
 
 ---
 
-## 9. Portfolio Positioning
+## 9. Portfolio Demo Assets
+
+The project includes dashboard screenshots that show the working flow:
+
+```text
+docs/assets/dashboard-connected.png
+docs/assets/metamask-transaction.png
+docs/assets/etherscan-transaction.png
+docs/assets/ai-recommendation.png
+```
+
+These screenshots demonstrate:
+
+- Connected dashboard state
+- MetaMask transaction confirmation
+- Etherscan transaction proof
+- AI Auto-Pilot recommendation output
+
+---
+
+## 10. Portfolio Positioning
 
 This project positions me as an AI Operator / Web3 Solutions Developer who can combine:
 
-- frontend engineering
+- Frontend engineering
 - Solidity-to-UI integration
-- wallet UX
+- Wallet UX
 - AI-assisted development
-- agentic workflow design
-- security awareness
-- human-approved automation
+- Agentic workflow design
+- Security awareness
+- Human-approved automation
 
 The main message:
 
@@ -163,15 +190,32 @@ I am designing AI-assisted Web3 workflows that turn smart contract logic into us
 
 ---
 
-## 10. Next Improvements
+## 11. Current Status
+
+Completed:
+
+- Deployed Sepolia staking contract
+- Hardened staking contract with a custom `nonReentrant` guard
+- React staking dashboard
+- MetaMask wallet flow
+- Staking and withdrawal interaction
+- Etherscan contract and transaction links
+- Safe mock DeFi agent decision layer
+- Explainable recommendation UX
+- Dashboard demo screenshots
+- Architecture documentation
+- Architecture diagram
+- Portfolio case study
+
+---
+
+## 12. Next Improvements
 
 Planned next steps:
 
-- add dashboard screenshots
-- add architecture diagram
-- add Sepolia network guard
-- improve transaction status UX
-- add secure AI proxy architecture
-- improve reward pool UX
-- add production-readiness notes
-- prepare LinkedIn / portfolio post
+- Add Sepolia network guard
+- Improve transaction status UX
+- Add secure AI proxy architecture
+- Improve reward pool UX
+- Add production-readiness notes
+- Prepare LinkedIn / portfolio post

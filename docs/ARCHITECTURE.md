@@ -32,10 +32,31 @@ The main goals of this PoC are:
 - Demonstrate a safe mock agentic decision layer for DeFi recommendations.
 - Keep blockchain execution under user control.
 - Show how an AI Operator can guide, validate, and structure AI-assisted Web3 delivery.
+- Package the project as a portfolio asset for Web3 / AI Operator opportunities.
 
 ---
 
-## 3. High-Level Architecture
+## 3. Architecture Diagram
+
+The visual architecture diagram is available here:
+
+[`docs/architecture-diagram.md`](architecture-diagram.md)
+
+It summarizes the main project flow:
+
+```text
+React Dashboard
+  → wagmi / viem
+  → MetaMask
+  → Sepolia Smart Contract
+  → Etherscan
+  → Mock DeFi Agent Recommendation
+  → Human-Approved Execution
+```
+
+---
+
+## 4. High-Level Architecture
 
 ```text
 User
@@ -80,7 +101,7 @@ User reviews result
 
 ---
 
-## 4. Four-Layer Agentic Architecture
+## 5. Four-Layer Agentic Architecture
 
 This project can be understood through a four-layer AI Operator architecture.
 
@@ -186,7 +207,7 @@ This keeps the system:
 
 ---
 
-## 5. User Flow
+## 6. User Flow
 
 The user flow is intentionally simple and transparent:
 
@@ -206,7 +227,7 @@ The user flow is intentionally simple and transparent:
 
 ---
 
-## 6. Smart Contract Layer
+## 7. Smart Contract Layer
 
 The staking contract is deployed on the Ethereum Sepolia testnet.
 
@@ -238,11 +259,17 @@ Responsibilities of the smart contract layer:
 - Allow reward pool funding
 - Provide readable staking state to the frontend
 
+Security hardening currently includes:
+
+- Checks-Effects-Interactions flow
+- Custom `nonReentrant` guard
+- Owner-only reward rate updates
+
 The contract layer does not contain AI logic. It only handles deterministic blockchain state and staking-related operations.
 
 ---
 
-## 7. Frontend Layer
+## 8. Frontend Layer
 
 The frontend is built with React, TypeScript, Vite, Tailwind CSS, wagmi, and viem.
 
@@ -272,7 +299,7 @@ The frontend does not store private keys and does not execute blockchain transac
 
 ---
 
-## 8. Wallet & Transaction Flow
+## 9. Wallet & Transaction Flow
 
 MetaMask is used as the wallet interaction layer.
 
@@ -307,7 +334,7 @@ This keeps execution transparent and user-approved.
 
 ---
 
-## 9. Agentic Decision Layer
+## 10. Agentic Decision Layer
 
 The current agentic layer is a safe mock decision-support module.
 
@@ -349,7 +376,7 @@ AI suggests → User reviews → Wallet confirms → Blockchain executes
 
 ---
 
-## 10. Security & Safety Boundaries
+## 11. Security & Safety Boundaries
 
 Current safety boundaries:
 
@@ -380,7 +407,7 @@ AI API keys should never be exposed directly in frontend code.
 
 ---
 
-## 11. Current Limitations
+## 12. Current Limitations
 
 This project is currently a PoC and has several limitations:
 
@@ -400,17 +427,13 @@ These limitations are intentional for a safe portfolio demonstration.
 
 ---
 
-## 12. Planned Improvements
+## 13. Planned Improvements
 
 Planned improvements include:
 
 - Add Sepolia network guard.
 - Add stronger transaction status handling.
-- Add contract address visibility improvements.
-- Add architecture diagram image to README.
-- Add dashboard screenshots.
 - Add secure Gemini proxy architecture example.
-- Add portfolio case study explaining the AI Operator workflow.
 - Add tests for staking and withdraw flows.
 - Improve error handling for rejected MetaMask transactions.
 - Improve reward pool UX.
@@ -418,9 +441,16 @@ Planned improvements include:
 - Add transaction history persistence.
 - Add optional backend/serverless AI decision endpoint.
 
+Completed portfolio documentation assets already include:
+
+- Architecture documentation
+- Architecture diagram
+- Dashboard screenshots
+- Portfolio case study
+
 ---
 
-## 13. Future Secure AI Integration
+## 14. Future Secure AI Integration
 
 The current mock agent is intentionally safe and does not require an API key.
 
@@ -474,7 +504,7 @@ AI recommends, but the user controls execution.
 
 ---
 
-## 14. AI Operator Value
+## 15. AI Operator Value
 
 This project demonstrates AI Operator work, not only frontend implementation.
 
@@ -501,7 +531,7 @@ The project shows practical operator judgment across:
 
 ---
 
-## 15. Portfolio Positioning
+## 16. Portfolio Positioning
 
 This project demonstrates the ability to operate at the intersection of:
 

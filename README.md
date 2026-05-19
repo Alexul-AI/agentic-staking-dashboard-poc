@@ -4,8 +4,6 @@ A portfolio Proof of Concept demonstrating how an AI-assisted Web3 operator work
 
 This project is part of my transition toward AI Operator / AI Solutions Developer work with a Web3 focus.
 
----
-
 ## Overview
 
 `agentic-staking-dashboard-poc` demonstrates a full Solidity-to-UI integration workflow:
@@ -19,10 +17,6 @@ This project is part of my transition toward AI Operator / AI Solutions Develope
 - Human-confirmed blockchain execution
 
 The goal is not only to build a staking dashboard, but to show how AI-assisted workflows can help Web3 teams move from smart contract logic to usable frontend interfaces faster and more safely.
-
----
-
----
 
 ## Demo Preview
 
@@ -42,7 +36,25 @@ The goal is not only to build a staking dashboard, but to show how AI-assisted w
 
 ![AI Recommendation](docs/assets/ai-recommendation.png)
 
----
+## Architecture Diagram
+
+The project architecture is documented in:
+
+- [`Architecture Documentation`](docs/ARCHITECTURE.md)
+- [`Architecture Diagram`](docs/architecture-diagram.md)
+- [`Portfolio Case Study`](docs/CASE_STUDY.md)
+
+High-level flow:
+
+```text
+React Dashboard
+  → wagmi / viem
+  → MetaMask
+  → Sepolia Staking Contract
+  → Etherscan Transparency
+  → Mock DeFi Agent Recommendation
+  → Human-Approved Execution
+```
 
 ## Problem
 
@@ -61,8 +73,6 @@ Teams usually need to manually build:
 - UI components for contract interaction
 
 This creates friction between smart contract development and real user-facing dApp interfaces.
-
----
 
 ## Solution
 
@@ -98,8 +108,6 @@ The AI layer does not execute transactions automatically. It only provides expla
 https://sepolia.etherscan.io/address/0xbB31245F4842FE90041B378CDac9Fe1c37701067
 ```
 
----
-
 ## Tech Stack
 
 - React
@@ -113,8 +121,6 @@ https://sepolia.etherscan.io/address/0xbB31245F4842FE90041B378CDac9Fe1c37701067
 - MetaMask
 - Ethereum Sepolia Testnet
 - Remix IDE
-
----
 
 ## Project Structure
 
@@ -139,11 +145,11 @@ prompts/
   defi-context.md
 
 docs/
-  [`Architecture`](docs/ARCHITECTURE.md)
-  [`Case Study`](docs/CASE_STUDY.md)
+  ARCHITECTURE.md
+  CASE_STUDY.md
+  architecture-diagram.md
+  assets/
 ```
-
----
 
 ## Smart Contract Features
 
@@ -158,8 +164,6 @@ The Solidity staking contract supports:
 - Owner-controlled reward rate
 
 The contract is deployed on Sepolia for demonstration purposes only.
-
----
 
 ## Frontend Features
 
@@ -176,8 +180,6 @@ The React dashboard supports:
 - Transaction confirmation flow
 - Automatic UI refresh after confirmed transactions
 - Sepolia Etherscan links for contract and transaction review
-
----
 
 ## Mock DeFi Agent Layer
 
@@ -211,8 +213,6 @@ AI suggests → User reviews → MetaMask confirms → Blockchain executes
 
 This keeps the system explainable, auditable, and human-approved.
 
----
-
 ## Verified Flow
 
 The end-to-end flow was tested on Ethereum Sepolia:
@@ -239,8 +239,6 @@ Tested actions:
 - Etherscan transaction link
 - Mock agent recommendation rendering
 
----
-
 ## AI Operator Role
 
 This project was built as an AI Operator workflow.
@@ -259,8 +257,6 @@ The operator role included:
 - Designing a safe human-in-the-loop agentic decision layer
 
 The purpose is to demonstrate not only frontend implementation, but also operator judgment, architecture decisions, and safe AI-assisted Web3 delivery.
-
----
 
 ## Security & Safety Notes
 
@@ -286,8 +282,6 @@ Recommended production pattern:
 Frontend → Backend / Serverless Proxy → AI API
 ```
 
----
-
 ## How to Run
 
 Install dependencies:
@@ -308,21 +302,29 @@ Build the project:
 npm run build
 ```
 
----
-
 ## Documentation
 
-Available documentation:
+Current documentation:
 
-- `docs/ARCHITECTURE.md` — system architecture and AI Operator workflow
-- `docs/CASE_STUDY.md` — portfolio case study and business positioning
+- [`Architecture Documentation`](docs/ARCHITECTURE.md)
+- [`Architecture Diagram`](docs/architecture-diagram.md)
+- [`Portfolio Case Study`](docs/CASE_STUDY.md)
+- `prompts/system-instruction.md`
+- `prompts/iteration-log.md`
+- `prompts/defi-context.md`
+
+Demo assets:
+
+- `docs/assets/dashboard-connected.png`
+- `docs/assets/metamask-transaction.png`
+- `docs/assets/etherscan-transaction.png`
+- `docs/assets/ai-recommendation.png`
 
 Planned documentation:
 
-- Architecture diagram
-- Dashboard screenshots
+- Security and production-readiness notes
 - Secure AI proxy architecture
-- Production-readiness notes
+- LinkedIn / portfolio case study post
 
 ## Current Status
 
@@ -331,27 +333,25 @@ Portfolio PoC / work in progress.
 Completed:
 
 - Deployed Sepolia staking contract
+- Hardened staking contract with a custom `nonReentrant` guard
 - React staking dashboard
 - MetaMask wallet flow
 - Staking and withdrawal interaction
 - Etherscan contract and transaction links
 - Safe mock DeFi agent decision layer
 - Explainable recommendation UX
-- Smart contract hardening with a custom reentrancy guard
+- Dashboard demo screenshots
 - Architecture documentation
+- Architecture diagram
 - Portfolio case study
 
 Next planned improvements:
 
-- Add dashboard screenshots
-- Add architecture diagram
 - Add Sepolia network guard
 - Improve transaction status UX
 - Add secure AI proxy architecture example
 - Improve reward pool UX
 - Add production security notes for the Solidity contract
-
----
 
 ## Portfolio Positioning
 
