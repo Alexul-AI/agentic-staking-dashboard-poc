@@ -290,16 +290,17 @@ npm run build
 
 ## Documentation
 
-Planned / recommended documentation:
+Available documentation:
 
-- `ARCHITECTURE.md`
+- `docs/ARCHITECTURE.md` — system architecture and AI Operator workflow
+- `docs/CASE_STUDY.md` — portfolio case study and business positioning
+
+Planned documentation:
+
 - Architecture diagram
 - Dashboard screenshots
-- AI Operator workflow notes
-- Security and production-readiness notes
 - Secure AI proxy architecture
-
----
+- Production-readiness notes
 
 ## Current Status
 
@@ -314,18 +315,19 @@ Completed:
 - Etherscan contract and transaction links
 - Safe mock DeFi agent decision layer
 - Explainable recommendation UX
+- Smart contract hardening with a custom reentrancy guard
+- Architecture documentation
+- Portfolio case study
 
 Next planned improvements:
 
+- Add dashboard screenshots
+- Add architecture diagram
 - Add Sepolia network guard
 - Improve transaction status UX
-- Add dashboard screenshots
-- Add architecture documentation
-- Add architecture diagram
 - Add secure AI proxy architecture example
 - Improve reward pool UX
 - Add production security notes for the Solidity contract
-- Prepare portfolio case study
 
 ---
 
