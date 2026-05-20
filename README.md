@@ -344,11 +344,11 @@ Completed:
 - Architecture documentation
 - Architecture diagram
 - Portfolio case study
+- Add Sepolia network guard
+- Improved transaction status UX
 
 Next planned improvements:
 
-- Add Sepolia network guard
-- Improve transaction status UX
 - Add secure AI proxy architecture example
 - Improve reward pool UX
 - Add production security notes for the Solidity contract

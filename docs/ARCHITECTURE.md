@@ -294,6 +294,7 @@ Responsibilities of the frontend layer:
 - Provide Etherscan links
 - Display mock agent recommendations
 - Keep blockchain execution under user control
+- Display clear transaction lifecycle status for wallet confirmation, network confirmation, and Etherscan review
 
 The frontend does not store private keys and does not execute blockchain transactions without wallet confirmation.
 
@@ -332,6 +333,14 @@ User can inspect transaction on Etherscan
 
 This keeps execution transparent and user-approved.
 
+The dashboard also includes a transaction status panel that explains the current transaction lifecycle to the user:
+
+````text
+Waiting for wallet confirmation
+  → Waiting for Sepolia confirmation
+  → Transaction submitted
+  → Etherscan review available
+
 ---
 
 ## 10. Agentic Decision Layer
@@ -364,7 +373,7 @@ No wallet transaction is required for HOLD.
 
 Risk Note:
 This recommendation is based only on simple staking and reward data.
-```
+````
 
 The agent does not directly execute transactions.
 

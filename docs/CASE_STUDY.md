@@ -106,6 +106,12 @@ The following flows were tested:
 - Mock DeFi agent recommendation rendering
 - Human-approved execution pattern
 
+````md
+- Transaction lifecycle status UX
+- Wallet confirmation status
+- Sepolia confirmation status
+- Last transaction hash display
+
 ---
 
 ## 7. Safety Boundaries
@@ -128,6 +134,7 @@ The intended safety model is:
 ```text
 AI suggests → User reviews → MetaMask confirms → Blockchain executes
 ```
+````
 
 ---
 
@@ -206,6 +213,7 @@ Completed:
 - Architecture documentation
 - Architecture diagram
 - Portfolio case study
+- Improved transaction status UX
 
 ---
 
@@ -214,7 +222,6 @@ Completed:
 Planned next steps:
 
 - Add Sepolia network guard
-- Improve transaction status UX
 - Add secure AI proxy architecture
 - Improve reward pool UX
 - Add production-readiness notes

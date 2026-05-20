@@ -14,6 +14,8 @@ import { useDeFiAgent } from "../hooks/useDeFiAgent";
 
 const SEPOLIA_ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
 
+type TransactionAction = "Stake" | "Claim Rewards" | "Withdraw All";
+
 const Spinner = () => (
   <svg
     className="animate-spin -ml-1 mr-2 h-5 w-5 text-current"
@@ -82,6 +84,8 @@ export const StakingDashboard = ({
 
   const [stakeAmount, setStakeAmount] = useState("");
 
+  const [lastAction, setLastAction] = useState<TransactionAction | null>(null);
+
   const formattedStaked = stakedBalance ? formatEther(stakedBalance) : "0.0";
   const formattedRewards = earnedRewards ? formatEther(earnedRewards) : "0.0";
 
@@ -107,6 +111,37 @@ export const StakingDashboard = ({
   const lastTransactionUrl = txHash
     ? `${SEPOLIA_ETHERSCAN_BASE_URL}/tx/${txHash}`
     : null;
+
+  const shortTxHash = txHash
+    ? `${txHash.slice(0, 10)}...${txHash.slice(-6)}`
+    : null;
+
+  const combinedError =
+    error ??
+    connectError?.message ??
+    disconnectError?.message ??
+    switchChainError?.message ??
+    null;
+
+  const transactionStatusTitle = combinedError
+    ? "Transaction failed or rejected"
+    : isLoading && txHash
+      ? "Waiting for Sepolia confirmation"
+      : isLoading
+        ? "Waiting for wallet confirmation"
+        : txHash
+          ? "Last transaction submitted"
+          : "Ready for transaction";
+
+  const transactionStatusDescription = combinedError
+    ? "The transaction did not complete. Check the error message and try again if needed."
+    : isLoading && txHash
+      ? "The transaction was submitted to Sepolia. Waiting for the network to confirm it."
+      : isLoading
+        ? "MetaMask should open a confirmation request. Review and approve the transaction in your wallet."
+        : txHash
+          ? "The latest transaction from this session is available for review on Sepolia Etherscan."
+          : "No transaction is currently in progress.";
 
   const handleConnectWallet = async () => {
     try {
@@ -162,8 +197,23 @@ export const StakingDashboard = ({
   const handleStake = async () => {
     if (!canStake) return;
 
+    setLastAction("Stake");
     await stake(stakeAmount);
     setStakeAmount("");
+  };
+
+  const handleClaimReward = async () => {
+    if (!canClaimRewards) return;
+
+    setLastAction("Claim Rewards");
+    await claimReward();
+  };
+
+  const handleWithdraw = async () => {
+    if (!canWithdraw) return;
+
+    setLastAction("Withdraw All");
+    await withdraw();
   };
 
   const handleAgentAnalyze = async () => {
@@ -176,13 +226,6 @@ export const StakingDashboard = ({
       console.log("Agent decision:", agentDecision);
     }
   };
-
-  const combinedError =
-    error ??
-    connectError?.message ??
-    disconnectError?.message ??
-    switchChainError?.message ??
-    null;
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 text-gray-100 font-sans">
@@ -260,12 +303,51 @@ export const StakingDashboard = ({
         </div>
       )}
 
-      {isLoading && (
-        <div className="mb-6 p-4 bg-indigo-500/10 border border-indigo-500/30 rounded-xl flex items-center gap-3">
-          <Spinner />
-          <span className="text-indigo-300 text-sm">
-            Processing transaction...
-          </span>
+      {(isLoading || txHash || lastAction) && (
+        <div className="mb-6 p-4 bg-indigo-500/10 border border-indigo-500/30 rounded-xl">
+          <div className="flex items-start gap-3">
+            {isLoading && <Spinner />}
+
+            <div className="flex-1">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-indigo-200 font-semibold text-sm">
+                  Transaction Status
+                </p>
+
+                {lastAction && (
+                  <span className="text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-200 border border-indigo-400/30">
+                    {lastAction}
+                  </span>
+                )}
+              </div>
+
+              <p className="text-white text-sm mt-2">
+                {transactionStatusTitle}
+              </p>
+
+              <p className="text-indigo-100/80 text-sm mt-1">
+                {transactionStatusDescription}
+              </p>
+
+              {txHash && lastTransactionUrl && (
+                <div className="mt-3 flex flex-col gap-1">
+                  <p className="text-xs text-gray-400">
+                    Transaction hash:{" "}
+                    <span className="text-gray-200">{shortTxHash}</span>
+                  </p>
+
+                  <a
+                    href={lastTransactionUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-green-300 hover:text-green-200 underline underline-offset-4 text-sm"
+                  >
+                    View transaction on Sepolia Etherscan
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
@@ -393,7 +475,7 @@ export const StakingDashboard = ({
         <div className="grid grid-cols-3 gap-3">
           <button
             type="button"
-            onClick={claimReward}
+            onClick={handleClaimReward}
             disabled={isLoading || !canClaimRewards}
             className="flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-xl border border-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -418,7 +500,7 @@ export const StakingDashboard = ({
 
           <button
             type="button"
-            onClick={withdraw}
+            onClick={handleWithdraw}
             disabled={isLoading || !canWithdraw}
             className="flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium py-3 px-4 rounded-xl border border-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
