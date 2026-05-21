@@ -29,6 +29,7 @@ The main goals of this PoC are:
 - Provide a clear MetaMask-based transaction flow.
 - Display staking position data in a user-friendly dashboard.
 - Add Sepolia Etherscan links for contract and transaction transparency.
+- Display reward pool liquidity and support reward pool funding.
 - Demonstrate a safe mock agentic decision layer for DeFi recommendations.
 - Keep blockchain execution under user control.
 - Show how an AI Operator can guide, validate, and structure AI-assisted Web3 delivery.
@@ -114,6 +115,7 @@ Examples:
 - Connected wallet address
 - Staked balance
 - Earned rewards
+- Contract reward pool balance
 - Contract address
 - Sepolia network state
 - Last transaction hash
@@ -138,7 +140,9 @@ Responsibilities:
 
 - Configure Sepolia and MetaMask connection
 - Read contract state using wagmi / viem
+- Read user stake, earned rewards, and contract reward pool balance
 - Call smart contract write functions
+- Support staking, withdrawal, reward claiming, and reward pool funding
 - Wait for transaction receipts
 - Refetch staking data after confirmed transactions
 - Expose transaction hash for Etherscan transparency
@@ -215,15 +219,17 @@ The user flow is intentionally simple and transparent:
 2. User connects MetaMask.
 3. Frontend reads wallet and staking state.
 4. User can stake Sepolia ETH.
-5. MetaMask opens and asks for confirmation.
-6. Transaction is submitted to Sepolia.
-7. Dashboard displays transaction status.
-8. Dashboard updates on-chain staking data.
-9. User can open the transaction on Sepolia Etherscan.
-10. User can run the mock AI Auto-Pilot.
-11. Agent evaluates the current staking position.
-12. Agent displays an explainable recommendation.
-13. User decides whether to manually claim, withdraw, stake more, or hold.
+5. User can view the contract reward pool balance.
+6. User can optionally fund the reward pool.
+7. MetaMask opens and asks for confirmation.
+8. Transaction is submitted to Sepolia.
+9. Dashboard displays transaction status.
+10. Dashboard updates on-chain staking data.
+11. User can open the transaction on Sepolia Etherscan.
+12. User can run the mock AI Auto-Pilot.
+13. Agent evaluates the current staking position.
+14. Agent displays an explainable recommendation.
+15. User decides whether to manually claim, withdraw, stake more, or hold.
 
 ---
 
@@ -256,7 +262,8 @@ Responsibilities of the smart contract layer:
 - Track accumulated rewards
 - Support withdrawal flow
 - Support reward claiming
-- Allow reward pool funding
+- Expose contract reward pool balance through `getContractBalance`
+- Allow reward pool funding through `fundRewards`
 - Provide readable staking state to the frontend
 
 Security hardening currently includes:
@@ -292,6 +299,8 @@ Responsibilities of the frontend layer:
 - Show transaction loading states
 - Display user-facing errors
 - Provide Etherscan links
+- Display reward pool liquidity
+- Allow reward pool funding through MetaMask-confirmed transactions
 - Display mock agent recommendations
 - Keep blockchain execution under user control
 - Display clear transaction lifecycle status for wallet confirmation, network confirmation, and Etherscan review
@@ -335,15 +344,47 @@ This keeps execution transparent and user-approved.
 
 The dashboard also includes a transaction status panel that explains the current transaction lifecycle to the user:
 
-````text
+```text
 Waiting for wallet confirmation
   → Waiting for Sepolia confirmation
   → Transaction submitted
   → Etherscan review available
+```
 
 ---
 
-## 10. Agentic Decision Layer
+## 10. Reward Pool UX
+
+The dashboard includes a reward pool section that displays the current ETH balance held by the staking contract.
+
+This balance represents contract liquidity available for paying staking rewards.
+
+The reward pool UX includes:
+
+- Contract balance display
+- Reward funding input
+- `Fund Pool` transaction action
+- Warning when earned rewards may exceed available contract liquidity
+- MetaMask-confirmed reward pool funding
+
+This makes the staking system easier to understand because earned rewards and contract liquidity are separate concepts.
+
+The intended model is:
+
+```text
+User stake
+  → creates staking position
+
+Reward pool funding
+  → provides ETH liquidity for reward payouts
+
+Claim rewards
+  → transfers earned rewards if the contract has enough ETH
+```
+
+This improves the DeFi product UX by making reward liquidity visible instead of hidden behind failed claim transactions.
+
+## 11. Agentic Decision Layer
 
 The current agentic layer is a safe mock decision-support module.
 
@@ -373,7 +414,7 @@ No wallet transaction is required for HOLD.
 
 Risk Note:
 This recommendation is based only on simple staking and reward data.
-````
+```
 
 The agent does not directly execute transactions.
 
@@ -385,7 +426,7 @@ AI suggests → User reviews → Wallet confirms → Blockchain executes
 
 ---
 
-## 11. Security & Safety Boundaries
+## 12. Security & Safety Boundaries
 
 Current safety boundaries:
 
@@ -416,7 +457,7 @@ AI API keys should never be exposed directly in frontend code.
 
 ---
 
-## 12. Current Limitations
+## 13. Current Limitations
 
 This project is currently a PoC and has several limitations:
 
@@ -436,7 +477,7 @@ These limitations are intentional for a safe portfolio demonstration.
 
 ---
 
-## 13. Planned Improvements
+## 14. Planned Improvements
 
 Planned improvements include:
 
@@ -444,7 +485,6 @@ Planned improvements include:
 - Add stronger transaction status handling.
 - Add tests for staking and withdraw flows.
 - Improve error handling for rejected MetaMask transactions.
-- Improve reward pool UX.
 - Add production security notes for the Solidity contract.
 - Add transaction history persistence.
 - Implement the documented secure AI proxy as a real backend/serverless endpoint.
@@ -458,7 +498,7 @@ Completed portfolio documentation assets already include:
 
 ---
 
-## 14. Future Secure AI Integration
+## 15. Future Secure AI Integration
 
 The current project uses a safe mock DeFi agent. It does not call an external AI API and does not require an API key.
 
@@ -528,7 +568,7 @@ The AI layer should support decision-making and explanation, while blockchain ex
 
 ---
 
-## 15. AI Operator Value
+## 16. AI Operator Value
 
 This project demonstrates AI Operator work, not only frontend implementation.
 
@@ -555,7 +595,7 @@ The project shows practical operator judgment across:
 
 ---
 
-## 16. Portfolio Positioning
+## 17. Portfolio Positioning
 
 This project demonstrates the ability to operate at the intersection of:
 

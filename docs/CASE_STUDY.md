@@ -40,6 +40,7 @@ The dashboard allows the user to:
 - Stake Sepolia ETH
 - Withdraw staked ETH
 - View staking and rewards state
+- View and fund the contract reward pool
 - Inspect contract and transaction activity on Sepolia Etherscan
 - Run a safe mock DeFi agent recommendation layer
 
@@ -64,11 +65,12 @@ The operator workflow included:
 9. Adding Etherscan transparency.
 10. Adding an explainable mock DeFi agent layer.
 11. Hardening the smart contract with a reentrancy guard.
-12. Adding dashboard screenshots.
-13. Adding architecture documentation.
-14. Adding an architecture diagram.
-15. Documenting the architecture and safety boundaries.
-16. Documenting a secure AI proxy architecture for future production-style integration.
+12. Improving reward pool visibility and funding UX.
+13. Adding dashboard screenshots.
+14. Adding architecture documentation.
+15. Adding an architecture diagram.
+16. Documenting the architecture and safety boundaries.
+17. Documenting a secure AI proxy architecture for future production-style integration.
 
 ---
 
@@ -102,6 +104,8 @@ The following flows were tested:
 - Transaction pending state
 - Transaction confirmation
 - On-chain balance update
+- Reward pool balance display
+- Reward pool funding transaction
 - Withdraw transaction
 - Etherscan transaction link
 - Mock DeFi agent recommendation rendering
@@ -149,6 +153,7 @@ Potential value:
 - Standardized wallet UX
 - Reusable contract interaction hooks
 - Explainable DeFi decision support
+- Clearer reward liquidity visibility
 - Safer human-in-the-loop execution
 - Better transaction transparency
 - Portfolio-ready Web3 automation workflows
@@ -216,6 +221,7 @@ Completed:
 - Portfolio case study
 - Improved transaction status UX
 - Secure AI proxy architecture documentation
+- Reward pool visibility and funding UX
 
 ---
 
@@ -223,6 +229,5 @@ Completed:
 
 Planned next steps:
 
-- Improve reward pool UX
 - Add production-readiness notes
 - Prepare LinkedIn / portfolio post

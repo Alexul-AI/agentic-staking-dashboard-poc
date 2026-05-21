@@ -13,6 +13,7 @@ This project is part of my transition toward AI Operator / AI Solutions Develope
 - MetaMask wallet connection
 - Staking, withdrawal, and reward interaction flow
 - Sepolia Etherscan links for contract and transaction transparency
+- Reward pool visibility and funding flow
 - Safe mock DeFi agent decision layer
 - Human-confirmed blockchain execution
 
@@ -86,6 +87,7 @@ The workflow includes:
 - Handling MetaMask wallet states
 - Showing transaction status to the user
 - Linking transactions to Sepolia Etherscan
+- Displaying contract reward pool liquidity
 - Adding a safe mock agent layer that explains possible next actions
 
 The AI layer does not execute transactions automatically. It only provides explainable recommendations. The user remains in control and confirms every blockchain action through MetaMask.
@@ -160,6 +162,7 @@ The Solidity staking contract supports:
 - Claiming accumulated rewards
 - Reading user stake
 - Reading user rewards
+- Reading contract reward pool balance
 - Funding the reward pool
 - Owner-controlled reward rate
 
@@ -173,6 +176,8 @@ The React dashboard supports:
 - ETH staking input
 - Staked balance display
 - Earned rewards display
+- Reward pool balance display
+- Reward pool funding action
 - Claim rewards action
 - Withdraw action
 - Loading states during transactions
@@ -180,6 +185,31 @@ The React dashboard supports:
 - Transaction confirmation flow
 - Automatic UI refresh after confirmed transactions
 - Sepolia Etherscan links for contract and transaction review
+
+---
+
+## Reward Pool UX
+
+The dashboard includes a dedicated reward pool section.
+
+The reward pool represents ETH held by the staking contract and used to pay accumulated staking rewards.
+
+The UI displays:
+
+- Contract balance
+- Reward funding input
+- Fund Pool action
+- Warning state when rewards exist but the contract may not have enough ETH to pay them
+
+This makes the staking mechanics clearer:
+
+```text
+Stake = user deposits ETH into their staking position
+Fund Pool = contract receives ETH for reward payouts
+Claim Rewards = user claims accumulated rewards from the contract balance
+```
+
+---
 
 ## Mock DeFi Agent Layer
 
@@ -232,10 +262,12 @@ Tested actions:
 
 - Wallet connection
 - Stake transaction
+- Reward pool funding transaction
 - Transaction pending state
 - On-chain balance update
 - Withdraw transaction
 - Rewards state update
+- Contract balance / reward pool update
 - Etherscan transaction link
 - Mock agent recommendation rendering
 
@@ -345,14 +377,15 @@ Completed:
 - Architecture documentation
 - Architecture diagram
 - Portfolio case study
-- Add Sepolia network guard
+- Sepolia network guard
 - Improved transaction status UX
 - Secure AI proxy architecture documentation
+- Reward pool visibility and funding UX
 
 Next planned improvements:
 
-- Improve reward pool UX
 - Add production security notes for the Solidity contract
+- Prepare LinkedIn / portfolio case study post
 
 ## Portfolio Positioning
 

@@ -14,7 +14,11 @@ import { useDeFiAgent } from "../hooks/useDeFiAgent";
 
 const SEPOLIA_ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
 
-type TransactionAction = "Stake" | "Claim Rewards" | "Withdraw All";
+type TransactionAction =
+  | "Stake"
+  | "Claim Rewards"
+  | "Withdraw All"
+  | "Fund Reward Pool";
 
 const Spinner = () => (
   <svg
@@ -72,22 +76,27 @@ export const StakingDashboard = ({
   const {
     stakedBalance,
     earnedRewards,
+    contractBalance,
     isLoading,
     error,
     txHash,
     stake,
     withdraw,
     claimReward,
+    fundRewards,
   } = useStaking(contractAddress);
 
   const { analyzePosition, isAnalyzing, decision } = useDeFiAgent();
 
   const [stakeAmount, setStakeAmount] = useState("");
-
+  const [rewardFundingAmount, setRewardFundingAmount] = useState("");
   const [lastAction, setLastAction] = useState<TransactionAction | null>(null);
 
   const formattedStaked = stakedBalance ? formatEther(stakedBalance) : "0.0";
   const formattedRewards = earnedRewards ? formatEther(earnedRewards) : "0.0";
+  const formattedContractBalance = contractBalance
+    ? formatEther(contractBalance)
+    : "0.0";
 
   const isSepolia = chainId === sepolia.id;
   const isWrongNetwork = isConnected && !isSepolia;
@@ -96,11 +105,21 @@ export const StakingDashboard = ({
   const canStake =
     canExecuteTransaction && Boolean(stakeAmount) && Number(stakeAmount) > 0;
 
+  const canFundRewards =
+    canExecuteTransaction &&
+    Boolean(rewardFundingAmount) &&
+    Number(rewardFundingAmount) > 0;
+
   const canClaimRewards =
     canExecuteTransaction && Boolean(earnedRewards && earnedRewards > 0n);
 
   const canWithdraw =
     canExecuteTransaction && Boolean(stakedBalance && stakedBalance > 0n);
+
+  const hasRewardsWithoutPool =
+    earnedRewards !== undefined &&
+    earnedRewards > 0n &&
+    (contractBalance === undefined || contractBalance < earnedRewards);
 
   const shortAddress = address
     ? `${address.slice(0, 6)}...${address.slice(-4)}`
@@ -200,6 +219,14 @@ export const StakingDashboard = ({
     setLastAction("Stake");
     await stake(stakeAmount);
     setStakeAmount("");
+  };
+
+  const handleFundRewards = async () => {
+    if (!canFundRewards) return;
+
+    setLastAction("Fund Reward Pool");
+    await fundRewards(rewardFundingAmount);
+    setRewardFundingAmount("");
   };
 
   const handleClaimReward = async () => {
@@ -388,6 +415,88 @@ export const StakingDashboard = ({
         </div>
       </div>
 
+      <div className="mb-8 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <div>
+            <p className="text-sm text-emerald-300 font-semibold">
+              Reward Pool
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Funds available in the contract for paying staking rewards.
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-xs text-gray-500">Contract Balance</p>
+            <p className="text-lg font-semibold text-emerald-300">
+              {formattedContractBalance} ETH
+            </p>
+          </div>
+        </div>
+
+        {hasRewardsWithoutPool && (
+          <div className="mb-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3">
+            <p className="text-yellow-200 text-sm font-medium">
+              Reward pool may be too low
+            </p>
+            <p className="text-yellow-100/80 text-xs mt-1">
+              Earned rewards are visible, but the contract may not have enough
+              ETH to pay them. Fund the reward pool before claiming.
+            </p>
+          </div>
+        )}
+
+        <label
+          htmlFor="rewardFundingAmount"
+          className="block text-sm text-gray-400 mb-2"
+        >
+          Reward Funding Amount
+        </label>
+
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <input
+              id="rewardFundingAmount"
+              type="number"
+              min="0"
+              step="0.001"
+              value={rewardFundingAmount}
+              onChange={(event) => setRewardFundingAmount(event.target.value)}
+              disabled={isLoading || isWrongNetwork}
+              placeholder="0.00"
+              className="w-full bg-gray-950 text-white border border-gray-700 rounded-xl py-3 px-4 pr-14 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all disabled:opacity-50"
+            />
+
+            <span className="absolute right-4 top-3.5 text-gray-500 font-medium pointer-events-none">
+              ETH
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleFundRewards}
+            disabled={isLoading || !canFundRewards}
+            className="flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-5 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-600/20"
+          >
+            {isLoading && lastAction === "Fund Reward Pool" ? (
+              <>
+                <Spinner />
+                Fund
+              </>
+            ) : (
+              "Fund Pool"
+            )}
+          </button>
+        </div>
+
+        {isWrongNetwork && (
+          <p className="text-xs text-yellow-200/80 mt-2">
+            Reward pool funding is disabled until the wallet is connected to
+            Sepolia.
+          </p>
+        )}
+      </div>
+
       <div className="mb-8 rounded-xl border border-gray-800 bg-gray-950/70 p-4">
         <p className="text-sm text-gray-400 mb-3">On-chain References</p>
 
@@ -451,7 +560,7 @@ export const StakingDashboard = ({
             disabled={isLoading || !canStake}
             className="flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/20"
           >
-            {isLoading ? (
+            {isLoading && lastAction === "Stake" ? (
               <>
                 <Spinner />
                 Stake
@@ -479,7 +588,7 @@ export const StakingDashboard = ({
             disabled={isLoading || !canClaimRewards}
             className="flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-xl border border-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
+            {isLoading && lastAction === "Claim Rewards" ? (
               <>
                 <Spinner />
                 Claim
@@ -504,7 +613,7 @@ export const StakingDashboard = ({
             disabled={isLoading || !canWithdraw}
             className="flex items-center justify-center bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium py-3 px-4 rounded-xl border border-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
+            {isLoading && lastAction === "Withdraw All" ? (
               <>
                 <Spinner />
                 Withdraw
