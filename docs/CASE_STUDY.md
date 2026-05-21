@@ -68,6 +68,7 @@ The operator workflow included:
 13. Adding architecture documentation.
 14. Adding an architecture diagram.
 15. Documenting the architecture and safety boundaries.
+16. Documenting a secure AI proxy architecture for future production-style integration.
 
 ---
 
@@ -222,7 +223,6 @@ Completed:
 
 Planned next steps:
 
-- Add Sepolia network guard
 - Improve reward pool UX
 - Add production-readiness notes
 - Prepare LinkedIn / portfolio post

@@ -309,10 +309,10 @@ Current documentation:
 - [`Architecture Documentation`](docs/ARCHITECTURE.md)
 - [`Architecture Diagram`](docs/architecture-diagram.md)
 - [`Portfolio Case Study`](docs/CASE_STUDY.md)
+- [`Secure AI Proxy Architecture`](docs/SECURE_AI_PROXY.md)
 - `prompts/system-instruction.md`
 - `prompts/iteration-log.md`
 - `prompts/defi-context.md`
-- [`Secure AI Proxy Architecture`](docs/SECURE_AI_PROXY.md)
 
 Demo assets:
 

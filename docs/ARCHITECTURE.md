@@ -442,13 +442,12 @@ Planned improvements include:
 
 - Add Sepolia network guard.
 - Add stronger transaction status handling.
-- Add secure Gemini proxy architecture example.
 - Add tests for staking and withdraw flows.
 - Improve error handling for rejected MetaMask transactions.
 - Improve reward pool UX.
 - Add production security notes for the Solidity contract.
 - Add transaction history persistence.
-- Add optional backend/serverless AI decision endpoint.
+- Implement the documented secure AI proxy as a real backend/serverless endpoint.
 
 Completed portfolio documentation assets already include:
 
@@ -461,13 +460,21 @@ Completed portfolio documentation assets already include:
 
 ## 14. Future Secure AI Integration
 
-The current project uses a mock agent, but the planned production pattern is documented in docs/SECURE_AI_PROXY.md.
+The current project uses a safe mock DeFi agent. It does not call an external AI API and does not require an API key.
 
-The current mock agent is intentionally safe and does not require an API key.
+A future production-oriented version should replace the mock decision layer with a secure backend or serverless AI proxy.
 
-A future production-oriented AI integration should avoid placing API keys in frontend code.
+Detailed proxy architecture:
 
-Recommended architecture:
+[`docs/SECURE_AI_PROXY.md`](SECURE_AI_PROXY.md)
+
+The main security principle is:
+
+```text
+AI API keys should never be exposed directly in frontend code.
+```
+
+Recommended production pattern:
 
 ```text
 React Frontend
@@ -481,7 +488,11 @@ Backend / Serverless API Route
    ▼
 AI Decision Engine
    │
-   │ Returns structured JSON
+   │ Returns structured JSON recommendation
+   ▼
+Backend / Serverless API Route
+   │
+   │ Validates and normalizes the response
    ▼
 Frontend
    │
@@ -512,6 +523,8 @@ This preserves the core safety principle:
 ```text
 AI recommends, but the user controls execution.
 ```
+
+The AI layer should support decision-making and explanation, while blockchain execution remains human-approved through MetaMask.
 
 ---
 
