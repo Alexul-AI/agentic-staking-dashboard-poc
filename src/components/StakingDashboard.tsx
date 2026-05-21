@@ -247,6 +247,7 @@ export const StakingDashboard = ({
     const agentDecision = await analyzePosition(
       formattedStaked,
       formattedRewards,
+      formattedContractBalance,
     );
 
     if (agentDecision) {
