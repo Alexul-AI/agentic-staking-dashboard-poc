@@ -13,6 +13,7 @@ Solidity smart contract logic
   → AI-assisted frontend integration
   → Web3 wallet UX
   → transaction transparency
+  → reward pool visibility
   → explainable agent recommendation layer
   → human-approved blockchain execution
 ```
@@ -51,6 +52,7 @@ React Dashboard
   → MetaMask
   → Sepolia Smart Contract
   → Etherscan
+  → Reward Pool UX
   → Mock DeFi Agent Recommendation
   → Human-Approved Execution
 ```
@@ -67,7 +69,9 @@ User
 React Frontend
  │
  │ Reads staking state
+ │ Reads reward pool state
  │ Requests wallet connection
+ │ Checks Sepolia network
  │ Prepares contract interactions
  │ Displays AI recommendation
  ▼
@@ -89,11 +93,15 @@ Ethereum Sepolia Network
 Staking Smart Contract
  │
  │ Updates on-chain state
+ │ Stores staking balances
+ │ Stores reward pool liquidity
  ▼
 Frontend Dashboard
  │
  │ Refetches data
  │ Updates balances
+ │ Updates reward pool display
+ │ Shows transaction status
  │ Shows Etherscan links
  │ Displays agent recommendation
  ▼
@@ -113,11 +121,11 @@ The grounding layer contains the factual state used by the dashboard and the moc
 Examples:
 
 - Connected wallet address
+- Current chain / network state
 - Staked balance
 - Earned rewards
 - Contract reward pool balance
 - Contract address
-- Sepolia network state
 - Last transaction hash
 - Etherscan contract and transaction links
 
@@ -139,6 +147,7 @@ src/wagmi.ts
 Responsibilities:
 
 - Configure Sepolia and MetaMask connection
+- Detect wrong wallet network
 - Read contract state using wagmi / viem
 - Read user stake, earned rewards, and contract reward pool balance
 - Call smart contract write functions
@@ -217,19 +226,20 @@ The user flow is intentionally simple and transparent:
 
 1. User opens the staking dashboard.
 2. User connects MetaMask.
-3. Frontend reads wallet and staking state.
-4. User can stake Sepolia ETH.
-5. User can view the contract reward pool balance.
-6. User can optionally fund the reward pool.
-7. MetaMask opens and asks for confirmation.
-8. Transaction is submitted to Sepolia.
-9. Dashboard displays transaction status.
-10. Dashboard updates on-chain staking data.
-11. User can open the transaction on Sepolia Etherscan.
-12. User can run the mock AI Auto-Pilot.
-13. Agent evaluates the current staking position.
-14. Agent displays an explainable recommendation.
-15. User decides whether to manually claim, withdraw, stake more, or hold.
+3. Frontend checks that the wallet is connected to Sepolia.
+4. Frontend reads wallet and staking state.
+5. User can stake Sepolia ETH.
+6. User can view the contract reward pool balance.
+7. User can optionally fund the reward pool.
+8. MetaMask opens and asks for confirmation.
+9. Transaction is submitted to Sepolia.
+10. Dashboard displays transaction lifecycle status.
+11. Dashboard updates on-chain staking and reward pool data.
+12. User can open the transaction on Sepolia Etherscan.
+13. User can run the mock AI Auto-Pilot.
+14. Agent evaluates the current staking position.
+15. Agent displays an explainable recommendation.
+16. User decides whether to manually claim, withdraw, stake more, fund the reward pool, or hold.
 
 ---
 
@@ -274,6 +284,10 @@ Security hardening currently includes:
 
 The contract layer does not contain AI logic. It only handles deterministic blockchain state and staking-related operations.
 
+Additional Solidity security notes are documented here:
+
+[`docs/SECURITY_NOTES.md`](SECURITY_NOTES.md)
+
 ---
 
 ## 8. Frontend Layer
@@ -294,24 +308,29 @@ Responsibilities of the frontend layer:
 
 - Render staking dashboard UI
 - Connect to MetaMask
+- Detect wrong wallet network and guide the user back to Sepolia
 - Read wallet and staking state
 - Trigger contract write operations
 - Show transaction loading states
+- Display clear transaction lifecycle status for wallet confirmation, network confirmation, and Etherscan review
 - Display user-facing errors
 - Provide Etherscan links
 - Display reward pool liquidity
 - Allow reward pool funding through MetaMask-confirmed transactions
 - Display mock agent recommendations
 - Keep blockchain execution under user control
-- Display clear transaction lifecycle status for wallet confirmation, network confirmation, and Etherscan review
 
 The frontend does not store private keys and does not execute blockchain transactions without wallet confirmation.
+
+The frontend also includes a Sepolia network guard. If the connected wallet is on a different EVM network, the dashboard shows a warning, disables write actions, and provides a `Switch to Sepolia` action through MetaMask.
 
 ---
 
 ## 9. Wallet & Transaction Flow
 
 MetaMask is used as the wallet interaction layer.
+
+Before allowing write actions, the dashboard checks that the connected wallet is on Ethereum Sepolia. If the wallet is connected to another network, staking, reward pool funding, reward claiming, and withdrawing are disabled until the user switches back to Sepolia.
 
 Transaction flow:
 
@@ -351,6 +370,8 @@ Waiting for wallet confirmation
   → Etherscan review available
 ```
 
+This improves the user experience by making the wallet and network confirmation process more transparent.
+
 ---
 
 ## 10. Reward Pool UX
@@ -383,6 +404,8 @@ Claim rewards
 ```
 
 This improves the DeFi product UX by making reward liquidity visible instead of hidden behind failed claim transactions.
+
+---
 
 ## 11. Agentic Decision Layer
 
@@ -441,6 +464,10 @@ Current safety boundaries:
 - No real financial advice is provided.
 - No production yield strategy is implemented.
 
+Additional security and production-readiness notes are documented here:
+
+[`docs/SECURITY_NOTES.md`](SECURITY_NOTES.md)
+
 Future AI integration should follow a safer architecture:
 
 ```text
@@ -481,13 +508,11 @@ These limitations are intentional for a safe portfolio demonstration.
 
 Planned improvements include:
 
-- Add Sepolia network guard.
-- Add stronger transaction status handling.
-- Add tests for staking and withdraw flows.
+- Add tests for staking, withdrawal, reward claiming, and reward pool funding.
 - Improve error handling for rejected MetaMask transactions.
-- Add production security notes for the Solidity contract.
 - Add transaction history persistence.
 - Implement the documented secure AI proxy as a real backend/serverless endpoint.
+- Prepare LinkedIn / portfolio case study post.
 
 Completed portfolio documentation assets already include:
 
@@ -495,6 +520,8 @@ Completed portfolio documentation assets already include:
 - Architecture diagram
 - Dashboard screenshots
 - Portfolio case study
+- Secure AI proxy architecture
+- Solidity security notes
 
 ---
 

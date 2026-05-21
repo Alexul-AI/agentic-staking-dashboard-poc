@@ -4,7 +4,7 @@
 
 This project was built as part of my transition toward AI Operator / AI Solutions Developer work with a Web3 focus.
 
-The goal was not only to build a staking dashboard, but to demonstrate an AI-assisted operator workflow that connects smart contract logic, frontend integration, wallet UX, transaction transparency, and an explainable agentic recommendation layer.
+The goal was not only to build a staking dashboard, but to demonstrate an AI-assisted operator workflow that connects smart contract logic, frontend integration, wallet UX, transaction transparency, reward pool visibility, and an explainable agentic recommendation layer.
 
 The project is designed as a portfolio Proof of Concept for remote / international Web3 opportunities, including crypto-paid work.
 
@@ -24,6 +24,7 @@ Common tasks include:
 - Displaying user-friendly errors
 - Linking transactions to explorers
 - Creating usable UI components
+- Showing reward pool / contract liquidity clearly
 - Documenting safety boundaries
 
 This creates friction between smart contract development and actual dApp usability.
@@ -42,6 +43,7 @@ The dashboard allows the user to:
 - View staking and rewards state
 - View and fund the contract reward pool
 - Inspect contract and transaction activity on Sepolia Etherscan
+- See clear transaction lifecycle status
 - Run a safe mock DeFi agent recommendation layer
 
 The AI agent layer does not execute wallet actions automatically. It provides an explainable recommendation and leaves execution under user control through MetaMask.
@@ -65,12 +67,14 @@ The operator workflow included:
 9. Adding Etherscan transparency.
 10. Adding an explainable mock DeFi agent layer.
 11. Hardening the smart contract with a reentrancy guard.
-12. Improving reward pool visibility and funding UX.
-13. Adding dashboard screenshots.
-14. Adding architecture documentation.
-15. Adding an architecture diagram.
-16. Documenting the architecture and safety boundaries.
-17. Documenting a secure AI proxy architecture for future production-style integration.
+12. Adding Sepolia network guard behavior.
+13. Improving transaction status UX.
+14. Improving reward pool visibility and funding UX.
+15. Adding dashboard screenshots.
+16. Adding architecture documentation.
+17. Adding an architecture diagram.
+18. Documenting a secure AI proxy architecture for future production-style integration.
+19. Documenting Solidity security boundaries and production-readiness limitations.
 
 ---
 
@@ -85,6 +89,7 @@ Solidity Staking Contract
   → MetaMask Wallet Confirmation
   → Sepolia Transaction
   → Etherscan Transparency
+  → Reward Pool Visibility
   → Agentic Recommendation Layer
 ```
 
@@ -100,8 +105,16 @@ The following flows were tested:
 
 - MetaMask wallet connection
 - Sepolia contract deployment
+- Sepolia network guard
+- Wrong-network warning state
+- Disabled transaction actions on unsupported networks
+- Switch-to-Sepolia recovery flow
 - Staking transaction
 - Transaction pending state
+- Wallet confirmation status
+- Sepolia confirmation status
+- Last transaction hash display
+- Transaction lifecycle status UX
 - Transaction confirmation
 - On-chain balance update
 - Reward pool balance display
@@ -110,12 +123,6 @@ The following flows were tested:
 - Etherscan transaction link
 - Mock DeFi agent recommendation rendering
 - Human-approved execution pattern
-
-````md
-- Transaction lifecycle status UX
-- Wallet confirmation status
-- Sepolia confirmation status
-- Last transaction hash display
 
 ---
 
@@ -139,7 +146,6 @@ The intended safety model is:
 ```text
 AI suggests → User reviews → MetaMask confirms → Blockchain executes
 ```
-````
 
 ---
 
@@ -182,7 +188,20 @@ These screenshots demonstrate:
 
 ---
 
-## 10. Portfolio Positioning
+## 10. Documentation Assets
+
+The project includes supporting documentation:
+
+- [`Architecture Documentation`](ARCHITECTURE.md)
+- [`Architecture Diagram`](architecture-diagram.md)
+- [`Secure AI Proxy Architecture`](SECURE_AI_PROXY.md)
+- [`Security Notes`](SECURITY_NOTES.md)
+
+These documents explain the technical architecture, AI Operator workflow, secure AI integration path, and Solidity production-readiness boundaries.
+
+---
+
+## 11. Portfolio Positioning
 
 This project positions me as an AI Operator / Web3 Solutions Developer who can combine:
 
@@ -203,7 +222,7 @@ I am designing AI-assisted Web3 workflows that turn smart contract logic into us
 
 ---
 
-## 11. Current Status
+## 12. Current Status
 
 Completed:
 
@@ -219,15 +238,18 @@ Completed:
 - Architecture documentation
 - Architecture diagram
 - Portfolio case study
+- Sepolia network guard
 - Improved transaction status UX
 - Secure AI proxy architecture documentation
 - Reward pool visibility and funding UX
+- Solidity production security notes
 
 ---
 
-## 12. Next Improvements
+## 13. Next Improvements
 
 Planned next steps:
 
-- Add production-readiness notes
 - Prepare LinkedIn / portfolio post
+- Add optional backend/serverless AI proxy implementation
+- Add automated tests for staking and reward pool flows

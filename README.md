@@ -342,6 +342,7 @@ Current documentation:
 - [`Architecture Diagram`](docs/architecture-diagram.md)
 - [`Portfolio Case Study`](docs/CASE_STUDY.md)
 - [`Secure AI Proxy Architecture`](docs/SECURE_AI_PROXY.md)
+- [`Security Notes`](docs/SECURITY_NOTES.md)
 - `prompts/system-instruction.md`
 - `prompts/iteration-log.md`
 - `prompts/defi-context.md`
@@ -381,11 +382,13 @@ Completed:
 - Improved transaction status UX
 - Secure AI proxy architecture documentation
 - Reward pool visibility and funding UX
+- Solidity production security notes
 
 Next planned improvements:
 
-- Add production security notes for the Solidity contract
 - Prepare LinkedIn / portfolio case study post
+- Add optional backend/serverless AI proxy implementation
+- Add automated tests for staking and reward pool flows
 
 ## Portfolio Positioning
 
