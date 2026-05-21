@@ -461,6 +461,8 @@ Completed portfolio documentation assets already include:
 
 ## 14. Future Secure AI Integration
 
+The current project uses a mock agent, but the planned production pattern is documented in docs/SECURE_AI_PROXY.md.
+
 The current mock agent is intentionally safe and does not require an API key.
 
 A future production-oriented AI integration should avoid placing API keys in frontend code.

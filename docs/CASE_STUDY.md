@@ -214,6 +214,7 @@ Completed:
 - Architecture diagram
 - Portfolio case study
 - Improved transaction status UX
+- Secure AI proxy architecture documentation
 
 ---
 
@@ -222,7 +223,6 @@ Completed:
 Planned next steps:
 
 - Add Sepolia network guard
-- Add secure AI proxy architecture
 - Improve reward pool UX
 - Add production-readiness notes
 - Prepare LinkedIn / portfolio post

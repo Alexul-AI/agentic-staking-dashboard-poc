@@ -312,6 +312,7 @@ Current documentation:
 - `prompts/system-instruction.md`
 - `prompts/iteration-log.md`
 - `prompts/defi-context.md`
+- [`Secure AI Proxy Architecture`](docs/SECURE_AI_PROXY.md)
 
 Demo assets:
 
@@ -346,10 +347,10 @@ Completed:
 - Portfolio case study
 - Add Sepolia network guard
 - Improved transaction status UX
+- Secure AI proxy architecture documentation
 
 Next planned improvements:
 
-- Add secure AI proxy architecture example
 - Improve reward pool UX
 - Add production security notes for the Solidity contract
 
