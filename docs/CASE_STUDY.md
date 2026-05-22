@@ -210,6 +210,7 @@ The project includes supporting documentation:
 - [`Architecture Diagram`](architecture-diagram.md)
 - [`Secure AI Proxy Architecture`](SECURE_AI_PROXY.md)
 - [`Security Notes`](SECURITY_NOTES.md)
+- [`Demo Walkthrough`](DEMO_WALKTHROUGH.md)
 
 These documents explain the technical architecture, AI Operator workflow, secure AI integration path, Solidity production-readiness boundaries, and safety constraints.
 
@@ -303,6 +304,7 @@ Completed:
 - Solidity production security notes
 - Optional backend/serverless AI proxy implementation
 - OpenZeppelin-based `ReentrancyGuard` and `Ownable`
+- Technical demo walkthrough
 
 ---
 
@@ -314,3 +316,4 @@ Planned next steps:
 - Add automated tests for staking and reward pool flows
 - Add transaction history persistence
 - Add optional deployed demo / hosted preview
+- Add backend DeFi mock context API

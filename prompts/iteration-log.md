@@ -711,6 +711,40 @@ Validated flows after redeploy:
 
 ---
 
+## Iteration 29 — Technical Demo Walkthrough
+
+A dedicated demo walkthrough document was added to make the project easier to present to technical reviewers, frontend team leads, and potential Web3 clients.
+
+Added document:
+
+```text
+docs/DEMO_WALKTHROUGH.md
+```
+
+Purpose:
+
+- explain what is real and what is mocked
+- provide a clear live demo flow
+- clarify the DeFi staking model
+- explain the AI Operator role
+- prepare the project for external technical review
+- translate the repository from code-only into a portfolio-ready presentation asset
+
+The walkthrough covers:
+
+- dashboard overview
+- Sepolia contract proof through Etherscan
+- network guard demo
+- reward pool funding
+- staking transaction
+- transaction lifecycle UX
+- Etherscan transaction review
+- AI Auto-Pilot recommendation
+- optional backend/serverless AI proxy explanation
+- suggested next technical step: backend DeFi mock context API
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -734,6 +768,7 @@ The project currently includes:
 - Solidity production security notes
 - Staking contract event emissions
 - OpenZeppelin-based ReentrancyGuard and Ownable
+- Technical demo walkthrough
 
 ---
 
@@ -741,7 +776,8 @@ The project currently includes:
 
 Planned next steps:
 
-1. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
-2. Add automated tests for staking and reward pool flows.
-3. Add backend request validation and rate limiting for the optional AI proxy.
-4. Prepare LinkedIn / portfolio post.
+1. Add backend DeFi mock context API.
+2. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
+3. Add automated tests for staking and reward pool flows.
+4. Add backend request validation and rate limiting for the optional AI proxy.
+5. Prepare LinkedIn / portfolio post.

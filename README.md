@@ -448,6 +448,7 @@ Current documentation:
 - [`Architecture Documentation`](docs/ARCHITECTURE.md)
 - [`Architecture Diagram`](docs/architecture-diagram.md)
 - [`Portfolio Case Study`](docs/CASE_STUDY.md)
+- [`Demo Walkthrough`](docs/DEMO_WALKTHROUGH.md)
 - [`Secure AI Proxy Architecture`](docs/SECURE_AI_PROXY.md)
 - [`Security Notes`](docs/SECURITY_NOTES.md)
 - `prompts/system-instruction.md`
@@ -492,6 +493,7 @@ Completed:
 - Solidity production security notes
 - Optional backend/serverless AI proxy implementation
 - OpenZeppelin-based `ReentrancyGuard` and `Ownable`
+- Technical demo walkthrough
 
 Next planned improvements:
 
