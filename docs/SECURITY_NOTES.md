@@ -52,6 +52,20 @@ claimReward
 
 This is important because ETH transfers use low-level `.call{value: amount}("")`, which can pass execution control to the receiver.
 
+### Ownership
+
+The contract uses OpenZeppelin `Ownable` for owner-based access control.
+
+The owner is assigned during deployment.
+
+Owner-protected functionality includes:
+
+```text
+setRewardRate
+```
+
+This prevents arbitrary users from changing the reward rate.
+
 ### Checks-Effects-Interactions Pattern
 
 The contract updates internal state before transferring ETH.
@@ -330,8 +344,9 @@ Before any mainnet deployment, the following steps would be required:
 - Add tests for staking, withdrawal, reward claiming, and reward pool funding.
 - Add event emissions for important contract actions.
 - Add professional security audit.
-- Consider using OpenZeppelin `ReentrancyGuard`.
-- Consider using OpenZeppelin `Ownable` or role-based access control.
+- OpenZeppelin `ReentrancyGuard` is already used.
+- OpenZeppelin `Ownable` is already used.
+- Consider role-based access control if the system grows beyond a single-owner model.
 - Add emergency pause functionality.
 - Define a real reward funding model.
 - Add stronger reward accounting.
@@ -402,6 +417,7 @@ The purpose is not to claim that the contract is production-ready.
 The purpose is to demonstrate:
 
 - Security awareness
+- use of standard OpenZeppelin security primitives
 - Clear limitation mapping
 - Web3 risk understanding
 - Safe human-in-the-loop execution design

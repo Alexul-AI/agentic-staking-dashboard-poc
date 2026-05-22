@@ -79,6 +79,7 @@ The operator workflow included:
 18. Documenting a secure AI proxy architecture for future production-style integration.
 19. Documenting Solidity security boundaries and production-readiness limitations.
 20. Adding an optional backend/serverless AI proxy implementation.
+21. Replacing custom security logic with OpenZeppelin `ReentrancyGuard` and `Ownable`.
 
 ---
 
@@ -131,6 +132,9 @@ The following flows were tested:
 - Optional AI proxy fallback behavior
 - Server-side AI proxy architecture path
 - Human-approved execution pattern
+- OpenZeppelin-based reentrancy protection
+- OpenZeppelin-based ownership protection
+- Owner-only reward rate protection
 
 ---
 
@@ -298,6 +302,7 @@ Completed:
 - Reward pool visibility and funding UX
 - Solidity production security notes
 - Optional backend/serverless AI proxy implementation
+- OpenZeppelin-based `ReentrancyGuard` and `Ownable`
 
 ---
 

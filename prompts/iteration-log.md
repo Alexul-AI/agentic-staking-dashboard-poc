@@ -649,6 +649,68 @@ Validation checklist after redeploy:
 
 ---
 
+## Iteration 28 — OpenZeppelin Security Patterns
+
+The staking smart contract was updated to use standard OpenZeppelin security primitives instead of custom local security logic.
+
+Changes made:
+
+```text
+Custom nonReentrant guard → OpenZeppelin ReentrancyGuard
+Manual owner variable / onlyOwner modifier → OpenZeppelin Ownable
+```
+
+Updated imports:
+
+```solidity
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+```
+
+Updated contract inheritance:
+
+```solidity
+contract StakingContract is ReentrancyGuard, Ownable
+```
+
+Updated constructor:
+
+```solidity
+constructor() Ownable(msg.sender) {}
+```
+
+Purpose:
+
+- use more standard Web3 security patterns
+- reduce reliance on custom security logic
+- improve production-readiness framing
+- prepare the contract for future automated tests
+- strengthen portfolio positioning around smart contract security awareness
+
+The contract was redeployed to Ethereum Sepolia after adopting OpenZeppelin patterns.
+
+Updated deployed contract:
+
+```text
+0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
+```
+
+Explorer:
+
+```text
+https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
+```
+
+Validated flows after redeploy:
+
+- Stake transaction
+- Reward pool funding transaction
+- Withdraw transaction
+- Etherscan transaction review
+- Event logs still visible on Sepolia Etherscan
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -670,7 +732,8 @@ The project currently includes:
 - Dashboard screenshots
 - Secure AI proxy architecture documentation
 - Solidity production security notes
-- Staking contract events pending redeploy / validation
+- Staking contract event emissions
+- OpenZeppelin-based ReentrancyGuard and Ownable
 
 ---
 
@@ -678,11 +741,7 @@ The project currently includes:
 
 Planned next steps:
 
-1. Redeploy the event-enabled staking contract to Sepolia.
-2. Replace the old contract address in all files.
-3. Validate event logs on Sepolia Etherscan.
-4. Add OpenZeppelin-based security patterns.
-5. Add production-grade access control.
-6. Add automated tests for staking and reward pool flows.
-7. Add backend request validation and rate limiting for the optional AI proxy.
-8. Prepare LinkedIn / portfolio post.
+1. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
+2. Add automated tests for staking and reward pool flows.
+3. Add backend request validation and rate limiting for the optional AI proxy.
+4. Prepare LinkedIn / portfolio post.

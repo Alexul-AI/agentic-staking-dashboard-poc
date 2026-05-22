@@ -135,6 +135,7 @@ https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 - TypeScript
 - Vite
 - Solidity
+- OpenZeppelin Contracts
 - wagmi
 - viem
 - TanStack React Query
@@ -197,6 +198,9 @@ The Solidity staking contract supports:
 - Reading contract reward pool balance
 - Funding the reward pool
 - Owner-controlled reward rate
+- Event emissions for key staking actions
+- OpenZeppelin-based `ReentrancyGuard`
+- OpenZeppelin-based `Ownable` access control
 
 The contract is deployed on Sepolia for demonstration purposes only.
 
@@ -344,6 +348,8 @@ Current safety boundaries:
 - No private keys are stored in the frontend
 - No seed phrases are requested or handled
 - All transactions require MetaMask confirmation
+- The smart contract uses OpenZeppelin `ReentrancyGuard`
+- The smart contract uses OpenZeppelin `Ownable`
 - The mock agent does not execute blockchain actions automatically
 - No autonomous fund management is implemented
 - No production yield strategy is used
@@ -485,6 +491,7 @@ Completed:
 - Reward pool visibility and funding UX
 - Solidity production security notes
 - Optional backend/serverless AI proxy implementation
+- OpenZeppelin-based `ReentrancyGuard` and `Ownable`
 
 Next planned improvements:
 

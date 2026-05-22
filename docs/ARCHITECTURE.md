@@ -32,7 +32,8 @@ The main goals of this PoC are:
 - Display staking position data in a user-friendly dashboard.
 - Add Sepolia Etherscan links for contract and transaction transparency.
 - Display reward pool liquidity and support reward pool funding.
-- Demonstrate a safe DeFi agent decision layer.
+- Use OpenZeppelin-based security patterns for reentrancy protection and ownership.
+- Demonstrate a safe mock agentic decision layer for DeFi recommendations.
 - Keep blockchain execution under user control.
 - Provide an optional backend/serverless AI proxy implementation.
 - Show how an AI Operator can guide, validate, and structure AI-assisted Web3 delivery.
@@ -313,8 +314,10 @@ Responsibilities of the smart contract layer:
 Security hardening currently includes:
 
 - Checks-Effects-Interactions flow
-- Custom `nonReentrant` guard
+- OpenZeppelin `ReentrancyGuard`
+- OpenZeppelin `Ownable`
 - Owner-only reward rate updates
+- Event emissions for staking, withdrawal, reward claiming, reward funding, and reward rate updates
 
 The contract layer does not contain AI logic. It only handles deterministic blockchain state and staking-related operations.
 
@@ -596,7 +599,7 @@ This project is currently a PoC and has several limitations:
 - Optional AI proxy is included as an implementation path, but not required for default local demo.
 - No production-grade backend deployment yet.
 - No persistent database.
-- No audited production staking contract.
+- Uses OpenZeppelin security primitives, but the staking contract itself has not been professionally audited.
 - No real yield strategy optimization.
 - No autonomous fund management.
 - No transaction history beyond the current session.
@@ -612,10 +615,11 @@ These limitations are intentional for a safe portfolio demonstration.
 
 Planned improvements include:
 
-- Add automated tests for staking, withdrawal, reward claiming, and reward pool funding.
+- Add tests for staking, withdrawal, reward claiming, reward pool funding, and emitted events.
+- Improve error handling for rejected MetaMask transactions.
 - Add transaction history persistence.
+- Implement the documented secure AI proxy as a real backend/serverless endpoint.
 - Prepare LinkedIn / portfolio case study post.
-- Add optional deployed demo / hosted preview.
 
 Completed portfolio documentation assets already include:
 
