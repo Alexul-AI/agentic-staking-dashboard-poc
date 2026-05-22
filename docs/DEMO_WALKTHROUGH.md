@@ -44,6 +44,8 @@ The following parts are real and working:
 - Event emissions from the smart contract
 - OpenZeppelin `ReentrancyGuard`
 - OpenZeppelin `Ownable`
+- Backend DeFi mock context endpoint
+- DeFi market context dashboard block
 
 These parts interact with a real deployed testnet smart contract.
 
@@ -58,6 +60,7 @@ The following parts are intentionally mocked or optional:
 - The mock agent does not execute transactions.
 - The project does not use a real DeFi yield source.
 - Rewards are calculated by the demo staking contract, not by a real market protocol.
+- APY, gas condition, pool health, risk level, and liquidity status are simulated backend values.
 
 This is intentional for portfolio safety.
 
@@ -295,7 +298,27 @@ The user must manually confirm blockchain actions through MetaMask.
 
 ---
 
-### Step 8 — Explain Optional AI Proxy
+### Step 8 — Show Backend DeFi Mock Context
+
+Point out the DeFi Market Context section.
+
+Explain:
+
+```text
+This backend mock endpoint simulates DeFi market context such as APY, gas condition, pool health, risk level, and liquidity status.
+```
+
+The purpose is to show how the agent can combine:
+
+```text
+on-chain staking state
++
+backend DeFi context
+```
+
+This makes the dashboard closer to a product-style Agentic DeFi Dashboard rather than only a staking UI.
+
+### Step 9 — Explain Optional AI Proxy
 
 Open:
 
@@ -417,7 +440,7 @@ Useful questions for a frontend team lead or Web3 reviewer:
 Based on technical review feedback, the next useful implementation step is:
 
 ```text
-Add backend DeFi mock context API
+Add automated tests for staking, reward pool, events, and access-control flows.
 ```
 
 This would make the agent recommendation layer more product-like by adding mock market context such as:

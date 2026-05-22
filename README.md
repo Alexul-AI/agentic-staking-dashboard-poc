@@ -18,6 +18,7 @@ This project is part of my transition toward AI Operator / AI Solutions Develope
 - Reward pool visibility and funding UX
 - Safe mock DeFi agent decision layer
 - Optional backend/serverless AI proxy implementation
+- Backend DeFi mock context API
 - Human-confirmed blockchain execution
 
 The goal is not only to build a staking dashboard, but to show how AI-assisted workflows can help Web3 teams move from smart contract logic to usable frontend interfaces faster and more safely.
@@ -106,6 +107,7 @@ The workflow includes:
 - Supporting reward pool funding through MetaMask-confirmed transactions
 - Adding a safe mock agent layer that explains possible next actions
 - Adding an optional backend/serverless AI proxy path for future real AI integration
+- Adding a backend DeFi mock context API for simulated APY, gas, risk, liquidity, and pool-health signals
 
 The AI layer does not execute transactions automatically. It only provides explainable recommendations. The user remains in control and confirms every blockchain action through MetaMask.
 
@@ -153,6 +155,7 @@ https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```text
 api/
   defi-agent.ts
+  defi-market-context.ts
 
 src/
   components/
@@ -160,6 +163,7 @@ src/
   hooks/
     useStaking.ts
     useDeFiAgent.ts
+    useDeFiMarketContext.ts
   App.tsx
   main.tsx
   wagmi.ts
@@ -247,6 +251,23 @@ The project also includes an optional backend/serverless AI proxy implementation
 React Frontend → /api/defi-agent → AI Model → Structured JSON Decision → Frontend
 ```
 
+The dashboard also includes a backend DeFi mock context API:
+
+```text
+/api/defi-market-context
+```
+
+This endpoint returns simulated market context used by the AI Auto-Pilot layer, including:
+
+- Mock APY
+- Gas condition
+- Pool health
+- Risk level
+- Liquidity status
+- Market note
+
+This makes the recommendation layer more product-like because the agent can combine visible on-chain staking state with backend-provided DeFi context.
+
 The agent evaluates the current staking position and returns:
 
 - Suggested action
@@ -291,6 +312,8 @@ React UI
   → reward pool update
   → Etherscan transaction review
   → mock agent recommendation
+  - Backend DeFi mock context loading
+  - AI recommendation enriched with mock market context
 ```
 
 Tested actions:
@@ -494,6 +517,8 @@ Completed:
 - Optional backend/serverless AI proxy implementation
 - OpenZeppelin-based `ReentrancyGuard` and `Ownable`
 - Technical demo walkthrough
+- Backend DeFi mock context API
+- DeFi market context dashboard UI
 
 Next planned improvements:
 

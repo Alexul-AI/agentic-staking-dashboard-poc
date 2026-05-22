@@ -624,21 +624,21 @@ Purpose:
 - prepare the contract for more production-like Web3 monitoring
 - make staking, withdrawal, reward claiming, reward funding, and reward-rate updates observable
 
-The contract must be redeployed to Ethereum Sepolia after adding events.
+The event-enabled contract was redeployed to Ethereum Sepolia and later preserved during the OpenZeppelin security-pattern upgrade.
 
-Updated deployed contract:
+Current deployed contract with events and OpenZeppelin security patterns:
 
 ```text
-NEW_EVENTS_CONTRACT_ADDRESS_HERE
+0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
 Explorer:
 
 ```text
-https://sepolia.etherscan.io/address/NEW_EVENTS_CONTRACT_ADDRESS_HERE
+https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
-Validation checklist after redeploy:
+Validated flows after redeploy:
 
 - Stake transaction
 - Reward pool funding transaction
@@ -745,6 +745,62 @@ The walkthrough covers:
 
 ---
 
+## Iteration 30 — Backend DeFi Mock Context API
+
+A backend mock DeFi context endpoint was added to make the dashboard more product-like and easier to explain during technical review.
+
+Added endpoint:
+
+```text
+api/defi-market-context.ts
+```
+
+Added frontend hook:
+
+```text
+src/hooks/useDeFiMarketContext.ts
+```
+
+The endpoint returns simulated DeFi context:
+
+```text
+mockApy
+gasCondition
+poolHealth
+riskLevel
+liquidityStatus
+marketNote
+updatedAt
+```
+
+Purpose:
+
+- connect the project more clearly to DeFi product thinking
+- make the AI Auto-Pilot recommendation layer more context-aware
+- demonstrate a backend-driven mock data layer
+- prepare the project for future real DeFi market integrations
+- respond to external technical feedback about connecting the dashboard to DeFi mocks and backend context
+
+Updated AI Auto-Pilot input model:
+
+```text
+on-chain staking state
++
+contract reward pool state
++
+backend DeFi mock context
+→ structured agent recommendation
+```
+
+Validated flows:
+
+- Load mock DeFi context
+- Refresh context manually
+- Run AI Auto-Pilot with backend context
+- Display mock APY, gas condition, pool health, risk level, and market note in the dashboard
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -769,6 +825,8 @@ The project currently includes:
 - Staking contract event emissions
 - OpenZeppelin-based ReentrancyGuard and Ownable
 - Technical demo walkthrough
+- Backend DeFi mock context API
+- DeFi market context dashboard UI
 
 ---
 
@@ -776,8 +834,7 @@ The project currently includes:
 
 Planned next steps:
 
-1. Add backend DeFi mock context API.
-2. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
-3. Add automated tests for staking and reward pool flows.
-4. Add backend request validation and rate limiting for the optional AI proxy.
-5. Prepare LinkedIn / portfolio post.
+1. Add automated tests for staking, reward pool, emitted events, and OpenZeppelin access-control flows.
+2. Add backend request validation and rate limiting for the optional AI proxy.
+3. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
+4. Prepare LinkedIn / portfolio post.
