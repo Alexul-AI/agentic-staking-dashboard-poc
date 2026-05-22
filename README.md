@@ -1,8 +1,10 @@
 # Agentic Staking Dashboard PoC
 
-A portfolio Proof of Concept demonstrating how an AI-assisted Web3 operator workflow can turn Solidity smart contract logic into a usable React staking dashboard with wallet interaction, transaction transparency, and an explainable mock DeFi agent layer.
+A portfolio Proof of Concept demonstrating how an AI-assisted Web3 operator workflow can turn Solidity smart contract logic into a usable React staking dashboard with wallet interaction, transaction transparency, reward pool visibility, and an explainable DeFi agent layer.
 
 This project is part of my transition toward AI Operator / AI Solutions Developer work with a Web3 focus.
+
+---
 
 ## Overview
 
@@ -11,13 +13,16 @@ This project is part of my transition toward AI Operator / AI Solutions Develope
 - Deployed staking smart contract on Ethereum Sepolia
 - React / TypeScript dashboard
 - MetaMask wallet connection
-- Staking, withdrawal, and reward interaction flow
+- Staking, withdrawal, reward claiming, and reward pool funding flow
 - Sepolia Etherscan links for contract and transaction transparency
-- Reward pool visibility and funding flow
+- Reward pool visibility and funding UX
 - Safe mock DeFi agent decision layer
+- Optional backend/serverless AI proxy implementation
 - Human-confirmed blockchain execution
 
 The goal is not only to build a staking dashboard, but to show how AI-assisted workflows can help Web3 teams move from smart contract logic to usable frontend interfaces faster and more safely.
+
+---
 
 ## Demo Preview
 
@@ -37,6 +42,8 @@ The goal is not only to build a staking dashboard, but to show how AI-assisted w
 
 ![AI Recommendation](docs/assets/ai-recommendation.png)
 
+---
+
 ## Architecture Diagram
 
 The project architecture is documented in:
@@ -53,9 +60,12 @@ React Dashboard
   → MetaMask
   → Sepolia Staking Contract
   → Etherscan Transparency
-  → Mock DeFi Agent Recommendation
+  → Reward Pool UX
+  → Safe Mock Agent / Optional AI Proxy
   → Human-Approved Execution
 ```
+
+---
 
 ## Problem
 
@@ -71,9 +81,13 @@ Teams usually need to manually build:
 - MetaMask rejection handling
 - User-facing error states
 - Explorer links for transparency
+- Reward pool / contract liquidity visibility
 - UI components for contract interaction
+- Documentation of safety boundaries
 
 This creates friction between smart contract development and real user-facing dApp interfaces.
+
+---
 
 ## Solution
 
@@ -85,10 +99,13 @@ The workflow includes:
 - Building reusable React hooks
 - Connecting wagmi / viem contract calls
 - Handling MetaMask wallet states
+- Blocking write actions on the wrong network
 - Showing transaction status to the user
 - Linking transactions to Sepolia Etherscan
 - Displaying contract reward pool liquidity
+- Supporting reward pool funding through MetaMask-confirmed transactions
 - Adding a safe mock agent layer that explains possible next actions
+- Adding an optional backend/serverless AI proxy path for future real AI integration
 
 The AI layer does not execute transactions automatically. It only provides explainable recommendations. The user remains in control and confirms every blockchain action through MetaMask.
 
@@ -110,6 +127,8 @@ The AI layer does not execute transactions automatically. It only provides expla
 https://sepolia.etherscan.io/address/0xbB31245F4842FE90041B378CDac9Fe1c37701067
 ```
 
+---
+
 ## Tech Stack
 
 - React
@@ -123,10 +142,17 @@ https://sepolia.etherscan.io/address/0xbB31245F4842FE90041B378CDac9Fe1c37701067
 - MetaMask
 - Ethereum Sepolia Testnet
 - Remix IDE
+- Optional serverless AI proxy
+- Gemini API integration path
+
+---
 
 ## Project Structure
 
 ```text
+api/
+  defi-agent.ts
+
 src/
   components/
     StakingDashboard.tsx
@@ -149,9 +175,15 @@ prompts/
 docs/
   ARCHITECTURE.md
   CASE_STUDY.md
+  SECURE_AI_PROXY.md
+  SECURITY_NOTES.md
   architecture-diagram.md
   assets/
+
+.env.example
 ```
+
+---
 
 ## Smart Contract Features
 
@@ -168,52 +200,48 @@ The Solidity staking contract supports:
 
 The contract is deployed on Sepolia for demonstration purposes only.
 
+Security hardening includes:
+
+- Checks-Effects-Interactions flow
+- Custom `nonReentrant` guard
+- Owner-only reward rate updates
+
+---
+
 ## Frontend Features
 
 The React dashboard supports:
 
 - MetaMask wallet connection
+- Sepolia network guard
 - ETH staking input
 - Staked balance display
 - Earned rewards display
-- Reward pool balance display
+- Reward pool / contract balance display
 - Reward pool funding action
 - Claim rewards action
 - Withdraw action
 - Loading states during transactions
+- Transaction lifecycle status UX
 - User-facing error messages
 - Transaction confirmation flow
 - Automatic UI refresh after confirmed transactions
 - Sepolia Etherscan links for contract and transaction review
+- AI Auto-Pilot recommendation rendering
 
 ---
 
-## Reward Pool UX
+## DeFi Agent Layer
 
-The dashboard includes a dedicated reward pool section.
+The project includes a safe DeFi agent decision layer.
 
-The reward pool represents ETH held by the staking contract and used to pay accumulated staking rewards.
+By default, the dashboard uses a local mock agent. This keeps the project safe for GitHub and portfolio review because no external AI API key is required.
 
-The UI displays:
-
-- Contract balance
-- Reward funding input
-- Fund Pool action
-- Warning state when rewards exist but the contract may not have enough ETH to pay them
-
-This makes the staking mechanics clearer:
+The project also includes an optional backend/serverless AI proxy implementation:
 
 ```text
-Stake = user deposits ETH into their staking position
-Fund Pool = contract receives ETH for reward payouts
-Claim Rewards = user claims accumulated rewards from the contract balance
+React Frontend → /api/defi-agent → AI Model → Structured JSON Decision → Frontend
 ```
-
----
-
-## Mock DeFi Agent Layer
-
-The project includes a safe mock DeFi agent decision layer.
 
 The agent evaluates the current staking position and returns:
 
@@ -243,6 +271,8 @@ AI suggests → User reviews → MetaMask confirms → Blockchain executes
 
 This keeps the system explainable, auditable, and human-approved.
 
+---
+
 ## Verified Flow
 
 The end-to-end flow was tested on Ethereum Sepolia:
@@ -254,6 +284,7 @@ React UI
   → Sepolia smart contract
   → transaction confirmation
   → updated on-chain staking balance in UI
+  → reward pool update
   → Etherscan transaction review
   → mock agent recommendation
 ```
@@ -261,15 +292,23 @@ React UI
 Tested actions:
 
 - Wallet connection
+- Sepolia network guard
+- Wrong-network warning state
+- Switch-to-Sepolia recovery flow
 - Stake transaction
 - Reward pool funding transaction
 - Transaction pending state
+- Transaction lifecycle status UX
 - On-chain balance update
 - Withdraw transaction
 - Rewards state update
 - Contract balance / reward pool update
 - Etherscan transaction link
 - Mock agent recommendation rendering
+- Optional AI proxy fallback behavior
+- Safe mock-agent default mode
+
+---
 
 ## AI Operator Role
 
@@ -286,9 +325,15 @@ The operator role included:
 - Deploying the contract through Remix
 - Connecting the frontend to a live Sepolia smart contract
 - Adding transaction transparency through Etherscan links
+- Hardening the Solidity contract with a reentrancy guard
+- Designing reward pool visibility and funding UX
 - Designing a safe human-in-the-loop agentic decision layer
+- Documenting a secure backend/serverless AI proxy path
+- Documenting security boundaries and production-readiness limitations
 
 The purpose is to demonstrate not only frontend implementation, but also operator judgment, architecture decisions, and safe AI-assisted Web3 delivery.
+
+---
 
 ## Security & Safety Notes
 
@@ -297,22 +342,34 @@ This is a portfolio PoC running on Sepolia testnet.
 Current safety boundaries:
 
 - No private keys are stored in the frontend
+- No seed phrases are requested or handled
 - All transactions require MetaMask confirmation
 - The mock agent does not execute blockchain actions automatically
 - No autonomous fund management is implemented
 - No production yield strategy is used
 - No real financial advice is provided
 - Etherscan links are included for transparency
+- API keys are not exposed in frontend code
 
 Future production AI integration should use a secure backend or serverless proxy.
 
-AI API keys should not be exposed directly in frontend code.
+This repository includes an optional serverless proxy example in:
+
+```text
+api/defi-agent.ts
+```
+
+The proxy is disabled by default unless explicitly enabled through environment configuration.
 
 Recommended production pattern:
 
 ```text
 Frontend → Backend / Serverless Proxy → AI API
 ```
+
+`GEMINI_API_KEY` must remain server-side only. It must not be exposed as a `VITE_*` variable.
+
+---
 
 ## How to Run
 
@@ -334,6 +391,50 @@ Build the project:
 npm run build
 ```
 
+Preview production build:
+
+```bash
+npm run preview
+```
+
+---
+
+## Optional AI Proxy Configuration
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Default safe mode:
+
+```env
+VITE_USE_AI_PROXY=false
+```
+
+This keeps the dashboard using the local mock DeFi agent.
+
+Optional serverless AI mode:
+
+```env
+VITE_USE_AI_PROXY=true
+GEMINI_API_KEY=your_server_side_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+Important:
+
+```text
+GEMINI_API_KEY must remain server-side only.
+Do not expose it as VITE_GEMINI_API_KEY.
+Do not commit real .env files.
+```
+
+The `.env.example` file is safe to commit. The real `.env` file must remain ignored by Git.
+
+---
+
 ## Documentation
 
 Current documentation:
@@ -347,6 +448,10 @@ Current documentation:
 - `prompts/iteration-log.md`
 - `prompts/defi-context.md`
 
+Configuration example:
+
+- `.env.example`
+
 Demo assets:
 
 - `docs/assets/dashboard-connected.png`
@@ -354,11 +459,7 @@ Demo assets:
 - `docs/assets/etherscan-transaction.png`
 - `docs/assets/ai-recommendation.png`
 
-Planned documentation:
-
-- Security and production-readiness notes
-- Secure AI proxy architecture
-- LinkedIn / portfolio case study post
+---
 
 ## Current Status
 
@@ -383,12 +484,15 @@ Completed:
 - Secure AI proxy architecture documentation
 - Reward pool visibility and funding UX
 - Solidity production security notes
+- Optional backend/serverless AI proxy implementation
 
 Next planned improvements:
 
-- Prepare LinkedIn / portfolio case study post
-- Add optional backend/serverless AI proxy implementation
 - Add automated tests for staking and reward pool flows
+- Prepare LinkedIn / portfolio case study post
+- Add optional deployed demo / hosted preview
+
+---
 
 ## Portfolio Positioning
 
@@ -398,9 +502,12 @@ This project demonstrates the ability to combine:
 - Solidity-to-UI integration
 - Web3 wallet UX
 - Transaction transparency
+- Reward pool UX
 - AI-assisted development
 - Agentic workflow design
+- Secure AI proxy architecture
 - Human-in-the-loop automation
+- Solidity security awareness
 
 The main value of the project is the workflow behind it: using AI-assisted operator methods to transform smart contract logic into a usable, explainable, and safer Web3 interface.
 

@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-`agentic-staking-dashboard-poc` is a portfolio-focused Web3 Proof of Concept demonstrating how a React dashboard can interact with a deployed Sepolia staking smart contract through MetaMask, while also presenting an explainable mock DeFi agent decision layer.
+`agentic-staking-dashboard-poc` is a portfolio-focused Web3 Proof of Concept demonstrating how a React dashboard can interact with a deployed Sepolia staking smart contract through MetaMask, while also presenting an explainable DeFi agent decision layer.
 
 The project is designed as part of an AI Operator / AI Solutions Developer portfolio with a Web3 focus.
 
@@ -15,6 +15,7 @@ Solidity smart contract logic
   → transaction transparency
   → reward pool visibility
   → explainable agent recommendation layer
+  → optional backend/serverless AI proxy
   → human-approved blockchain execution
 ```
 
@@ -31,8 +32,9 @@ The main goals of this PoC are:
 - Display staking position data in a user-friendly dashboard.
 - Add Sepolia Etherscan links for contract and transaction transparency.
 - Display reward pool liquidity and support reward pool funding.
-- Demonstrate a safe mock agentic decision layer for DeFi recommendations.
+- Demonstrate a safe DeFi agent decision layer.
 - Keep blockchain execution under user control.
+- Provide an optional backend/serverless AI proxy implementation.
 - Show how an AI Operator can guide, validate, and structure AI-assisted Web3 delivery.
 - Package the project as a portfolio asset for Web3 / AI Operator opportunities.
 
@@ -53,7 +55,7 @@ React Dashboard
   → Sepolia Smart Contract
   → Etherscan
   → Reward Pool UX
-  → Mock DeFi Agent Recommendation
+  → Safe Mock Agent / Optional AI Proxy
   → Human-Approved Execution
 ```
 
@@ -108,6 +110,28 @@ Frontend Dashboard
 User reviews result
 ```
 
+Optional AI proxy path:
+
+```text
+React Frontend
+ │
+ │ Sends staking state
+ ▼
+api/defi-agent.ts
+ │
+ │ Calls AI model server-side
+ ▼
+AI Model
+ │
+ │ Returns structured JSON decision
+ ▼
+Frontend Dashboard
+ │
+ │ Displays recommendation
+ ▼
+User reviews result
+```
+
 ---
 
 ## 5. Four-Layer Agentic Architecture
@@ -116,7 +140,7 @@ This project can be understood through a four-layer AI Operator architecture.
 
 ### Layer 1 — Grounding / On-Chain Data
 
-The grounding layer contains the factual state used by the dashboard and the mock agent.
+The grounding layer contains the factual state used by the dashboard and the agent.
 
 Examples:
 
@@ -160,13 +184,23 @@ Responsibilities:
 
 ### Layer 3 — Agentic Decision Layer
 
-This layer is currently implemented as a safe mock DeFi agent.
+This layer is implemented as a safe DeFi agent decision layer.
 
 Main file:
 
 ```text
 src/hooks/useDeFiAgent.ts
 ```
+
+By default, the agent uses a local mock decision function and does not call an external AI API.
+
+The project also includes an optional backend/serverless AI proxy implementation in:
+
+```text
+api/defi-agent.ts
+```
+
+This proxy is intended for future production-style integration and keeps AI API keys server-side.
 
 The agent evaluates staking position data and returns a structured recommendation.
 
@@ -188,7 +222,7 @@ The agent returns:
 - Execution guidance
 - Risk note
 
-The current agent does not call an external AI API and does not expose any API key.
+The default mock mode does not require any API key.
 
 This design keeps the project safe for GitHub and portfolio use.
 
@@ -236,7 +270,7 @@ The user flow is intentionally simple and transparent:
 10. Dashboard displays transaction lifecycle status.
 11. Dashboard updates on-chain staking and reward pool data.
 12. User can open the transaction on Sepolia Etherscan.
-13. User can run the mock AI Auto-Pilot.
+13. User can run the DeFi agent.
 14. Agent evaluates the current staking position.
 15. Agent displays an explainable recommendation.
 16. User decides whether to manually claim, withdraw, stake more, fund the reward pool, or hold.
@@ -317,7 +351,7 @@ Responsibilities of the frontend layer:
 - Provide Etherscan links
 - Display reward pool liquidity
 - Allow reward pool funding through MetaMask-confirmed transactions
-- Display mock agent recommendations
+- Display DeFi agent recommendations
 - Keep blockchain execution under user control
 
 The frontend does not store private keys and does not execute blockchain transactions without wallet confirmation.
@@ -409,7 +443,7 @@ This improves the DeFi product UX by making reward liquidity visible instead of 
 
 ## 11. Agentic Decision Layer
 
-The current agentic layer is a safe mock decision-support module.
+The current agentic layer is a safe decision-support module.
 
 It evaluates visible staking state and returns:
 
@@ -419,6 +453,22 @@ It evaluates visible staking state and returns:
 - Recommended next step
 - Execution guidance
 - Risk note
+
+Default mode:
+
+```text
+Local safe mock agent
+```
+
+Optional mode:
+
+```text
+React Frontend
+  → /api/defi-agent
+  → AI Model
+  → Structured JSON Decision
+  → Frontend Recommendation UI
+```
 
 Example output:
 
@@ -449,7 +499,59 @@ AI suggests → User reviews → Wallet confirms → Blockchain executes
 
 ---
 
-## 12. Security & Safety Boundaries
+## 12. Optional AI Proxy Implementation
+
+The repository includes an optional backend/serverless AI proxy implementation:
+
+```text
+api/defi-agent.ts
+```
+
+The proxy is designed to support a future real AI agent integration while keeping API keys out of frontend code.
+
+Configuration is controlled through:
+
+```text
+.env.example
+```
+
+Default safe mode:
+
+```env
+VITE_USE_AI_PROXY=false
+```
+
+Optional AI proxy mode:
+
+```env
+VITE_USE_AI_PROXY=true
+GEMINI_API_KEY=your_server_side_gemini_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+```
+
+Important rule:
+
+```text
+GEMINI_API_KEY must remain server-side only.
+It must not be exposed as VITE_GEMINI_API_KEY.
+```
+
+The proxy returns a structured decision object:
+
+```json
+{
+  "action": "HOLD",
+  "confidence": "HIGH",
+  "reasoning": "Rewards are too small to justify a transaction.",
+  "recommendedNextStep": "Wait until rewards accumulate further.",
+  "executionHint": "No wallet transaction is required.",
+  "riskNote": "This recommendation does not evaluate market or contract risk."
+}
+```
+
+---
+
+## 13. Security & Safety Boundaries
 
 Current safety boundaries:
 
@@ -463,6 +565,7 @@ Current safety boundaries:
 - The project runs on Sepolia testnet.
 - No real financial advice is provided.
 - No production yield strategy is implemented.
+- AI API keys are not exposed in frontend code.
 
 Additional security and production-readiness notes are documented here:
 
@@ -484,14 +587,14 @@ AI API keys should never be exposed directly in frontend code.
 
 ---
 
-## 13. Current Limitations
+## 14. Current Limitations
 
 This project is currently a PoC and has several limitations:
 
 - Uses Sepolia testnet only.
-- Agentic decision layer is mocked.
-- No production-grade backend.
-- No real Gemini / AI API integration yet.
+- Default agentic decision layer is mocked.
+- Optional AI proxy is included as an implementation path, but not required for default local demo.
+- No production-grade backend deployment yet.
 - No persistent database.
 - No audited production staking contract.
 - No real yield strategy optimization.
@@ -499,20 +602,20 @@ This project is currently a PoC and has several limitations:
 - No transaction history beyond the current session.
 - No production risk engine.
 - No financial advice logic.
+- No automated test suite yet.
 
 These limitations are intentional for a safe portfolio demonstration.
 
 ---
 
-## 14. Planned Improvements
+## 15. Planned Improvements
 
 Planned improvements include:
 
-- Add tests for staking, withdrawal, reward claiming, and reward pool funding.
-- Improve error handling for rejected MetaMask transactions.
+- Add automated tests for staking, withdrawal, reward claiming, and reward pool funding.
 - Add transaction history persistence.
-- Implement the documented secure AI proxy as a real backend/serverless endpoint.
 - Prepare LinkedIn / portfolio case study post.
+- Add optional deployed demo / hosted preview.
 
 Completed portfolio documentation assets already include:
 
@@ -525,15 +628,27 @@ Completed portfolio documentation assets already include:
 
 ---
 
-## 15. Future Secure AI Integration
+## 16. Future Secure AI Integration
 
-The current project uses a safe mock DeFi agent. It does not call an external AI API and does not require an API key.
+The current project uses a safe mock DeFi agent by default.
 
-A future production-oriented version should replace the mock decision layer with a secure backend or serverless AI proxy.
+The project also includes an optional backend/serverless AI proxy implementation.
 
 Detailed proxy architecture:
 
 [`docs/SECURE_AI_PROXY.md`](SECURE_AI_PROXY.md)
+
+Optional implementation file:
+
+```text
+api/defi-agent.ts
+```
+
+Configuration example:
+
+```text
+.env.example
+```
 
 The main security principle is:
 
@@ -572,19 +687,6 @@ User
 Blockchain
 ```
 
-Example structured response:
-
-```json
-{
-  "action": "HOLD",
-  "confidence": "HIGH",
-  "reasoning": "Rewards are too small to justify a transaction.",
-  "recommendedNextStep": "Wait until rewards accumulate further.",
-  "executionHint": "No wallet transaction is required.",
-  "riskNote": "This recommendation does not evaluate market or contract risk."
-}
-```
-
 This preserves the core safety principle:
 
 ```text
@@ -595,7 +697,7 @@ The AI layer should support decision-making and explanation, while blockchain ex
 
 ---
 
-## 16. AI Operator Value
+## 17. AI Operator Value
 
 This project demonstrates AI Operator work, not only frontend implementation.
 
@@ -622,7 +724,7 @@ The project shows practical operator judgment across:
 
 ---
 
-## 17. Portfolio Positioning
+## 18. Portfolio Positioning
 
 This project demonstrates the ability to operate at the intersection of:
 
@@ -630,8 +732,10 @@ This project demonstrates the ability to operate at the intersection of:
 - Web3 wallet UX
 - Solidity-to-UI integration
 - Transaction transparency
+- Reward pool UX
 - AI-assisted product thinking
 - Agentic workflow design
+- Secure AI proxy architecture
 - Safe human-in-the-loop automation
 
 The main value is not only the staking dashboard itself, but the workflow behind it:

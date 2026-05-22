@@ -4,7 +4,7 @@
 
 This project was built as part of my transition toward AI Operator / AI Solutions Developer work with a Web3 focus.
 
-The goal was not only to build a staking dashboard, but to demonstrate an AI-assisted operator workflow that connects smart contract logic, frontend integration, wallet UX, transaction transparency, reward pool visibility, and an explainable agentic recommendation layer.
+The goal was not only to build a staking dashboard, but to demonstrate an AI-assisted operator workflow that connects smart contract logic, frontend integration, wallet UX, transaction transparency, reward pool visibility, and an explainable DeFi agent recommendation layer.
 
 The project is designed as a portfolio Proof of Concept for remote / international Web3 opportunities, including crypto-paid work.
 
@@ -23,9 +23,10 @@ Common tasks include:
 - Waiting for confirmations
 - Displaying user-friendly errors
 - Linking transactions to explorers
-- Creating usable UI components
 - Showing reward pool / contract liquidity clearly
+- Creating usable UI components
 - Documenting safety boundaries
+- Preparing a safe path for AI-assisted decision support
 
 This creates friction between smart contract development and actual dApp usability.
 
@@ -44,9 +45,11 @@ The dashboard allows the user to:
 - View and fund the contract reward pool
 - Inspect contract and transaction activity on Sepolia Etherscan
 - See clear transaction lifecycle status
-- Run a safe mock DeFi agent recommendation layer
+- Run a safe DeFi agent recommendation layer
 
-The AI agent layer does not execute wallet actions automatically. It provides an explainable recommendation and leaves execution under user control through MetaMask.
+The DeFi agent layer does not execute wallet actions automatically. It provides an explainable recommendation and leaves execution under user control through MetaMask.
+
+By default, the project uses a local safe mock agent. It also includes an optional backend/serverless AI proxy implementation for future real AI integration.
 
 ---
 
@@ -75,6 +78,7 @@ The operator workflow included:
 17. Adding an architecture diagram.
 18. Documenting a secure AI proxy architecture for future production-style integration.
 19. Documenting Solidity security boundaries and production-readiness limitations.
+20. Adding an optional backend/serverless AI proxy implementation.
 
 ---
 
@@ -90,6 +94,7 @@ Solidity Staking Contract
   → Sepolia Transaction
   → Etherscan Transparency
   → Reward Pool Visibility
+  → Safe Mock Agent / Optional AI Proxy
   → Agentic Recommendation Layer
 ```
 
@@ -122,6 +127,9 @@ The following flows were tested:
 - Withdraw transaction
 - Etherscan transaction link
 - Mock DeFi agent recommendation rendering
+- Safe mock-agent default mode
+- Optional AI proxy fallback behavior
+- Server-side AI proxy architecture path
 - Human-approved execution pattern
 
 ---
@@ -134,12 +142,13 @@ Current boundaries:
 
 - No private keys are stored
 - No seed phrase is requested
-- No API key is exposed in frontend
+- No API key is exposed in frontend code
 - All blockchain writes require MetaMask confirmation
-- The AI agent is recommendation-only
+- The DeFi agent is recommendation-only
 - The project runs on Sepolia testnet
 - No real financial advice is provided
 - No autonomous fund management is implemented
+- AI recommendations do not directly execute wallet actions
 
 The intended safety model is:
 
@@ -162,6 +171,7 @@ Potential value:
 - Clearer reward liquidity visibility
 - Safer human-in-the-loop execution
 - Better transaction transparency
+- A production-safe path for AI API integration
 - Portfolio-ready Web3 automation workflows
 
 The value is not only the dashboard itself, but the repeatable process behind it.
@@ -197,11 +207,54 @@ The project includes supporting documentation:
 - [`Secure AI Proxy Architecture`](SECURE_AI_PROXY.md)
 - [`Security Notes`](SECURITY_NOTES.md)
 
-These documents explain the technical architecture, AI Operator workflow, secure AI integration path, and Solidity production-readiness boundaries.
+These documents explain the technical architecture, AI Operator workflow, secure AI integration path, Solidity production-readiness boundaries, and safety constraints.
 
 ---
 
-## 11. Portfolio Positioning
+## 11. Optional AI Proxy Implementation
+
+The project includes an optional backend/serverless AI proxy implementation:
+
+```text
+api/defi-agent.ts
+```
+
+Default mode:
+
+```text
+Local safe mock agent
+```
+
+Optional mode:
+
+```text
+React Frontend
+  → /api/defi-agent
+  → AI Model
+  → Structured JSON Decision
+  → Frontend Recommendation UI
+```
+
+The optional proxy is designed to keep AI API keys server-side.
+
+The configuration example is documented in:
+
+```text
+.env.example
+```
+
+The key safety rule:
+
+```text
+GEMINI_API_KEY must remain server-side only.
+It must not be exposed as VITE_GEMINI_API_KEY.
+```
+
+This shows how the project can evolve from a local mock agent into a real AI-assisted decision-support layer without exposing secrets in frontend code.
+
+---
+
+## 12. Portfolio Positioning
 
 This project positions me as an AI Operator / Web3 Solutions Developer who can combine:
 
@@ -210,6 +263,7 @@ This project positions me as an AI Operator / Web3 Solutions Developer who can c
 - Wallet UX
 - AI-assisted development
 - Agentic workflow design
+- Secure AI proxy architecture
 - Security awareness
 - Human-approved automation
 
@@ -222,7 +276,7 @@ I am designing AI-assisted Web3 workflows that turn smart contract logic into us
 
 ---
 
-## 12. Current Status
+## 13. Current Status
 
 Completed:
 
@@ -243,13 +297,15 @@ Completed:
 - Secure AI proxy architecture documentation
 - Reward pool visibility and funding UX
 - Solidity production security notes
+- Optional backend/serverless AI proxy implementation
 
 ---
 
-## 13. Next Improvements
+## 14. Next Improvements
 
 Planned next steps:
 
 - Prepare LinkedIn / portfolio post
-- Add optional backend/serverless AI proxy implementation
 - Add automated tests for staking and reward pool flows
+- Add transaction history persistence
+- Add optional deployed demo / hosted preview
