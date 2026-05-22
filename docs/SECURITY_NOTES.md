@@ -251,6 +251,19 @@ The repository includes an optional backend/serverless AI proxy implementation, 
 
 The proxy keeps AI API keys server-side and does not create an AI-to-wallet execution path.
 
+The optional AI proxy now includes request validation and basic in-memory rate limiting.
+
+The proxy validates:
+
+- supported network
+- ETH amount strings
+- optional wallet address
+- optional contract address
+- optional transaction hash
+- optional market context object
+
+The proxy also normalizes AI responses and falls back to a safe `HOLD` recommendation if the response is invalid.
+
 ---
 
 ## 10. Optional AI Proxy Security
@@ -359,6 +372,8 @@ Before any mainnet deployment, the following steps would be required:
 - Add request validation for backend endpoints.
 - Add logging and observability.
 - Add legal and financial disclaimers where relevant.
+- Replace in-memory AI proxy rate limiting with persistent production-grade rate limiting.
+- Add tests for AI proxy request validation and fallback behavior.
 
 ---
 

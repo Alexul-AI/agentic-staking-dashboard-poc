@@ -580,6 +580,9 @@ Current safety boundaries:
 - No real financial advice is provided.
 - No production yield strategy is implemented.
 - AI API keys are not exposed in frontend code.
+- Optional AI proxy validates incoming request bodies.
+- Optional AI proxy includes basic in-memory rate limiting.
+- AI model output is normalized before being returned to the frontend.
 
 Additional security and production-readiness notes are documented here:
 
@@ -629,10 +632,11 @@ Planned improvements include:
 - Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
 - Improve error handling for rejected MetaMask transactions.
 - Add transaction history persistence.
-- Implement the documented secure AI proxy as a real backend/serverless endpoint.
+- Replace in-memory AI proxy rate limiting with a production-grade persistent limiter.
 - Prepare LinkedIn / portfolio case study post.
 
 Completed portfolio documentation assets already include:
+c
 
 - Architecture documentation
 - Architecture diagram
@@ -658,6 +662,20 @@ Optional implementation file:
 ```text
 api/defi-agent.ts
 ```
+
+The optional AI proxy implementation includes request validation and basic rate limiting.
+
+Validation currently covers:
+
+- HTTP method
+- supported network
+- ETH amount strings
+- optional wallet address
+- optional contract address
+- optional transaction hash
+- optional backend market context
+
+The proxy also normalizes the AI response before returning it to the frontend.
 
 Configuration example:
 

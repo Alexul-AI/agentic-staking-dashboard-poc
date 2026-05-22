@@ -19,6 +19,7 @@ This project is part of my transition toward AI Operator / AI Solutions Develope
 - Safe mock DeFi agent decision layer
 - Optional backend/serverless AI proxy implementation
 - Backend DeFi mock context API
+- AI proxy request validation and rate limiting
 - Human-confirmed blockchain execution
 
 The goal is not only to build a staking dashboard, but to show how AI-assisted workflows can help Web3 teams move from smart contract logic to usable frontend interfaces faster and more safely.
@@ -386,6 +387,8 @@ Current safety boundaries:
 - No real financial advice is provided
 - Etherscan links are included for transparency
 - API keys are not exposed in frontend code
+- Optional AI proxy validates request body before calling the AI model
+- Optional AI proxy includes basic in-memory rate limiting
 
 Future production AI integration should use a secure backend or serverless proxy.
 
@@ -402,6 +405,19 @@ Recommended production pattern:
 ```text
 Frontend → Backend / Serverless Proxy → AI API
 ```
+
+The optional AI proxy implementation includes:
+
+- request method validation
+- supported network validation
+- ETH amount string validation
+- optional wallet and contract address validation
+- optional transaction hash validation
+- sanitized market context input
+- response normalization
+- basic in-memory rate limiting
+
+For production, the in-memory limiter should be replaced with a persistent rate-limiting layer such as Redis / Upstash or a platform-level edge rate limiter.
 
 `GEMINI_API_KEY` must remain server-side only. It must not be exposed as a `VITE_*` variable.
 
@@ -533,11 +549,12 @@ Completed:
 - Backend DeFi mock context API
 - DeFi market context dashboard UI
 - Automated staking contract tests
+- AI proxy request validation and rate limiting
 
 Next planned improvements:
 
-- Add backend request validation and rate limiting for the optional AI proxy
 - Decide whether basic Ownable access control is enough or whether role-based access control is needed
+- Expand automated tests for reward claiming, emitted events, and edge cases
 - Prepare LinkedIn / portfolio case study post
 
 ---

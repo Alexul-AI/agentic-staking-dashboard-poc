@@ -312,6 +312,9 @@ The backend / serverless proxy should:
 - Avoid executing blockchain transactions directly
 - Avoid storing wallet secrets
 - Avoid requesting private keys or seed phrases
+- Validate incoming request body
+- Apply rate limiting
+- Sanitize market context input
 
 ---
 
@@ -347,7 +350,47 @@ The AI proxy may recommend an action, but it must not execute that action.
 
 ---
 
-## 14. Local Development Notes
+## 14 Request Validation and Rate Limiting
+
+The optional AI proxy implementation includes request validation before calling the AI model.
+
+Current validation covers:
+
+- `POST` method enforcement
+- supported network validation
+- non-negative ETH amount strings
+- optional wallet address format
+- optional contract address format
+- optional transaction hash format
+- optional market context sanitization
+
+The proxy also includes basic in-memory rate limiting:
+
+```text
+20 requests / 60 seconds / client
+```
+
+This is sufficient for a portfolio PoC, but it is not production-grade.
+
+For a production deployment, rate limiting should be moved to a persistent or edge-level layer, for example:
+
+- Redis
+- Upstash
+- Vercel / Cloudflare edge rate limiting
+- API gateway rate limiting
+
+The proxy also normalizes AI model output before returning it to the frontend. Unsupported actions or confidence values are replaced with safe fallback values.
+
+The fallback behavior remains:
+
+```text
+Invalid request or invalid AI response
+  → HOLD
+  → LOW confidence
+  → no wallet transaction prepared
+```
+
+## 15. Local Development Notes
 
 In a plain Vite development server, files under `api/` are not automatically executed as serverless functions.
 
@@ -370,7 +413,7 @@ This keeps the project running safely without requiring a backend or real AI API
 
 ---
 
-## 15. Future Implementation Options
+## 16. Future Implementation Options
 
 Possible implementation options:
 
@@ -387,7 +430,7 @@ The optional proxy implementation is included as the recommended path for a futu
 
 ---
 
-## 16. AI Operator Value
+## 17. AI Operator Value
 
 This architecture demonstrates AI Operator judgment.
 
@@ -413,7 +456,7 @@ This supports a professional positioning around:
 
 ---
 
-## 17. Current Status
+## 18. Current Status
 
 Current implementation status:
 

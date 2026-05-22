@@ -81,6 +81,7 @@ The operator workflow included:
 20. Adding an optional backend/serverless AI proxy implementation.
 21. Replacing custom security logic with OpenZeppelin `ReentrancyGuard` and `Ownable`.
 22. Adding automated Hardhat tests for core staking contract flows.
+23. Adding request validation and basic rate limiting to the optional AI proxy.
 
 ---
 
@@ -143,6 +144,11 @@ The following flows were tested:
 - Withdrawal test flow
 - Owner-only reward rate test flow
 - Zero-value transaction rejection tests
+- AI proxy request body validation
+- AI proxy supported network validation
+- AI proxy ETH amount validation
+- AI proxy response normalization
+- Basic in-memory AI proxy rate limiting
 
 ---
 
@@ -314,6 +320,7 @@ Completed:
 - OpenZeppelin-based `ReentrancyGuard` and `Ownable`
 - Technical demo walkthrough
 - Automated staking contract tests
+- AI proxy request validation and rate limiting
 
 ---
 

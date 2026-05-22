@@ -848,6 +848,59 @@ Next testing improvements:
 
 ---
 
+## Iteration 32 — AI Proxy Validation and Rate Limiting
+
+The optional backend/serverless AI proxy was updated with request validation and basic rate limiting.
+
+Updated file:
+
+```text
+api/defi-agent.ts
+```
+
+Validation added for:
+
+```text
+HTTP method
+supported network
+stakedBalanceEth
+earnedRewardsEth
+contractBalanceEth
+walletAddress
+contractAddress
+lastTransactionHash
+marketContext
+```
+
+Rate limiting added:
+
+```text
+20 requests / 60 seconds / client
+```
+
+Purpose:
+
+- reduce unsafe or malformed AI proxy input
+- keep AI API calls behind a safer backend boundary
+- prevent basic request abuse in the portfolio implementation
+- normalize AI model responses before returning them to the frontend
+- preserve the safe fallback behavior if the AI proxy fails
+
+Fallback behavior:
+
+```text
+invalid request / rate limit / invalid AI response
+→ HOLD
+→ LOW confidence
+→ no wallet transaction prepared
+```
+
+Production note:
+
+The current rate limiter is in-memory and suitable only for a portfolio PoC. A production deployment should use a persistent limiter such as Redis, Upstash, an edge limiter, or an API gateway.
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -875,6 +928,7 @@ The project currently includes:
 - Backend DeFi mock context API
 - DeFi market context dashboard UI
 - Automated staking contract tests
+- AI proxy request validation and rate limiting
 
 ---
 
@@ -882,7 +936,7 @@ The project currently includes:
 
 Planned next steps:
 
-1. Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
-2. Add backend request validation and rate limiting for the optional AI proxy.
-3. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
+1. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
+2. Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
+3. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.
 4. Prepare LinkedIn / portfolio post.
