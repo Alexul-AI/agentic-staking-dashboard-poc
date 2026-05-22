@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { formatEther } from "viem";
+import { useDeFiMarketContext } from "../hooks/useDeFiMarketContext";
 import {
   useChainId,
   useConnect,
@@ -87,6 +88,12 @@ export const StakingDashboard = ({
   } = useStaking(contractAddress);
 
   const { analyzePosition, isAnalyzing, decision } = useDeFiAgent();
+  const {
+    marketContext,
+    isLoadingMarketContext,
+    marketContextError,
+    fetchMarketContext,
+  } = useDeFiMarketContext();
 
   const [stakeAmount, setStakeAmount] = useState("");
   const [rewardFundingAmount, setRewardFundingAmount] = useState("");
@@ -244,10 +251,13 @@ export const StakingDashboard = ({
   };
 
   const handleAgentAnalyze = async () => {
+    const context = await fetchMarketContext();
+
     const agentDecision = await analyzePosition(
       formattedStaked,
       formattedRewards,
       formattedContractBalance,
+      context,
     );
 
     if (agentDecision) {
@@ -498,6 +508,79 @@ export const StakingDashboard = ({
         )}
       </div>
 
+      <div className="mb-8 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <p className="text-sm text-purple-300 font-semibold">
+              DeFi Market Context
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              Mock backend context used by the AI Auto-Pilot recommendation
+              layer.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={fetchMarketContext}
+            disabled={isLoadingMarketContext}
+            className="text-xs bg-purple-500/20 hover:bg-purple-500/30 text-purple-100 border border-purple-400/30 rounded-lg px-3 py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoadingMarketContext ? "Loading..." : "Refresh Context"}
+          </button>
+        </div>
+
+        {marketContext ? (
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="rounded-lg bg-gray-950/60 border border-gray-800 p-3">
+              <p className="text-gray-500 text-xs">Mock APY</p>
+              <p className="text-purple-200 font-semibold">
+                {marketContext.mockApy}
+              </p>
+            </div>
+
+            <div className="rounded-lg bg-gray-950/60 border border-gray-800 p-3">
+              <p className="text-gray-500 text-xs">Gas Condition</p>
+              <p className="text-purple-200 font-semibold">
+                {marketContext.gasCondition}
+              </p>
+            </div>
+
+            <div className="rounded-lg bg-gray-950/60 border border-gray-800 p-3">
+              <p className="text-gray-500 text-xs">Pool Health</p>
+              <p className="text-purple-200 font-semibold">
+                {marketContext.poolHealth}
+              </p>
+            </div>
+
+            <div className="rounded-lg bg-gray-950/60 border border-gray-800 p-3">
+              <p className="text-gray-500 text-xs">Risk Level</p>
+              <p className="text-purple-200 font-semibold">
+                {marketContext.riskLevel}
+              </p>
+            </div>
+
+            <div className="col-span-2 rounded-lg bg-gray-950/60 border border-gray-800 p-3">
+              <p className="text-gray-500 text-xs">Market Note</p>
+              <p className="text-gray-300 text-sm mt-1">
+                {marketContext.marketNote}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-500 text-sm">
+            No DeFi market context loaded yet. Run AI Auto-Pilot or refresh the
+            context manually.
+          </p>
+        )}
+
+        {marketContextError && (
+          <p className="text-yellow-200/80 text-xs mt-3">
+            Market context fallback used: {marketContextError}
+          </p>
+        )}
+      </div>
+
       <div className="mb-8 rounded-xl border border-gray-800 bg-gray-950/70 p-4">
         <p className="text-sm text-gray-400 mb-3">On-chain References</p>
 
@@ -602,10 +685,12 @@ export const StakingDashboard = ({
           <button
             type="button"
             onClick={handleAgentAnalyze}
-            disabled={isLoading || isAnalyzing}
+            disabled={isLoading || isAnalyzing || isLoadingMarketContext}
             className="flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isAnalyzing ? "Analyzing..." : "🤖 AI Auto-Pilot"}
+            {isAnalyzing || isLoadingMarketContext
+              ? "Analyzing..."
+              : "🤖 AI Auto-Pilot"}
           </button>
 
           <button
