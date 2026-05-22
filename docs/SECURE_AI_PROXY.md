@@ -181,7 +181,7 @@ Example request payload:
 ```json
 {
   "walletAddress": "0x35B40...",
-  "contractAddress": "0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47",
+  "contractAddress": "0xA8Ac339504973AB21c1206F753C5BAF0350ba08d",
   "network": "sepolia",
   "stakedBalanceEth": "0.001",
   "earnedRewardsEth": "0.00000012",

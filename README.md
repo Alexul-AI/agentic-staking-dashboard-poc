@@ -118,13 +118,13 @@ The AI layer does not execute transactions automatically. It only provides expla
 **Contract Address:**
 
 ```text
-0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47
+0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
 **Sepolia Etherscan:**
 
 ```text
-https://sepolia.etherscan.io/address/0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47
+https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
 ---

@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-contract StakingContract {
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract StakingContract is ReentrancyGuard, Ownable {
     mapping(address => uint256) public stakes;
     mapping(address => uint256) public rewards;
     mapping(address => uint256) public lastUpdate;
@@ -11,31 +14,13 @@ contract StakingContract {
     // 1 = 1% per day
     uint256 public rewardRatePercentPerDay = 1;
 
-    address public owner;
-
-    bool private locked;
-
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardClaimed(address indexed user, uint256 amount);
     event RewardsFunded(address indexed funder, uint256 amount);
     event RewardRateUpdated(uint256 oldRate, uint256 newRate);
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can perform this action");
-        _;
-    }
-
-    modifier nonReentrant() {
-        require(!locked, "Reentrant call detected");
-        locked = true;
-        _;
-        locked = false;
-    }
-
-    constructor() {
-        owner = msg.sender;
-    }
+    constructor() Ownable(msg.sender) {}
 
     function stake() public payable nonReentrant {
         require(msg.value > 0, "Stake amount must be greater than zero");
@@ -106,7 +91,9 @@ contract StakingContract {
         emit RewardsFunded(msg.sender, msg.value);
     }
 
-    function setRewardRate(uint256 newRewardRatePercentPerDay) public onlyOwner {
+    function setRewardRate(
+        uint256 newRewardRatePercentPerDay
+    ) public onlyOwner {
         require(newRewardRatePercentPerDay <= 10, "Reward rate too high");
 
         uint256 oldRate = rewardRatePercentPerDay;

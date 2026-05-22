@@ -1,6 +1,6 @@
 import { StakingDashboard } from "./components/StakingDashboard";
 
-const CONTRACT_ADDRESS = "0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47" as const;
+const CONTRACT_ADDRESS = "0xA8Ac339504973AB21c1206F753C5BAF0350ba08d" as const;
 
 function App() {
   return (

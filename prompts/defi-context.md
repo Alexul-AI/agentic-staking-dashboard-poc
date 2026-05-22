@@ -29,14 +29,14 @@ Current deployed contract:
 
 ```json
 {
-  "contractAddress": "0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47"
+  "contractAddress": "0xA8Ac339504973AB21c1206F753C5BAF0350ba08d"
 }
 ```
 
 Explorer:
 
 ```text
-https://sepolia.etherscan.io/address/0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47
+https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
 ---
@@ -862,13 +862,13 @@ The contract was redeployed to Ethereum Sepolia after adding events.
 Updated deployed contract:
 
 ```text
-0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47
+0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
 Explorer:
 
 ```text
-https://sepolia.etherscan.io/address/0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47
+https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
 Validated flows after redeploy:
@@ -902,7 +902,7 @@ The project is working on Ethereum Sepolia with:
 Current deployed contract:
 
 ```text
-0x8a0fdc67D8751d409d3ad2571faD8eA45820dA47
+0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
 ---
