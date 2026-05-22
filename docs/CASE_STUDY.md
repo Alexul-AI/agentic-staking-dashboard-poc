@@ -150,6 +150,12 @@ The following flows were tested:
 - AI proxy ETH amount validation
 - AI proxy response normalization
 - Basic in-memory AI proxy rate limiting
+- Reward claiming test flow
+- Emitted event assertions
+- Insufficient reward pool rejection test
+- Invalid reward rate rejection test
+- Withdraw-without-stake rejection test
+- Multi-user staking state test
 
 ---
 
@@ -323,6 +329,7 @@ Completed:
 - Automated staking contract tests
 - AI proxy request validation and rate limiting
 - Documented access-control decision
+- Expanded automated staking contract tests
 
 ---
 
@@ -330,6 +337,7 @@ Completed:
 
 Planned next steps:
 
-- Expand automated tests for reward claiming, emitted events, and edge cases
+- Add reentrancy-oriented attack simulation tests
+- Add frontend/component tests for dashboard UX
 - Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting
 - Prepare LinkedIn / portfolio post

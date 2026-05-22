@@ -942,6 +942,57 @@ Ownable now.
 AccessControl later only if multiple privileged roles are introduced.
 ```
 
+## Iteration 34 — Expanded Automated Contract Tests
+
+The Hardhat test suite was expanded to cover more staking contract behavior, events, access-control flows, and edge cases.
+
+Updated file:
+
+```text
+test/StakingContract.test.ts
+```
+
+Expanded test coverage includes:
+
+```text
+deployment owner
+staking
+Staked event
+reward pool funding
+RewardsFunded event
+withdrawal
+Withdrawn event
+reward claiming
+RewardClaimed event
+insufficient reward pool rejection
+non-owner reward rate rejection
+owner reward rate update
+RewardRateUpdated event
+invalid reward rate rejection
+zero-value stake rejection
+zero-value reward funding rejection
+withdraw without stake rejection
+multi-user staking state
+```
+
+Purpose:
+
+- improve confidence in the Solidity contract behavior
+- validate emitted events for future monitoring and indexing
+- verify OpenZeppelin Ownable restrictions
+- cover common failure scenarios
+- prepare the project for more production-like Web3 review
+- strengthen the repository as a technical portfolio asset
+
+Future test improvements:
+
+- reentrancy-oriented attack simulation
+- larger multi-user reward accounting scenarios
+- frontend/component tests for dashboard UX
+- AI proxy validation tests
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -971,6 +1022,7 @@ The project currently includes:
 - Automated staking contract tests
 - AI proxy request validation and rate limiting
 - Documented access-control decision
+- Expanded automated staking contract tests
 
 ---
 
@@ -978,6 +1030,7 @@ The project currently includes:
 
 Planned next steps:
 
-1. Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
-2. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.
-3. Prepare LinkedIn / portfolio post.
+1. Add reentrancy-oriented attack simulation tests.
+2. Add frontend/component tests for dashboard UX.
+3. Add AI proxy validation tests.
+4. Prepare LinkedIn / portfolio post.

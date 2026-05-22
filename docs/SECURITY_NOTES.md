@@ -467,18 +467,23 @@ Current test coverage includes:
 - staking ETH
 - reward pool funding
 - withdrawing staked ETH
+- claiming rewards when reward pool liquidity is sufficient
+- insufficient reward pool rejection
 - owner-only reward rate update
+- invalid reward rate rejection
 - zero-value stake rejection
 - zero-value reward funding rejection
-
-Additional test coverage should be added before any production use:
-
-- reward claiming
+- withdraw without stake rejection
 - emitted event assertions
-- reward pool underfunding cases
-- access-control edge cases
+- multi-user staking state
+
+Additional test coverage that could still be added before production use:
+
 - reentrancy-specific attack simulation
-- multi-user staking scenarios
+- larger multi-user reward accounting scenarios
+- long-duration reward accumulation scenarios
+- frontend/component tests for dashboard UX
+- AI proxy validation tests
 
 ## 16. Portfolio Positioning
 

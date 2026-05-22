@@ -212,8 +212,7 @@ The Solidity staking contract supports:
 - Event emissions for key staking actions
 - OpenZeppelin-based `ReentrancyGuard`
 - OpenZeppelin-based `Ownable` access control
-- Automated Hardhat tests for core staking flows
-
+- Automated Hardhat tests for staking, reward pool funding, reward claiming, events, access control, and edge cases
 The contract is deployed on Sepolia for demonstration purposes only.
 
 Security hardening includes:
@@ -551,10 +550,11 @@ Completed:
 - Automated staking contract tests
 - AI proxy request validation and rate limiting
 - Documented access-control decision: `Ownable` is sufficient for the current PoC
+- Expanded automated staking contract tests
 
 Next planned improvements:
 
-- Expand automated tests for reward claiming, emitted events, and edge cases
+- Add frontend/component tests for dashboard UX
 - Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting
 - Consider role-based `AccessControl` only if multiple privileged roles are introduced
 - Prepare LinkedIn / portfolio case study post

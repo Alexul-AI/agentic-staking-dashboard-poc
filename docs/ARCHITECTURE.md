@@ -328,9 +328,19 @@ Automated tests currently cover core contract behavior, including:
 - staking
 - reward pool funding
 - withdrawal
+- reward claiming
+- emitted staking events
+- emitted reward funding events
+- emitted withdrawal events
+- emitted reward claiming events
+- emitted reward rate update events
 - owner-only reward rate update
+- invalid reward rate rejection
 - zero-value stake rejection
 - zero-value reward funding rejection
+- withdraw without stake rejection
+- insufficient reward pool rejection
+- multi-user staking state
 
 Additional Solidity security notes are documented here:
 
@@ -646,14 +656,13 @@ This project is currently a PoC and has several limitations:
 - No production-grade backend deployment yet.
 - No persistent database.
 - Uses OpenZeppelin security primitives, but the staking contract itself has not been professionally audited.
-- No real yield strategy optimization.
+- No real yield strategy optimization.c
 - No autonomous fund management.
 - No transaction history beyond the current session.
 - No production risk engine.
 - No financial advice logic.
-- Initial automated contract tests exist, but broader edge-case and event-specific coverage can still be expanded.
-
-These limitations are intentional for a safe portfolio demonstration.
+- Automated contract tests cover the main staking, reward pool, event, access-control, and edge-case flows; future tests could still add reentrancy-oriented attack simulations and larger multi-user reward accounting scenarios.
+  These limitations are intentional for a safe portfolio demonstration.
 
 ---
 
@@ -661,7 +670,9 @@ These limitations are intentional for a safe portfolio demonstration.
 
 Planned improvements include:
 
-- Expand automated tests for reward claiming, emitted events, edge cases, and Ownable access-control flows.
+- Add reentrancy-oriented attack simulation tests.
+- Add larger multi-user reward accounting tests.
+- Add frontend/component tests for dashboard UX.
 - Improve error handling for rejected MetaMask transactions.
 - Add transaction history persistence.
 - Replace in-memory AI proxy rate limiting with a production-grade persistent limiter.
