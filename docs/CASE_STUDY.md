@@ -82,6 +82,7 @@ The operator workflow included:
 21. Replacing custom security logic with OpenZeppelin `ReentrancyGuard` and `Ownable`.
 22. Adding automated Hardhat tests for core staking contract flows.
 23. Adding request validation and basic rate limiting to the optional AI proxy.
+24. Making an explicit access-control decision to keep `Ownable` for the current PoC instead of overengineering with role-based `AccessControl`.
 
 ---
 
@@ -321,6 +322,7 @@ Completed:
 - Technical demo walkthrough
 - Automated staking contract tests
 - AI proxy request validation and rate limiting
+- Documented access-control decision
 
 ---
 
@@ -328,8 +330,6 @@ Completed:
 
 Planned next steps:
 
-- Prepare LinkedIn / portfolio post
 - Expand automated tests for reward claiming, emitted events, and edge cases
-- Add transaction history persistence
-- Add optional deployed demo / hosted preview
-- Add backend DeFi mock context API
+- Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting
+- Prepare LinkedIn / portfolio post

@@ -550,11 +550,13 @@ Completed:
 - DeFi market context dashboard UI
 - Automated staking contract tests
 - AI proxy request validation and rate limiting
+- Documented access-control decision: `Ownable` is sufficient for the current PoC
 
 Next planned improvements:
 
-- Decide whether basic Ownable access control is enough or whether role-based access control is needed
 - Expand automated tests for reward claiming, emitted events, and edge cases
+- Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting
+- Consider role-based `AccessControl` only if multiple privileged roles are introduced
 - Prepare LinkedIn / portfolio case study post
 
 ---

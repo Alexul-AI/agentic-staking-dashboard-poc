@@ -901,6 +901,47 @@ The current rate limiter is in-memory and suitable only for a portfolio PoC. A p
 
 ---
 
+## Iteration 33 — Access Control Decision
+
+The project access-control model was reviewed after adopting OpenZeppelin `Ownable`.
+
+Decision:
+
+```text
+Keep Ownable for the current PoC.
+Do not add role-based AccessControl yet.
+```
+
+Reasoning:
+
+The current contract has only one privileged operation: setRewardRate.
+A single-owner model is sufficient for the current portfolio PoC.
+Adding role-based AccessControl now would increase complexity without meaningful product value.
+AccessControl should be considered later only if the protocol introduces multiple privileged roles.
+
+Possible future roles:
+
+- REWARD_MANAGER_ROLE
+- PAUSER_ROLE
+- TREASURY_ROLE
+- BACKEND_OPERATOR_ROLE
+- DEFAULT_ADMIN_ROLE
+
+Purpose:
+
+avoid overengineering
+document the access-control reasoning
+show architectural judgment
+keep the PoC focused and understandable
+preserve a clear future path for production-grade role design
+
+Updated roadmap decision:
+
+```text
+Ownable now.
+AccessControl later only if multiple privileged roles are introduced.
+```
+
 ## Current Status
 
 The project currently includes:
@@ -929,6 +970,7 @@ The project currently includes:
 - DeFi market context dashboard UI
 - Automated staking contract tests
 - AI proxy request validation and rate limiting
+- Documented access-control decision
 
 ---
 
@@ -936,7 +978,6 @@ The project currently includes:
 
 Planned next steps:
 
-1. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
-2. Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
-3. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.
-4. Prepare LinkedIn / portfolio post.
+1. Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
+2. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.
+3. Prepare LinkedIn / portfolio post.

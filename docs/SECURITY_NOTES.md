@@ -66,6 +66,39 @@ setRewardRate
 
 This prevents arbitrary users from changing the reward rate.
 
+---
+
+### Access Control Decision
+
+The contract currently uses OpenZeppelin `Ownable` rather than role-based `AccessControl`.
+
+This is intentional.
+
+The current contract has only one privileged operation:
+
+```text
+setRewardRate
+```
+
+Because of that, a single-owner model is sufficient for the current PoC.
+
+Role-based AccessControl would be more appropriate if the project introduced multiple privileged roles, for example:
+
+REWARD_MANAGER_ROLE
+PAUSER_ROLE
+TREASURY_ROLE
+BACKEND_OPERATOR_ROLE
+DEFAULT_ADMIN_ROLE
+
+For the current portfolio version, adding AccessControl would increase complexity without adding meaningful product value.
+
+The access-control decision is therefore:
+
+```text
+Use Ownable now.
+Consider AccessControl later only if the protocol grows beyond a single-owner model.
+```
+
 ### Checks-Effects-Interactions Pattern
 
 The contract updates internal state before transferring ETH.
@@ -359,7 +392,7 @@ Before any mainnet deployment, the following steps would be required:
 - Add professional security audit.
 - OpenZeppelin `ReentrancyGuard` is already used.
 - OpenZeppelin `Ownable` is already used.
-- Consider role-based access control if the system grows beyond a single-owner model.
+- Revisit role-based `AccessControl` only if the system introduces multiple privileged roles.
 - Add emergency pause functionality.
 - Define a real reward funding model.
 - Add stronger reward accounting.

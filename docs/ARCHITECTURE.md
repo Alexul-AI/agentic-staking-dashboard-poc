@@ -338,7 +338,39 @@ Additional Solidity security notes are documented here:
 
 ---
 
-## 8. Frontend Layer
+## 8 Access Control Decision
+
+The current staking contract uses OpenZeppelin `Ownable`.
+
+This is intentional for the current PoC because the contract currently has a simple privileged model:
+
+```text
+Owner
+  → can update reward rate
+
+Users
+  → can stake
+  → can withdraw
+  → can claim rewards
+  → can fund the reward pool
+```
+
+Role-based AccessControl is intentionally not implemented at this stage to avoid unnecessary complexity.
+
+AccessControl would become appropriate if the protocol introduced multiple privileged roles, such as:
+
+reward manager
+treasury manager
+pauser
+backend operator
+DAO-controlled admin
+upgrade admin
+
+For the current portfolio PoC, Ownable provides a clear and sufficient access-control model.
+
+---
+
+## 9. Frontend Layer
 
 The frontend is built with React, TypeScript, Vite, Tailwind CSS, wagmi, and viem.
 
@@ -374,7 +406,7 @@ The frontend also includes a Sepolia network guard. If the connected wallet is o
 
 ---
 
-## 9. Wallet & Transaction Flow
+## 10. Wallet & Transaction Flow
 
 MetaMask is used as the wallet interaction layer.
 
@@ -422,7 +454,7 @@ This improves the user experience by making the wallet and network confirmation 
 
 ---
 
-## 10. Reward Pool UX
+## 11. Reward Pool UX
 
 The dashboard includes a reward pool section that displays the current ETH balance held by the staking contract.
 
@@ -455,7 +487,7 @@ This improves the DeFi product UX by making reward liquidity visible instead of 
 
 ---
 
-## 11. Agentic Decision Layer
+## 12. Agentic Decision Layer
 
 The current agentic layer is a safe decision-support module.
 
@@ -513,7 +545,7 @@ AI suggests → User reviews → Wallet confirms → Blockchain executes
 
 ---
 
-## 12. Optional AI Proxy Implementation
+## 13. Optional AI Proxy Implementation
 
 The repository includes an optional backend/serverless AI proxy implementation:
 
@@ -565,7 +597,7 @@ The proxy returns a structured decision object:
 
 ---
 
-## 13. Security & Safety Boundaries
+## 14. Security & Safety Boundaries
 
 Current safety boundaries:
 
@@ -604,7 +636,7 @@ AI API keys should never be exposed directly in frontend code.
 
 ---
 
-## 14. Current Limitations
+## 15. Current Limitations
 
 This project is currently a PoC and has several limitations:
 
@@ -625,14 +657,15 @@ These limitations are intentional for a safe portfolio demonstration.
 
 ---
 
-## 15. Planned Improvements
+## 16. Planned Improvements
 
 Planned improvements include:
 
-- Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
+- Expand automated tests for reward claiming, emitted events, edge cases, and Ownable access-control flows.
 - Improve error handling for rejected MetaMask transactions.
 - Add transaction history persistence.
 - Replace in-memory AI proxy rate limiting with a production-grade persistent limiter.
+- Consider role-based `AccessControl` only if the protocol introduces multiple privileged roles.
 - Prepare LinkedIn / portfolio case study post.
 
 Completed portfolio documentation assets already include:
@@ -647,7 +680,7 @@ c
 
 ---
 
-## 16. Future Secure AI Integration
+## 17. Future Secure AI Integration
 
 The current project uses a safe mock DeFi agent by default.
 
@@ -730,7 +763,7 @@ The AI layer should support decision-making and explanation, while blockchain ex
 
 ---
 
-## 17. AI Operator Value
+## 18. AI Operator Value
 
 This project demonstrates AI Operator work, not only frontend implementation.
 
@@ -757,7 +790,7 @@ The project shows practical operator judgment across:
 
 ---
 
-## 18. Portfolio Positioning
+## 19. Portfolio Positioning
 
 This project demonstrates the ability to operate at the intersection of:
 
