@@ -15,6 +15,12 @@ contract StakingContract {
 
     bool private locked;
 
+    event Staked(address indexed user, uint256 amount);
+    event Withdrawn(address indexed user, uint256 amount);
+    event RewardClaimed(address indexed user, uint256 amount);
+    event RewardsFunded(address indexed funder, uint256 amount);
+    event RewardRateUpdated(uint256 oldRate, uint256 newRate);
+
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can perform this action");
         _;
@@ -38,6 +44,8 @@ contract StakingContract {
 
         stakes[msg.sender] += msg.value;
         totalStaked += msg.value;
+
+        emit Staked(msg.sender, msg.value);
     }
 
     function withdraw() public nonReentrant {
@@ -51,6 +59,8 @@ contract StakingContract {
 
         (bool success, ) = payable(msg.sender).call{value: amount}("");
         require(success, "ETH transfer failed");
+
+        emit Withdrawn(msg.sender, amount);
     }
 
     function claimReward() public nonReentrant {
@@ -67,6 +77,8 @@ contract StakingContract {
 
         (bool success, ) = payable(msg.sender).call{value: reward}("");
         require(success, "ETH transfer failed");
+
+        emit RewardClaimed(msg.sender, reward);
     }
 
     function updateReward(address user) internal {
@@ -88,14 +100,19 @@ contract StakingContract {
         lastUpdate[user] = block.timestamp;
     }
 
-    function fundRewards() public payable {
+    function fundRewards() public payable nonReentrant {
         require(msg.value > 0, "Funding amount must be greater than zero");
+
+        emit RewardsFunded(msg.sender, msg.value);
     }
 
     function setRewardRate(uint256 newRewardRatePercentPerDay) public onlyOwner {
         require(newRewardRatePercentPerDay <= 10, "Reward rate too high");
 
+        uint256 oldRate = rewardRatePercentPerDay;
         rewardRatePercentPerDay = newRewardRatePercentPerDay;
+
+        emit RewardRateUpdated(oldRate, newRewardRatePercentPerDay);
     }
 
     function getContractBalance() public view returns (uint256) {
