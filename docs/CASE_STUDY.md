@@ -80,6 +80,7 @@ The operator workflow included:
 19. Documenting Solidity security boundaries and production-readiness limitations.
 20. Adding an optional backend/serverless AI proxy implementation.
 21. Replacing custom security logic with OpenZeppelin `ReentrancyGuard` and `Ownable`.
+22. Adding automated Hardhat tests for core staking contract flows.
 
 ---
 
@@ -135,6 +136,13 @@ The following flows were tested:
 - OpenZeppelin-based reentrancy protection
 - OpenZeppelin-based ownership protection
 - Owner-only reward rate protection
+- Automated Hardhat contract test setup
+- Owner assignment on deploy
+- Staking test flow
+- Reward pool funding test flow
+- Withdrawal test flow
+- Owner-only reward rate test flow
+- Zero-value transaction rejection tests
 
 ---
 
@@ -305,6 +313,7 @@ Completed:
 - Optional backend/serverless AI proxy implementation
 - OpenZeppelin-based `ReentrancyGuard` and `Ownable`
 - Technical demo walkthrough
+- Automated staking contract tests
 
 ---
 
@@ -313,7 +322,7 @@ Completed:
 Planned next steps:
 
 - Prepare LinkedIn / portfolio post
-- Add automated tests for staking and reward pool flows
+- Expand automated tests for reward claiming, emitted events, and edge cases
 - Add transaction history persistence
 - Add optional deployed demo / hosted preview
 - Add backend DeFi mock context API

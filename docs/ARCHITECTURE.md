@@ -38,6 +38,7 @@ The main goals of this PoC are:
 - Provide an optional backend/serverless AI proxy implementation.
 - Show how an AI Operator can guide, validate, and structure AI-assisted Web3 delivery.
 - Package the project as a portfolio asset for Web3 / AI Operator opportunities.
+- Validate core Solidity flows with automated Hardhat tests.
 
 ---
 
@@ -320,6 +321,16 @@ Security hardening currently includes:
 - Event emissions for staking, withdrawal, reward claiming, reward funding, and reward rate updates
 
 The contract layer does not contain AI logic. It only handles deterministic blockchain state and staking-related operations.
+
+Automated tests currently cover core contract behavior, including:
+
+- deployment owner
+- staking
+- reward pool funding
+- withdrawal
+- owner-only reward rate update
+- zero-value stake rejection
+- zero-value reward funding rejection
 
 Additional Solidity security notes are documented here:
 
@@ -605,7 +616,7 @@ This project is currently a PoC and has several limitations:
 - No transaction history beyond the current session.
 - No production risk engine.
 - No financial advice logic.
-- No automated test suite yet.
+- Initial automated contract tests exist, but broader edge-case and event-specific coverage can still be expanded.
 
 These limitations are intentional for a safe portfolio demonstration.
 
@@ -615,7 +626,7 @@ These limitations are intentional for a safe portfolio demonstration.
 
 Planned improvements include:
 
-- Add tests for staking, withdrawal, reward claiming, reward pool funding, and emitted events.
+- Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
 - Improve error handling for rejected MetaMask transactions.
 - Add transaction history persistence.
 - Implement the documented secure AI proxy as a real backend/serverless endpoint.

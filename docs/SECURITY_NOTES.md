@@ -340,7 +340,7 @@ This keeps failure states conservative.
 
 Before any mainnet deployment, the following steps would be required:
 
-- Add a full smart contract test suite.
+- Expand the current smart contract test suite to cover reward claiming, emitted events, edge cases, and access-control flows.
 - Add tests for staking, withdrawal, reward claiming, and reward pool funding.
 - Add event emissions for important contract actions.
 - Add professional security audit.
@@ -408,7 +408,31 @@ The project demonstrates AI-assisted decision support, not autonomous financial 
 
 ---
 
-## 15. Portfolio Positioning
+## 15 Automated Test Coverage
+
+The project includes an initial Hardhat-based automated test setup for the staking contract.
+
+Current test coverage includes:
+
+- contract deployment
+- deployer ownership
+- staking ETH
+- reward pool funding
+- withdrawing staked ETH
+- owner-only reward rate update
+- zero-value stake rejection
+- zero-value reward funding rejection
+
+Additional test coverage should be added before any production use:
+
+- reward claiming
+- emitted event assertions
+- reward pool underfunding cases
+- access-control edge cases
+- reentrancy-specific attack simulation
+- multi-user staking scenarios
+
+## 16. Portfolio Positioning
 
 These security notes are included to make the PoC more transparent and professionally framed.
 
@@ -429,7 +453,7 @@ This supports the broader goal of building practical AI Operator / Web3 Solution
 
 ---
 
-## 16. Current Security Status
+## 17. Current Security Status
 
 Current status:
 

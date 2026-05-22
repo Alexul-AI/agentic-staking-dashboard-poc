@@ -138,6 +138,7 @@ https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 - Vite
 - Solidity
 - OpenZeppelin Contracts
+- Hardhat
 - wagmi
 - viem
 - TanStack React Query
@@ -172,6 +173,9 @@ src/
 contracts/
   StakingContract.sol
 
+test/
+  StakingContract.test.ts
+
 prompts/
   system-instruction.md
   iteration-log.md
@@ -180,11 +184,13 @@ prompts/
 docs/
   ARCHITECTURE.md
   CASE_STUDY.md
+  DEMO_WALKTHROUGH.md
   SECURE_AI_PROXY.md
   SECURITY_NOTES.md
   architecture-diagram.md
   assets/
 
+hardhat.config.ts
 .env.example
 ```
 
@@ -205,6 +211,7 @@ The Solidity staking contract supports:
 - Event emissions for key staking actions
 - OpenZeppelin-based `ReentrancyGuard`
 - OpenZeppelin-based `Ownable` access control
+- Automated Hardhat tests for core staking flows
 
 The contract is deployed on Sepolia for demonstration purposes only.
 
@@ -426,6 +433,12 @@ Preview production build:
 npm run preview
 ```
 
+Run smart contract tests:
+
+```bash
+npm run test:contracts
+```
+
 ---
 
 ## Optional AI Proxy Configuration
@@ -519,12 +532,13 @@ Completed:
 - Technical demo walkthrough
 - Backend DeFi mock context API
 - DeFi market context dashboard UI
+- Automated staking contract tests
 
 Next planned improvements:
 
-- Add automated tests for staking and reward pool flows
+- Add backend request validation and rate limiting for the optional AI proxy
+- Decide whether basic Ownable access control is enough or whether role-based access control is needed
 - Prepare LinkedIn / portfolio case study post
-- Add optional deployed demo / hosted preview
 
 ---
 

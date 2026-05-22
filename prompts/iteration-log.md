@@ -801,6 +801,53 @@ Validated flows:
 
 ---
 
+## Iteration 31 — Automated Staking Contract Tests
+
+Automated smart contract tests were added using Hardhat and the viem toolbox.
+
+Added files:
+
+```text
+hardhat.config.ts
+test/StakingContract.test.ts
+```
+
+Updated package scripts:
+
+```text
+npm run test:contracts
+```
+
+Initial test coverage includes:
+
+- deployment with deployer as owner
+- user staking flow
+- reward pool funding flow
+- staker withdrawal flow
+- non-owner rejection for reward rate changes
+- owner reward rate update
+- zero-value stake rejection
+- zero-value reward funding rejection
+
+Purpose:
+
+- validate core Solidity behavior automatically
+- prepare the contract for safer future refactoring
+- make OpenZeppelin ownership and staking flows testable
+- improve production-readiness framing
+- strengthen the project as a Web3 portfolio asset
+
+Next testing improvements:
+
+- reward claiming test
+- emitted event assertions
+- reward pool underfunding scenario
+- multi-user staking scenario
+- access-control edge cases
+- reentrancy-oriented test case
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -827,6 +874,7 @@ The project currently includes:
 - Technical demo walkthrough
 - Backend DeFi mock context API
 - DeFi market context dashboard UI
+- Automated staking contract tests
 
 ---
 
@@ -834,7 +882,7 @@ The project currently includes:
 
 Planned next steps:
 
-1. Add automated tests for staking, reward pool, emitted events, and OpenZeppelin access-control flows.
+1. Expand automated tests for reward claiming, emitted events, edge cases, and access-control flows.
 2. Add backend request validation and rate limiting for the optional AI proxy.
 3. Decide whether basic Ownable access control is enough or whether role-based access control is needed.
 4. Prepare LinkedIn / portfolio post.
