@@ -781,6 +781,17 @@ export const StakingDashboard = ({
               <p className="text-gray-300 text-sm">{decision.reasoning}</p>
             </div>
 
+            {decision.contextSummary && (
+              <div>
+                <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">
+                  Context Used
+                </p>
+                <p className="text-purple-200 text-sm">
+                  {decision.contextSummary}
+                </p>
+              </div>
+            )}
+
             <div>
               <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">
                 Recommended Next Step

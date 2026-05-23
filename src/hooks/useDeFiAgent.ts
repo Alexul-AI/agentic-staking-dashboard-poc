@@ -15,6 +15,7 @@ export interface AgentDecision {
   recommendedNextStep: string;
   executionHint: string;
   riskNote: string;
+  contextSummary?: string;
 }
 
 interface ProxyResponse {
@@ -41,22 +42,26 @@ const getMockDecision = (
   const staked = Number(stakedBalance);
   const rewards = Number(earnedRewards);
 
-  const contextNote = marketContext
-    ? ` Mock context: APY ${marketContext.mockApy ?? "unknown"}, gas ${
+  const contextSummary = marketContext
+    ? `APY ${marketContext.mockApy ?? "unknown"}, gas ${
         marketContext.gasCondition ?? "unknown"
       }, pool health ${marketContext.poolHealth ?? "unknown"}, risk ${
         marketContext.riskLevel ?? "unknown"
       }.`
-    : "";
+    : undefined;
 
   if (!staked || staked <= 0) {
     return {
       action: "STAKE_MORE",
       confidence: "HIGH",
-      reasoning: `No active staking position was detected. Without a staked balance, the position cannot generate meaningful rewards.${contextNote}`,
-      recommendedNextStep: `Stake a small amount of Sepolia ETH to activate the position.${contextNote}`,
-      executionHint: `Enter an amount in the deposit field and click Stake. MetaMask will ask you to confirm the transaction.${contextNote}`,
-      riskNote: `This is a testnet PoC. On mainnet, staking decisions should consider gas costs, contract risk, and liquidity needs.${contextNote}`,
+      reasoning: `No active staking position was detected. Without a staked balance, the position cannot generate meaningful rewards.`,
+      recommendedNextStep:
+        "Stake a small amount of Sepolia ETH to activate the position.",
+      executionHint:
+        "Enter an amount in the deposit field and click Stake. MetaMask will ask you to confirm the transaction.",
+      riskNote:
+        "This is a testnet PoC. On mainnet, staking decisions should consider gas costs, contract risk, and liquidity needs.",
+      contextSummary,
     };
   }
 
@@ -64,20 +69,28 @@ const getMockDecision = (
     return {
       action: "CLAIM_REWARDS",
       confidence: "MEDIUM",
-      reasoning: `The earned rewards are above the configured claim threshold. Claiming may be reasonable, depending on gas cost and user preference.${contextNote}`,
-      recommendedNextStep: `Consider claiming accumulated rewards if the expected value justifies a transaction.${contextNote}`,
-      executionHint: `Click Claim Rewards to open MetaMask and manually confirm the transaction.${contextNote}`,
-      riskNote: `The agent does not execute wallet actions automatically. User confirmation through MetaMask is required.${contextNote}`,
+      reasoning: `The earned rewards are above the configured claim threshold. Claiming may be reasonable, depending on gas cost and user preference.`,
+      recommendedNextStep:
+        "Consider claiming accumulated rewards if the expected value justifies a transaction.",
+      executionHint:
+        "Click Claim Rewards to open MetaMask and manually confirm the transaction.",
+      riskNote:
+        "The agent does not execute wallet actions automatically. User confirmation through MetaMask is required.",
+      contextSummary,
     };
   }
 
   return {
     action: "HOLD",
     confidence: "HIGH",
-    reasoning: `Rewards are currently too small to justify a transaction. Claiming now would create unnecessary transaction activity.${contextNote}`,
-    recommendedNextStep: `Hold the staking position and wait for rewards to accumulate further.${contextNote}`,
-    executionHint: `No wallet transaction is required for HOLD. The user can manually claim or withdraw if desired.${contextNote}`,
-    riskNote: `This recommendation is based only on simple staking and reward data. It does not evaluate market risk or smart contract security.${contextNote}`,
+    reasoning: `Rewards are currently too small to justify a transaction. Claiming now would create unnecessary transaction activity.`,
+    recommendedNextStep:
+      "Hold the staking position and wait for rewards to accumulate further.",
+    executionHint:
+      "No wallet transaction is required for HOLD. The user can manually claim or withdraw if desired.",
+    riskNote:
+      "This recommendation is based only on simple staking and reward data. It does not evaluate market risk or smart contract security.",
+    contextSummary,
   };
 };
 
