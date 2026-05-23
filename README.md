@@ -213,7 +213,7 @@ The Solidity staking contract supports:
 - OpenZeppelin-based `ReentrancyGuard`
 - OpenZeppelin-based `Ownable` access control
 - Automated Hardhat tests for staking, reward pool funding, reward claiming, events, access control, and edge cases
-The contract is deployed on Sepolia for demonstration purposes only.
+  The contract is deployed on Sepolia for demonstration purposes only.
 
 Security hardening includes:
 
@@ -243,6 +243,8 @@ The React dashboard supports:
 - Automatic UI refresh after confirmed transactions
 - Sepolia Etherscan links for contract and transaction review
 - AI Auto-Pilot recommendation rendering
+- Public demo onboarding message for users without a connected wallet
+- Separate AI recommendation context display
 
 ---
 
@@ -280,9 +282,12 @@ The agent evaluates the current staking position and returns:
 - Suggested action
 - Confidence level
 - Reasoning
+- Context used
 - Recommended next step
 - Execution guidance
 - Risk note
+
+The recommendation UI separates the agent reasoning from the backend mock DeFi context. This keeps the output easier to read and avoids repeating the same context across every explanation field.
 
 Current supported actions:
 
@@ -551,6 +556,8 @@ Completed:
 - AI proxy request validation and rate limiting
 - Documented access-control decision: `Ownable` is sufficient for the current PoC
 - Expanded automated staking contract tests
+- Public demo onboarding UX
+- Separate AI recommendation context display
 
 Next planned improvements:
 

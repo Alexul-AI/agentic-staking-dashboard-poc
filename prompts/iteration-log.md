@@ -991,6 +991,51 @@ Future test improvements:
 - frontend/component tests for dashboard UX
 - AI proxy validation tests
 
+## Iteration 35 — Public Demo UX and AI Context Display
+
+The public demo UX was improved for users who open the deployed Vercel demo without connecting a wallet.
+
+Added behavior:
+
+```text
+Public Demo Mode message
+```
+
+Purpose:
+
+- explain why wallet write actions are disabled before MetaMask connection
+- clarify that the project is connected to a Sepolia testnet contract
+- explain that staking, reward pool funding, claiming, and withdrawing require MetaMask
+- allow visitors to still review DeFi Market Context and AI Auto-Pilot in safe mock mode
+
+The AI recommendation UI was also improved.
+
+Previously, backend mock context was repeated inside multiple recommendation fields.
+
+Updated behavior:
+
+```text
+Reasoning
+Context Used
+Recommended Next Step
+Execution
+Risk Note
+```
+
+Purpose:
+
+- avoid repeated context text
+- make the AI recommendation easier to read
+- show clearly which backend DeFi context was used
+- improve the project’s presentation quality for public demos and technical review
+
+Validated on:
+
+```text
+local development
+Vercel production deployment
+```
+
 ---
 
 ## Current Status
@@ -1023,6 +1068,8 @@ The project currently includes:
 - AI proxy request validation and rate limiting
 - Documented access-control decision
 - Expanded automated staking contract tests
+- Public demo onboarding UX
+- Separate AI recommendation context display
 
 ---
 
@@ -1030,7 +1077,7 @@ The project currently includes:
 
 Planned next steps:
 
-1. Add reentrancy-oriented attack simulation tests.
+1. Prepare LinkedIn / portfolio post.
 2. Add frontend/component tests for dashboard UX.
-3. Add AI proxy validation tests.
-4. Prepare LinkedIn / portfolio post.
+3. Add reentrancy-oriented attack simulation tests.
+4. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.

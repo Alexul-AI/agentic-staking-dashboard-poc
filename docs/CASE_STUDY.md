@@ -46,6 +46,8 @@ The dashboard allows the user to:
 - Inspect contract and transaction activity on Sepolia Etherscan
 - See clear transaction lifecycle status
 - Run a safe DeFi agent recommendation layer
+- Understand the public demo mode before connecting a wallet
+- View AI recommendation context separately from the main reasoning
 
 The DeFi agent layer does not execute wallet actions automatically. It provides an explainable recommendation and leaves execution under user control through MetaMask.
 
@@ -156,6 +158,9 @@ The following flows were tested:
 - Invalid reward rate rejection test
 - Withdraw-without-stake rejection test
 - Multi-user staking state test
+- Public demo onboarding UX
+- Read-only demo behavior without wallet connection
+- Separate AI recommendation context rendering
 
 ---
 
@@ -330,6 +335,8 @@ Completed:
 - AI proxy request validation and rate limiting
 - Documented access-control decision
 - Expanded automated staking contract tests
+- Public demo onboarding UX
+- Separate AI recommendation context display
 
 ---
 

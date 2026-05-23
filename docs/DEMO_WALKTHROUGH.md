@@ -46,8 +46,15 @@ The following parts are real and working:
 - OpenZeppelin `Ownable`
 - Backend DeFi mock context endpoint
 - DeFi market context dashboard block
+- Public demo mode explanation for users without a connected wallet
+- Separate AI recommendation context display
 
-These parts interact with a real deployed testnet smart contract.
+These parts are implemented and working in the deployed demo.
+
+Important distinction:
+
+- The staking contract interactions are connected to a real deployed Sepolia testnet contract.
+- The DeFi market context endpoint is real backend functionality, but the APY, gas, pool health, risk, and liquidity values are simulated mock data for portfolio demonstration.
 
 ---
 
@@ -107,13 +114,25 @@ This is a Web3 staking dashboard connected to a deployed Sepolia smart contract.
 Point out:
 
 - Connected wallet
+- Public Demo Mode message, if wallet is not connected
 - Staked ETH
 - Earned rewards
 - Reward pool
+- DeFi Market Context block
 - On-chain references
 - Stake input
 - AI Auto-Pilot button
 - Withdraw and claim actions
+
+If the wallet is not connected, point out the Public Demo Mode message.
+
+Explain:
+
+```text
+The dashboard can be reviewed without a wallet.
+Read-only demo features such as DeFi Market Context and AI Auto-Pilot remain available.
+MetaMask is required only for blockchain write actions.
+```
 
 ---
 
@@ -284,9 +303,21 @@ Point out:
 - AI Action
 - Confidence
 - Reasoning
+- Context Used
 - Recommended next step
 - Execution hint
 - Risk note
+
+The recommendation separates the reasoning from the backend mock context.
+
+Point out:
+
+```text
+Context Used
+APY, gas condition, pool health, and risk level
+```
+
+This makes the AI recommendation easier to read and shows that the agent combines on-chain staking state with backend DeFi context.
 
 Important:
 
