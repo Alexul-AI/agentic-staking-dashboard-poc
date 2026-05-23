@@ -190,12 +190,11 @@ export const StakingDashboard = ({
         ) ?? connectors[0];
 
       if (!metaMaskConnector) {
-        if (isMobileBrowser) {
-          window.location.href = METAMASK_MOBILE_DEEPLINK;
-          return;
-        }
-
-        alert("MetaMask connector was not found. Please install MetaMask.");
+        alert(
+          isMobileBrowser
+            ? "MetaMask provider was not found. Open this demo inside the MetaMask mobile app browser and try again."
+            : "MetaMask connector was not found. Please install MetaMask.",
+        );
         return;
       }
 
@@ -218,9 +217,13 @@ export const StakingDashboard = ({
         (message.toLowerCase().includes("provider") ||
           message.toLowerCase().includes("not found"))
       ) {
-        window.location.href = METAMASK_MOBILE_DEEPLINK;
+        alert(
+          "MetaMask provider was not found. Open this demo inside the MetaMask mobile app browser and try again.",
+        );
         return;
       }
+
+      alert(message);
 
       alert(message);
     }
@@ -395,12 +398,25 @@ export const StakingDashboard = ({
                 the MetaMask mobile app browser.
               </p>
 
-              <a
-                href={METAMASK_MOBILE_DEEPLINK}
-                className="mt-3 inline-flex items-center justify-center bg-orange-500/20 hover:bg-orange-500/30 text-orange-100 border border-orange-400/30 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
-              >
-                Open in MetaMask Mobile
-              </a>
+              <div className="mt-3 flex flex-col gap-2">
+                <a
+                  href={METAMASK_MOBILE_DEEPLINK}
+                  className="inline-flex items-center justify-center bg-orange-500/20 hover:bg-orange-500/30 text-orange-100 border border-orange-400/30 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Open in MetaMask Mobile
+                </a>
+
+                <div className="rounded-lg bg-gray-950/50 border border-orange-400/20 p-3">
+                  <p className="text-orange-100/80 text-xs">
+                    If the button opens an error page, open the MetaMask app
+                    manually, go to the built-in Browser, and paste this URL:
+                  </p>
+
+                  <p className="text-orange-100 text-xs mt-2 break-all">
+                    https://agentic-staking-dashboard-poc.vercel.app
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
