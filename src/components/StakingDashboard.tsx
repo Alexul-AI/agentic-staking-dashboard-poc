@@ -14,6 +14,8 @@ import { useStaking } from "../hooks/useStaking";
 import { useDeFiAgent } from "../hooks/useDeFiAgent";
 
 const SEPOLIA_ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
+const LIVE_DEMO_HOST = "agentic-staking-dashboard-poc.vercel.app";
+const METAMASK_MOBILE_DEEPLINK = `https://link.metamask.io/dapp/${LIVE_DEMO_HOST}`;
 
 type TransactionAction =
   | "Stake"
@@ -109,6 +111,17 @@ export const StakingDashboard = ({
   const isWrongNetwork = isConnected && !isSepolia;
   const canExecuteTransaction = isConnected && isSepolia;
 
+  const isMobileBrowser =
+    typeof navigator !== "undefined" &&
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  const hasInjectedEthereumProvider =
+    typeof window !== "undefined" &&
+    Boolean((window as Window & { ethereum?: unknown }).ethereum);
+
+  const shouldShowMobileWalletGuidance =
+    !isConnected && isMobileBrowser && !hasInjectedEthereumProvider;
+
   const canStake =
     canExecuteTransaction && Boolean(stakeAmount) && Number(stakeAmount) > 0;
 
@@ -177,7 +190,12 @@ export const StakingDashboard = ({
         ) ?? connectors[0];
 
       if (!metaMaskConnector) {
-        alert("MetaMask connector was not found.");
+        if (isMobileBrowser) {
+          window.location.href = METAMASK_MOBILE_DEEPLINK;
+          return;
+        }
+
+        alert("MetaMask connector was not found. Please install MetaMask.");
         return;
       }
 
@@ -190,11 +208,21 @@ export const StakingDashboard = ({
     } catch (connectionError) {
       console.error("Wallet connection failed:", connectionError);
 
-      alert(
+      const message =
         connectionError instanceof Error
           ? connectionError.message
-          : "Wallet connection failed. Check browser console.",
-      );
+          : "Wallet connection failed. Check browser console.";
+
+      if (
+        isMobileBrowser &&
+        (message.toLowerCase().includes("provider") ||
+          message.toLowerCase().includes("not found"))
+      ) {
+        window.location.href = METAMASK_MOBILE_DEEPLINK;
+        return;
+      }
+
+      alert(message);
     }
   };
 
@@ -333,6 +361,46 @@ export const StakingDashboard = ({
                 Without a wallet, you can still review the DeFi Market Context
                 and run the AI Auto-Pilot recommendation flow in safe mock mode.
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {shouldShowMobileWalletGuidance && (
+        <div className="mb-6 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl">
+          <div className="flex items-start gap-3">
+            <svg
+              className="w-5 h-5 text-orange-300 flex-shrink-0 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+              />
+            </svg>
+
+            <div className="flex-1">
+              <p className="text-orange-200 font-semibold text-sm">
+                Mobile wallet connection
+              </p>
+
+              <p className="text-orange-100/80 text-sm mt-1">
+                Mobile Chrome or Safari usually cannot connect directly to
+                MetaMask. To use wallet actions on mobile, open this demo inside
+                the MetaMask mobile app browser.
+              </p>
+
+              <a
+                href={METAMASK_MOBILE_DEEPLINK}
+                className="mt-3 inline-flex items-center justify-center bg-orange-500/20 hover:bg-orange-500/30 text-orange-100 border border-orange-400/30 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+              >
+                Open in MetaMask Mobile
+              </a>
             </div>
           </div>
         </div>
