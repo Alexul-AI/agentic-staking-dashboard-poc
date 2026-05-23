@@ -461,6 +461,24 @@ npm run test:contracts
 
 ---
 
+### Mobile Wallet Usage
+
+On mobile, wallet connection should be opened through the MetaMask mobile app browser.
+
+Recommended mobile flow:
+
+```text
+MetaMask app
+  → Explore / Browser
+  → open https://agentic-staking-dashboard-poc.vercel.app
+  → connect wallet
+  → switch to Sepolia if needed
+```
+
+Regular mobile browsers such as Chrome, Safari, or Mi Browser may not expose the injected wallet provider required by wagmi / MetaMask connection.
+
+---
+
 ## Optional AI Proxy Configuration
 
 Copy the example environment file:

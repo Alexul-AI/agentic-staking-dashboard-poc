@@ -77,16 +77,113 @@ The project also includes an optional backend/serverless AI proxy path for futur
 
 ## 5. Demo Preparation
 
-Before starting the demo:
+Before starting the demo, choose one of the available demo modes.
+
+---
+
+### Option A — Local Desktop Demo
+
+Use this option when running the project from VS Code.
 
 1. Open the project locally.
-2. Make sure MetaMask is installed.
+2. Make sure MetaMask is installed in the desktop browser.
 3. Make sure MetaMask is connected to the same wallet used for testing.
 4. Make sure the wallet has Sepolia ETH.
 5. Run the app locally:
 
 ```bash
 npm run dev
+```
+
+6. Open the local development URL:
+
+```text
+http://localhost:5173
+```
+
+7. Make sure the contract address in `src/App.tsx` matches the latest deployed Sepolia contract.
+
+---
+
+### Option B — Public Vercel Demo
+
+Use this option when showing the project to another person.
+
+Open the deployed demo:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
+The public demo can be reviewed without connecting a wallet.
+
+Available without wallet connection:
+
+- Public Demo Mode explanation
+- DeFi Market Context
+- AI Auto-Pilot recommendation flow
+- Sepolia Etherscan contract link
+- General dashboard structure
+
+Requires MetaMask wallet connection:
+
+- Staking ETH
+- Funding the reward pool
+- Claiming rewards
+- Withdrawing staked ETH
+- Switching to Sepolia through the wallet
+
+---
+
+### Desktop Wallet Demo
+
+For full Web3 interaction on desktop:
+
+1. Open the Vercel demo in a desktop browser.
+2. Make sure MetaMask extension is installed.
+3. Connect the wallet.
+4. Switch to Ethereum Sepolia if needed.
+5. Test wallet actions such as Stake, Fund Pool, Claim Rewards, or Withdraw.
+
+Recommended desktop URL:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
+---
+
+### Mobile Wallet Demo
+
+For mobile testing, open the deployed demo inside the MetaMask mobile app browser.
+
+Recommended mobile path:
+
+```text
+MetaMask app
+  → Explore / Browser
+  → paste https://agentic-staking-dashboard-poc.vercel.app
+```
+
+The dApp connection works correctly inside the MetaMask built-in browser because it provides the wallet provider required for Web3 actions.
+
+Regular mobile browsers such as Chrome, Safari, or Mi Browser may not expose the injected MetaMask provider to the page. In those browsers, read-only demo features can still work, but wallet actions may remain unavailable.
+
+If the mobile browser does not connect to MetaMask, use this manual flow:
+
+```text
+1. Open MetaMask mobile app.
+2. Tap Explore / Browser.
+3. Paste the deployed demo URL.
+4. Open the site inside MetaMask.
+5. Connect wallet.
+6. Switch to Sepolia if needed.
+```
+
+Deployed demo URL:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
 ```
 
 6. Open:

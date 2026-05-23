@@ -1038,6 +1038,52 @@ Vercel production deployment
 
 ---
 
+## Iteration 36 — Mobile MetaMask Browser Guidance
+
+Mobile wallet behavior was tested on the deployed Vercel demo.
+
+Finding:
+
+```text
+The dApp connects correctly on mobile when opened inside the MetaMask built-in Browser / Explore tab.
+```
+
+Regular mobile browsers may not expose the injected wallet provider required by wagmi / MetaMask connection.
+
+Updated mobile guidance:
+
+```text
+MetaMask app
+  → Explore / Browser
+  → open deployed Vercel demo URL
+  → connect wallet
+  → use Sepolia network
+```
+
+Deployed demo URL:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
+Purpose:
+
+- improve mobile demo reliability
+- avoid confusing provider-not-found errors
+- explain why regular mobile browsers may not connect directly
+- provide a clear path for mobile reviewers and clients
+- make the public Vercel demo easier to present on both desktop and mobile
+
+Validated behavior:
+
+- Deployed Vercel app opens inside MetaMask Browser
+- Connect Wallet works inside MetaMask Browser
+- Sepolia network flow works
+- Dashboard actions work normally after wallet connection
+- Regular mobile browsers still support read-only demo flows such as DeFi Market Context and AI Auto-Pilot
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -1070,6 +1116,9 @@ The project currently includes:
 - Expanded automated staking contract tests
 - Public demo onboarding UX
 - Separate AI recommendation context display
+- Public Vercel deployment
+- Public demo onboarding UX
+- Mobile MetaMask browser guidance
 
 ---
 
