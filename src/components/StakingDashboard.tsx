@@ -300,6 +300,44 @@ export const StakingDashboard = ({
         )}
       </div>
 
+      {!isConnected && (
+        <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+          <div className="flex items-start gap-3">
+            <svg
+              className="w-5 h-5 text-blue-300 flex-shrink-0 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+
+            <div>
+              <p className="text-blue-200 font-semibold text-sm">
+                Public Demo Mode
+              </p>
+
+              <p className="text-blue-100/80 text-sm mt-1">
+                This dashboard is connected to a Sepolia testnet staking
+                contract. Connect MetaMask to test staking, reward pool funding,
+                claiming, and withdrawing.
+              </p>
+
+              <p className="text-blue-100/70 text-xs mt-2">
+                Without a wallet, you can still review the DeFi Market Context
+                and run the AI Auto-Pilot recommendation flow in safe mock mode.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isWrongNetwork && (
         <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
           <div className="flex items-start gap-3">
@@ -709,6 +747,13 @@ export const StakingDashboard = ({
             )}
           </button>
         </div>
+
+        {!isConnected && (
+          <p className="text-xs text-blue-200/80 mt-3">
+            Wallet actions are disabled until MetaMask is connected. AI
+            Auto-Pilot remains available in demo mode.
+          </p>
+        )}
 
         {isWrongNetwork && (
           <p className="text-xs text-yellow-200/80 mt-3">
