@@ -29,8 +29,25 @@ const fallbackContext: DeFiMarketContext = {
   riskLevel: "LOW",
   liquidityStatus: "SUFFICIENT",
   marketNote:
-    "Fallback mock DeFi context is being used. This is simulated data for portfolio demonstration only.",
+    "Fallback mock DeFi context is being used for public demo mode. This is simulated data for portfolio demonstration only.",
   updatedAt: new Date().toISOString(),
+};
+
+const isValidMarketContext = (value: unknown): value is DeFiMarketContext => {
+  if (!value || typeof value !== "object") return false;
+
+  const candidate = value as Partial<DeFiMarketContext>;
+
+  return (
+    candidate.network === "sepolia" &&
+    typeof candidate.mockApy === "string" &&
+    typeof candidate.gasCondition === "string" &&
+    typeof candidate.poolHealth === "string" &&
+    typeof candidate.riskLevel === "string" &&
+    typeof candidate.liquidityStatus === "string" &&
+    typeof candidate.marketNote === "string" &&
+    typeof candidate.updatedAt === "string"
+  );
 };
 
 export const useDeFiMarketContext = () => {
@@ -47,23 +64,37 @@ export const useDeFiMarketContext = () => {
     setMarketContextError(null);
 
     try {
-      const response = await fetch("/api/defi-market-context");
+      const response = await fetch("/api/defi-market-context", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const contentType = response.headers.get("content-type") ?? "";
+
+      if (!contentType.includes("application/json")) {
+        throw new Error("Market context API did not return JSON.");
+      }
+
       const data = (await response.json()) as MarketContextResponse;
 
-      if (!response.ok || !data.context) {
+      if (!response.ok) {
         throw new Error(data.error ?? "Failed to load DeFi market context.");
+      }
+
+      if (!isValidMarketContext(data.context)) {
+        throw new Error("Market context API returned an invalid payload.");
       }
 
       setMarketContext(data.context);
       return data.context;
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Unknown DeFi market context error.";
+      console.warn("Using fallback DeFi market context:", error);
 
-      console.error("DeFi market context failed:", error);
-      setMarketContextError(message);
+      setMarketContextError(
+        "Live mock context endpoint is unavailable. Using local fallback demo context.",
+      );
 
       setMarketContext(fallbackContext);
       return fallbackContext;

@@ -613,8 +613,8 @@ export const StakingDashboard = ({
         )}
 
         {marketContextError && (
-          <p className="text-yellow-200/80 text-xs mt-3">
-            Market context fallback used: {marketContextError}
+          <p className="text-gray-500 text-xs mt-3">
+            Demo fallback context is active.
           </p>
         )}
       </div>
