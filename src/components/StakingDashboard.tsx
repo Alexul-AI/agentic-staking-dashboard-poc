@@ -15,6 +15,7 @@ import { useDeFiAgent } from "../hooks/useDeFiAgent";
 
 const SEPOLIA_ETHERSCAN_BASE_URL = "https://sepolia.etherscan.io";
 const LIVE_DEMO_HOST = "agentic-staking-dashboard-poc.vercel.app";
+const LIVE_DEMO_URL = `https://${LIVE_DEMO_HOST}`;
 const METAMASK_MOBILE_DEEPLINK = `https://link.metamask.io/dapp/${LIVE_DEMO_HOST}`;
 
 type TransactionAction =
@@ -100,6 +101,7 @@ export const StakingDashboard = ({
   const [stakeAmount, setStakeAmount] = useState("");
   const [rewardFundingAmount, setRewardFundingAmount] = useState("");
   const [lastAction, setLastAction] = useState<TransactionAction | null>(null);
+  const [hasCopiedDemoUrl, setHasCopiedDemoUrl] = useState(false);
 
   const formattedStaked = stakedBalance ? formatEther(stakedBalance) : "0.0";
   const formattedRewards = earnedRewards ? formatEther(earnedRewards) : "0.0";
@@ -181,6 +183,20 @@ export const StakingDashboard = ({
         : txHash
           ? "The latest transaction from this session is available for review on Sepolia Etherscan."
           : "No transaction is currently in progress.";
+
+  const handleCopyDemoUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(LIVE_DEMO_URL);
+      setHasCopiedDemoUrl(true);
+
+      window.setTimeout(() => {
+        setHasCopiedDemoUrl(false);
+      }, 2000);
+    } catch (copyError) {
+      console.error("Failed to copy demo URL:", copyError);
+      alert(`Copy this URL manually: ${LIVE_DEMO_URL}`);
+    }
+  };
 
   const handleConnectWallet = async () => {
     try {
@@ -401,19 +417,30 @@ export const StakingDashboard = ({
               <div className="mt-3 flex flex-col gap-2">
                 <a
                   href={METAMASK_MOBILE_DEEPLINK}
+                  target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center justify-center bg-orange-500/20 hover:bg-orange-500/30 text-orange-100 border border-orange-400/30 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
                 >
-                  Open in MetaMask Mobile
+                  Try opening in MetaMask Mobile
                 </a>
+
+                <button
+                  type="button"
+                  onClick={handleCopyDemoUrl}
+                  className="inline-flex items-center justify-center bg-gray-800 hover:bg-gray-700 text-gray-100 border border-gray-700 rounded-lg px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  {hasCopiedDemoUrl ? "Copied demo URL" : "Copy demo URL"}
+                </button>
 
                 <div className="rounded-lg bg-gray-950/50 border border-orange-400/20 p-3">
                   <p className="text-orange-100/80 text-xs">
-                    If the button opens an error page, open the MetaMask app
-                    manually, go to the built-in Browser, and paste this URL:
+                    If your phone opens Mi Browser or shows a MetaMask error
+                    page, open the MetaMask app manually, go to the built-in
+                    Browser, and paste this URL:
                   </p>
 
                   <p className="text-orange-100 text-xs mt-2 break-all">
-                    https://agentic-staking-dashboard-poc.vercel.app
+                    {LIVE_DEMO_URL}
                   </p>
                 </div>
               </div>
