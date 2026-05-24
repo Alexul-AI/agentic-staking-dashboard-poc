@@ -10,10 +10,43 @@ Focus on:
 - wagmi / viem hook behavior
 - transaction lifecycle
 - reward pool mechanics
+- DeFi market context
 - safe agentic decision logic
+- optional AI proxy architecture
 - human-approved wallet execution
+- B2B readiness artifacts
 
 The project is a portfolio Proof of Concept for AI Operator / AI Solutions Developer work with a Web3 focus.
+
+---
+
+## Current Live Demo
+
+Deployed demo:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
+Desktop usage:
+
+```text
+Chrome / browser
+  → MetaMask extension
+  → Sepolia
+  → connect wallet
+```
+
+Mobile usage:
+
+```text
+MetaMask app
+  → Explore / Browser
+  → open https://agentic-staking-dashboard-poc.vercel.app
+  → connect wallet
+```
+
+Regular mobile browsers such as Chrome, Safari, or Mi Browser may not expose the injected MetaMask provider required by wagmi.
 
 ---
 
@@ -43,11 +76,22 @@ https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 
 ## Current Solidity Contract
 
+The current Solidity contract uses:
+
+- OpenZeppelin `ReentrancyGuard`
+- OpenZeppelin `Ownable`
+- event emissions
+- reward pool funding
+- owner-only reward-rate updates
+
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-contract StakingContract {
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract StakingContract is ReentrancyGuard, Ownable {
     mapping(address => uint256) public stakes;
     mapping(address => uint256) public rewards;
     mapping(address => uint256) public lastUpdate;
@@ -57,31 +101,13 @@ contract StakingContract {
     // 1 = 1% per day
     uint256 public rewardRatePercentPerDay = 1;
 
-    address public owner;
-
-    bool private locked;
-
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardClaimed(address indexed user, uint256 amount);
     event RewardsFunded(address indexed funder, uint256 amount);
     event RewardRateUpdated(uint256 oldRate, uint256 newRate);
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can perform this action");
-        _;
-    }
-
-    modifier nonReentrant() {
-        require(!locked, "Reentrant call detected");
-        locked = true;
-        _;
-        locked = false;
-    }
-
-    constructor() {
-        owner = msg.sender;
-    }
+    constructor() Ownable(msg.sender) {}
 
     function stake() public payable nonReentrant {
         require(msg.value > 0, "Stake amount must be greater than zero");
@@ -152,7 +178,9 @@ contract StakingContract {
         emit RewardsFunded(msg.sender, msg.value);
     }
 
-    function setRewardRate(uint256 newRewardRatePercentPerDay) public onlyOwner {
+    function setRewardRate(
+        uint256 newRewardRatePercentPerDay
+    ) public onlyOwner {
         require(newRewardRatePercentPerDay <= 10, "Reward rate too high");
 
         uint256 oldRate = rewardRatePercentPerDay;
@@ -170,6 +198,20 @@ contract StakingContract {
 ---
 
 ## Current ABI Context
+
+The frontend hook uses the staking contract ABI for:
+
+- `stake`
+- `withdraw`
+- `claimReward`
+- `fundRewards`
+- `getContractBalance`
+- `stakes`
+- `rewards`
+- `totalStaked`
+- `rewardRatePercentPerDay`
+
+Core ABI excerpt:
 
 ```ts
 const STAKING_ABI = [
@@ -235,7 +277,7 @@ The main frontend hook is:
 src/hooks/useStaking.ts
 ```
 
-Current expected hook return shape:
+Expected hook return shape:
 
 ```ts
 interface UseStakingReturn {
@@ -331,6 +373,18 @@ Current model:
 1 = 1% per day
 ```
 
+The owner can update it through:
+
+```solidity
+setRewardRate(uint256 newRewardRatePercentPerDay)
+```
+
+The current max is:
+
+```text
+10 = 10% per day
+```
+
 ---
 
 ### `contractBalance`
@@ -372,11 +426,49 @@ event RewardRateUpdated(uint256 oldRate, uint256 newRate);
 
 Purpose:
 
-- Improve Etherscan readability
-- Support future automated tests
-- Make contract activity easier to track
-- Prepare the contract for more production-like Web3 monitoring
-- Make future analytics / indexing easier
+- improve Etherscan readability
+- support automated tests
+- make contract activity easier to track
+- prepare the contract for more production-like Web3 monitoring
+- support future analytics / indexing
+- support event-driven automation workflows
+
+---
+
+## Access Control Decision
+
+The contract currently uses OpenZeppelin `Ownable`.
+
+Decision:
+
+```text
+Keep Ownable for the current PoC.
+Do not add role-based AccessControl yet.
+```
+
+Reasoning:
+
+- the contract currently has one privileged operation: `setRewardRate`
+- a single-owner model is sufficient for this portfolio PoC
+- adding role-based `AccessControl` now would increase complexity without meaningful product value
+- `AccessControl` should be considered later only if the protocol introduces multiple privileged roles
+
+Possible future roles:
+
+```text
+REWARD_MANAGER_ROLE
+PAUSER_ROLE
+TREASURY_ROLE
+BACKEND_OPERATOR_ROLE
+DEFAULT_ADMIN_ROLE
+```
+
+Current decision:
+
+```text
+Ownable now.
+AccessControl later only if multiple privileged roles are introduced.
+```
 
 ---
 
@@ -399,9 +491,79 @@ The dashboard currently supports:
 - last transaction hash display
 - Sepolia Etherscan contract link
 - Sepolia Etherscan transaction link
+- public demo onboarding UX
+- mobile MetaMask browser guidance
+- DeFi market context block
 - safe mock DeFi agent decision layer
+- separate AI recommendation context display
 - optional backend/serverless AI proxy path
 - human-approved execution through MetaMask
+
+---
+
+## Public Demo Behavior
+
+Without a connected wallet:
+
+- public demo mode message is visible
+- wallet write actions are disabled
+- DeFi Market Context can be refreshed
+- AI Auto-Pilot can run in safe mock mode
+- Sepolia Etherscan contract link remains visible
+
+Wallet actions require MetaMask:
+
+- `Stake`
+- `Fund Pool`
+- `Claim Rewards`
+- `Withdraw All`
+
+Mobile wallet flow:
+
+```text
+MetaMask app
+  → Explore / Browser
+  → open https://agentic-staking-dashboard-poc.vercel.app
+  → connect wallet
+  → switch to Sepolia if needed
+```
+
+---
+
+## Backend DeFi Market Context
+
+The project includes a backend mock context endpoint:
+
+```text
+api/defi-market-context.ts
+```
+
+Frontend hook:
+
+```text
+src/hooks/useDeFiMarketContext.ts
+```
+
+The endpoint returns simulated DeFi market context:
+
+```text
+mockApy
+gasCondition
+poolHealth
+riskLevel
+liquidityStatus
+marketNote
+updatedAt
+```
+
+Purpose:
+
+- make the agent recommendation layer more product-like
+- demonstrate backend-driven DeFi context
+- simulate APY, gas, pool health, risk, and liquidity signals
+- help explain the project as an Agentic DeFi Dashboard
+
+Current context is simulated and portfolio-focused. It is not live market data and is not financial advice.
 
 ---
 
@@ -444,8 +606,21 @@ export interface AgentDecision {
   recommendedNextStep: string;
   executionHint: string;
   riskNote: string;
+  contextSummary?: string;
 }
 ```
+
+The recommendation UI separates:
+
+```text
+Reasoning
+Context Used
+Recommended Next Step
+Execution
+Risk Note
+```
+
+This avoids repeating the same backend market context across multiple explanation fields.
 
 The AI layer must not:
 
@@ -492,6 +667,32 @@ Default portfolio-safe mode remains:
 VITE_USE_AI_PROXY=false
 ```
 
+The optional AI proxy includes:
+
+- `POST` method enforcement
+- supported network validation
+- ETH amount string validation
+- optional wallet address validation
+- optional contract address validation
+- optional transaction hash validation
+- optional market context sanitization
+- AI response normalization
+- safe fallback decision
+- basic in-memory rate limiting
+
+Current rate limit:
+
+```text
+20 requests / 60 seconds / client
+```
+
+Production note:
+
+```text
+The current rate limiter is suitable for a portfolio PoC only.
+A production deployment should use Redis, Upstash, edge rate limiting, or an API gateway.
+```
+
 ---
 
 ## Security Boundaries
@@ -499,32 +700,189 @@ VITE_USE_AI_PROXY=false
 Current safety boundaries:
 
 - Sepolia testnet only
-- No private keys in frontend
-- No seed phrase handling
+- no private keys in frontend
+- no seed phrase handling
 - MetaMask confirmation required for all write actions
-- No autonomous wallet execution
-- Safe mock agent by default
-- Optional AI proxy keeps API keys server-side
+- no autonomous wallet execution
+- safe mock agent by default
+- optional AI proxy keeps API keys server-side
+- AI proxy validates and sanitizes incoming requests
+- AI proxy normalizes model output
+- safe fallback to `HOLD`
 - Etherscan links included for transparency
-- Custom `nonReentrant` guard
+- OpenZeppelin `ReentrancyGuard`
+- OpenZeppelin `Ownable`
 - Checks-Effects-Interactions pattern
-- Owner-only reward rate updates
-- Event emissions for contract actions
+- owner-only reward rate updates
+- event emissions for contract actions
+- Hardhat automated contract tests
+- public demo mode explains wallet requirements
+- mobile MetaMask browser guidance documented
 
 Known production limitations:
 
-- No professional audit
-- No OpenZeppelin-based security patterns yet
-- No automated test suite yet
-- No production-grade access control yet
-- No backend request validation / rate limiting yet
-- No real yield strategy
-- No transaction history persistence
-- No production risk engine
+- no professional audit
+- no real yield strategy
+- no transaction history persistence
+- no production risk engine
+- no production-grade persistent rate limiting
+- no live DeFi market data source
+- no production event indexer
+- no frontend/component tests yet
+- no reentrancy-oriented attack simulation test yet
 
 ---
 
-# Iteration Log
+## Automated Test Coverage
+
+Test framework:
+
+```text
+Hardhat
+```
+
+Test file:
+
+```text
+test/StakingContract.test.ts
+```
+
+Current test coverage includes:
+
+- deployment owner
+- staking
+- `Staked` event
+- reward pool funding
+- `RewardsFunded` event
+- withdrawal
+- `Withdrawn` event
+- reward claiming
+- `RewardClaimed` event
+- insufficient reward pool rejection
+- non-owner reward rate rejection
+- owner reward rate update
+- `RewardRateUpdated` event
+- invalid reward rate rejection
+- zero-value stake rejection
+- zero-value reward funding rejection
+- withdraw without stake rejection
+- multi-user staking state
+
+Command:
+
+```bash
+npm run test:contracts
+```
+
+---
+
+## Project Automation
+
+The repository includes a `Makefile` for simple operational commands.
+
+Available commands:
+
+```text
+make install
+make dev
+make build
+make test-contracts
+make verify
+make status
+make clean
+```
+
+Main verification command:
+
+```bash
+make verify
+```
+
+Equivalent npm commands:
+
+```bash
+npm run build
+npm run test:contracts
+```
+
+Note:
+
+```text
+On Windows, make may require additional installation.
+The npm commands remain the primary cross-platform commands.
+```
+
+---
+
+## B2B Readiness Assets
+
+The project includes B2B-oriented documentation:
+
+```text
+docs/AI_EVALUATION_GUARDRAILS.md
+docs/EVENT_MONITORING_AUTOMATION.md
+docs/B2B_PROJECT_PROPOSAL.md
+```
+
+Purpose:
+
+- define AI recommendation evaluation guardrails
+- document fallback behavior and response validation
+- describe AI cost / token-budget control
+- explain how smart contract events can trigger business automation
+- show how event logs can support notifications, analytics, and AI-generated reports
+- provide a reusable B2B proposal template for Web3 client work
+- make the project easier to review as a client-ready delivery framework
+
+B2B positioning:
+
+```text
+AI Operator
++
+Web3 dashboard delivery
++
+smart contract integration
++
+AI recommendation guardrails
++
+event-driven automation
++
+client-ready proposal structure
+```
+
+---
+
+## Main Documentation Files
+
+Core documentation:
+
+```text
+README.md
+docs/ARCHITECTURE.md
+docs/CASE_STUDY.md
+docs/DEMO_WALKTHROUGH.md
+docs/SECURE_AI_PROXY.md
+docs/SECURITY_NOTES.md
+docs/AI_EVALUATION_GUARDRAILS.md
+docs/EVENT_MONITORING_AUTOMATION.md
+docs/B2B_PROJECT_PROPOSAL.md
+prompts/iteration-log.md
+prompts/system-instruction.md
+prompts/defi-context.md
+```
+
+---
+
+# Iteration Log Summary
+
+This section summarizes the main implementation history.  
+The full iteration history is maintained in:
+
+```text
+prompts/iteration-log.md
+```
+
+---
 
 ## Iteration 1 — Initial Hook Generation
 
@@ -541,172 +899,96 @@ The hook included:
 
 ---
 
-## Issue 1 — Deprecated wagmi API
+## Iteration 2 — wagmi / viem Modernization
 
 The initial generated code used deprecated wagmi patterns.
 
-### Fix
+Fixes included:
 
-Updated the hook to use current wagmi patterns and replaced deprecated usage.
-
----
-
-## Issue 2 — React Hooks ESLint Warning
-
-The generated code called `setState` directly inside an effect.
-
-### Fix
-
-Refactored error handling so transaction receipt errors are derived from existing hook state instead of being set synchronously inside `useEffect`.
+- updated wagmi hook usage
+- safer transaction handling
+- improved hook dependencies
+- avoided synchronous `setState` inside effects
 
 ---
 
-## Issue 3 — Missing Hook Dependencies
-
-React Hooks ESLint reported missing dependencies inside `useCallback`.
-
-### Fix
-
-Wrapped transaction helpers in `useCallback` and added the correct dependency arrays.
-
----
-
-## Issue 4 — UI Integration
+## Iteration 3 — UI Integration
 
 Generated a Tailwind CSS staking dashboard component.
 
-The component includes:
+The component included:
 
 - staking input
 - staked balance display
 - earned rewards display
 - claim rewards action
 - withdraw action
-- loading spinner
+- loading state
 - error display
 
 ---
 
-## Issue 5 — Tailwind CSS Not Applied
+## Iteration 4 — Tailwind / Vite Setup
 
-The first UI preview appeared broken because Tailwind CSS was not correctly configured.
-
-### Fix
-
-Installed and configured Tailwind CSS for Vite and updated the global CSS entry point.
+Tailwind CSS was configured for the Vite project and global CSS entry points were updated.
 
 ---
 
-## Issue 6 — Initial Contract Address
-
-The frontend required a deployed smart contract address.
-
-### Fix
+## Iteration 5 — Sepolia Deployment
 
 The Solidity staking contract was deployed through Remix IDE to the Ethereum Sepolia testnet.
 
-Initial deployed contract is now superseded by later redeploys.
+The initial deployed contract was later superseded by redeployments that added:
 
----
+- event emissions
+- OpenZeppelin security patterns
+- updated contract address
 
-## Issue 7 — Missing Wallet Connection Flow
-
-The staking dashboard could call the contract hook, but there was no visible wallet connection button.
-
-### Fix
-
-Added a MetaMask connection button using wagmi connection hooks and displayed the connected wallet address in the dashboard.
-
----
-
-## Issue 8 — Wallet Connector Conflict
-
-During wallet connection testing, multiple browser wallet extensions competed for the injected provider.
-
-Observed behavior:
-
-- Trust Wallet opened instead of MetaMask.
-- Coinbase Wallet opened after Trust Wallet was removed.
-- MetaMask was available in the browser, but the connector flow had to be debugged.
-
-### Fix
-
-Removed or disabled competing wallet extensions and configured the app to target MetaMask through the injected wallet connector.
-
----
-
-## Issue 9 — MetaMask SDK Connector Import Error
-
-Using the direct MetaMask connector caused a Vite runtime import error related to a missing MetaMask SDK dependency.
-
-### Fix
-
-Replaced the direct MetaMask connector with an injected connector targeting MetaMask.
-
----
-
-## Issue 10 — Successful MetaMask Connection
-
-The frontend successfully opened the MetaMask connection request from `localhost:5173`.
-
-Result:
-
-- MetaMask connection popup appeared.
-- The wallet was connected to the dashboard.
-- The UI displayed the shortened wallet address.
-
----
-
-## Issue 11 — Successful End-to-End Stake Flow
-
-The React frontend successfully connected to MetaMask, submitted a stake transaction, waited for confirmation, and updated the on-chain staking balance in the UI.
-
-Verified flow:
+Current active contract:
 
 ```text
-React UI
-  → wagmi / viem hook
-  → MetaMask transaction request
-  → Sepolia transaction
-  → deployed Solidity contract
-  → confirmed transaction
-  → updated dashboard state
+0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
-Tested stake amount:
+---
+
+## Iteration 6 — MetaMask Wallet Flow
+
+Added and debugged MetaMask connection flow.
+
+Observed issues:
+
+- competing wallet extensions
+- injected provider conflicts
+- Trust Wallet / Coinbase Wallet opening instead of MetaMask
+- MetaMask SDK connector import issues
+
+Final approach:
 
 ```text
-0.001 SepoliaETH
+injected connector targeting MetaMask
 ```
 
-Result:
+---
 
-- MetaMask transaction request appeared.
-- Transaction was confirmed.
-- `Staked ETH` updated to `0.001`.
+## Iteration 7 — End-to-End Stake and Withdraw Flow
+
+Verified:
+
+- MetaMask connection
+- stake transaction
+- Sepolia confirmation
+- dashboard balance update
+- withdraw transaction
+- on-chain state refresh
 
 ---
 
-## Issue 12 — Successful Withdraw Flow
+## Iteration 8 — Etherscan Transparency
 
-The withdraw flow was tested after staking.
+Added:
 
-Result:
-
-- `Withdraw All` triggered a MetaMask transaction.
-- Staked balance returned to `0.0`.
-- Rewards value became visible.
-- The dashboard continued reading on-chain state correctly.
-
----
-
-## Iteration 13 — Etherscan Transaction Links
-
-Added Sepolia Etherscan transparency.
-
-The dashboard now shows:
-
-- contract address link
+- Sepolia contract link
 - last transaction link
 - transaction hash preview
 
@@ -718,15 +1000,16 @@ Purpose:
 
 ---
 
-## Iteration 14 — Safe Mock DeFi Agent
+## Iteration 9 — Safe Mock DeFi Agent
 
-Added a local mock DeFi agent decision layer.
+Added local mock DeFi agent decision layer.
 
 The agent returns:
 
 - action
 - confidence
 - reasoning
+- context summary
 - recommended next step
 - execution hint
 - risk note
@@ -735,55 +1018,42 @@ Execution remains human-approved through MetaMask.
 
 ---
 
-## Iteration 15 — Explainable Agent Recommendation UX
+## Iteration 10 — Explainable Agent Recommendation UX
 
-Improved the AI Auto-Pilot output so the dashboard clearly displays:
+Improved AI Auto-Pilot output so the dashboard clearly displays:
 
 - AI Action
 - Confidence
 - Reasoning
+- Context Used
 - Recommended Next Step
 - Execution
 - Risk Note
 
-This transformed the agent from a simple action suggestion into an explainable decision-support layer.
+---
+
+## Iteration 11 — Reentrancy Protection
+
+The staking contract was first hardened with a custom `nonReentrant` guard and later upgraded to OpenZeppelin `ReentrancyGuard`.
 
 ---
 
-## Iteration 16 — Reentrancy Guard
-
-The staking contract was hardened with a custom `nonReentrant` guard.
-
-Reason:
-
-- ETH transfers use low-level `.call`
-- `.call` can pass execution control to receiver contracts
-- `nonReentrant` reduces reentrancy risk
-
-The contract also follows the Checks-Effects-Interactions pattern.
-
----
-
-## Iteration 17 — Sepolia Network Guard
+## Iteration 12 — Sepolia Network Guard
 
 Added frontend network protection.
 
 The dashboard now:
 
 - detects wrong EVM network
-- shows a wrong-network warning
+- shows wrong-network warning
 - disables write actions on unsupported networks
 - provides a `Switch to Sepolia` action
 
-This improves dApp safety and wallet UX.
-
 ---
 
-## Iteration 18 — Transaction Status UX
+## Iteration 13 — Transaction Status UX
 
-Added a transaction lifecycle status panel.
-
-The dashboard now explains:
+Added transaction lifecycle status panel:
 
 ```text
 Waiting for wallet confirmation
@@ -792,28 +1062,24 @@ Waiting for wallet confirmation
   → Etherscan review available
 ```
 
-This makes MetaMask and blockchain confirmation states clearer to the user.
-
 ---
 
-## Iteration 19 — Reward Pool UX
+## Iteration 14 — Reward Pool UX
 
 Added reward pool visibility and funding flow.
 
-The dashboard now supports:
+The dashboard supports:
 
 - contract balance display
 - reward funding input
 - `Fund Pool` transaction action
 - warning when rewards may exceed contract liquidity
 
-This clarifies the difference between earned rewards and available contract liquidity.
-
 ---
 
-## Iteration 20 — Secure AI Proxy Architecture
+## Iteration 15 — Secure AI Proxy Architecture
 
-Documented and implemented an optional backend/serverless AI proxy path.
+Documented and implemented optional backend/serverless AI proxy path.
 
 Default:
 
@@ -832,72 +1098,198 @@ React Frontend
   → User confirms through MetaMask
 ```
 
-The API key remains server-side.
-
 ---
 
-## Iteration 21 — Staking Contract Events
+## Iteration 16 — Staking Contract Events
 
-The staking smart contract was updated to emit events for key contract actions.
-
-Added events:
+The staking smart contract was updated to emit events:
 
 ```text
-Staked(address indexed user, uint256 amount)
-Withdrawn(address indexed user, uint256 amount)
-RewardClaimed(address indexed user, uint256 amount)
-RewardsFunded(address indexed funder, uint256 amount)
-RewardRateUpdated(uint256 oldRate, uint256 newRate)
+Staked
+Withdrawn
+RewardClaimed
+RewardsFunded
+RewardRateUpdated
 ```
 
 Purpose:
 
-- Improve Etherscan readability
-- Support future automated tests
-- Make contract activity easier to track
-- Prepare the contract for more production-like Web3 monitoring
+- improve Etherscan readability
+- support automated tests
+- prepare for event-driven monitoring
 
-The contract was redeployed to Ethereum Sepolia after adding events.
+---
 
-Updated deployed contract:
+## Iteration 17 — OpenZeppelin Security Patterns
 
-```text
-0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
-```
-
-Explorer:
+The contract was updated to use:
 
 ```text
-https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
+OpenZeppelin ReentrancyGuard
+OpenZeppelin Ownable
 ```
 
-Validated flows after redeploy:
+Decision:
 
-- Stake transaction
-- Reward pool funding transaction
-- Withdraw transaction
-- Etherscan transaction review
-- Event logs visible on Sepolia Etherscan
+```text
+Ownable is sufficient for the current PoC.
+AccessControl should be considered only if multiple privileged roles are introduced.
+```
+
+---
+
+## Iteration 18 — Backend DeFi Mock Context API
+
+Added backend mock context endpoint:
+
+```text
+api/defi-market-context.ts
+```
+
+Added frontend hook:
+
+```text
+src/hooks/useDeFiMarketContext.ts
+```
+
+The endpoint returns simulated:
+
+- APY
+- gas condition
+- pool health
+- risk level
+- liquidity status
+- market note
+
+---
+
+## Iteration 19 — AI Proxy Validation and Rate Limiting
+
+The optional AI proxy was updated with:
+
+- request validation
+- market context sanitization
+- AI response normalization
+- fallback to `HOLD`
+- basic in-memory rate limiting
+
+---
+
+## Iteration 20 — Automated Contract Tests
+
+Added Hardhat contract tests for:
+
+- staking
+- withdrawal
+- reward claiming
+- reward pool funding
+- events
+- Ownable access control
+- invalid input rejection
+- insufficient reward pool
+- multi-user staking state
+
+---
+
+## Iteration 21 — Vercel Deployment
+
+The project was deployed to Vercel:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
+The public demo supports:
+
+- read-only demo mode without wallet
+- MetaMask connection
+- Sepolia network guard
+- AI Auto-Pilot
+- DeFi Market Context
+- Etherscan proof links
+
+---
+
+## Iteration 22 — Public Demo and Mobile UX
+
+Added:
+
+- public demo onboarding message
+- mobile MetaMask browser guidance
+- manual fallback for mobile users
+- separate AI context display
+
+Validated mobile path:
+
+```text
+MetaMask app
+  → Explore / Browser
+  → open Vercel demo
+  → connect wallet
+```
+
+---
+
+## Iteration 23 — B2B Readiness Layer
+
+Added B2B readiness documentation:
+
+```text
+docs/AI_EVALUATION_GUARDRAILS.md
+docs/EVENT_MONITORING_AUTOMATION.md
+docs/B2B_PROJECT_PROPOSAL.md
+```
+
+Added project automation:
+
+```text
+Makefile
+```
+
+Purpose:
+
+- frame the project as a client-ready delivery framework
+- show AI evaluation and fallback thinking
+- show event-driven automation architecture
+- provide a commercial proposal template
+- make the project easier to verify operationally
 
 ---
 
 ## Current Status
 
-The project is working on Ethereum Sepolia with:
+The project is working as a deployed Sepolia/Vercel portfolio PoC with:
 
-- deployed staking smart contract
-- event emissions
+- deployed Sepolia staking smart contract
+- Vercel live demo
 - MetaMask connection
+- mobile MetaMask browser guidance
 - Sepolia network guard
-- stake / withdraw / claim flows
+- staking / withdrawal / reward claiming
 - reward pool funding
-- transaction status UX
-- Etherscan links
+- reward pool visibility
+- transaction lifecycle status
+- Etherscan contract and transaction links
+- event emissions
+- OpenZeppelin `ReentrancyGuard`
+- OpenZeppelin `Ownable`
+- documented access-control decision
+- backend DeFi mock context API
+- DeFi market context dashboard UI
 - safe mock DeFi agent
 - optional serverless AI proxy implementation
+- AI proxy validation and rate limiting
+- separate AI recommendation context display
+- Hardhat automated contract tests
 - architecture documentation
+- demo walkthrough
 - portfolio case study
 - security notes
+- secure AI proxy architecture
+- AI evaluation guardrails
+- event monitoring automation plan
+- B2B project proposal template
+- project automation Makefile
 
 Current deployed contract:
 
@@ -905,12 +1297,19 @@ Current deployed contract:
 0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
 ```
 
+Live demo:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
 ---
 
 ## Next Steps
 
-1. Add automated tests.
-2. Add OpenZeppelin-based security patterns.
-3. Add production-grade access control.
-4. Add backend request validation and rate limiting for the optional AI proxy.
-5. Prepare LinkedIn / portfolio post.
+1. Prepare LinkedIn / portfolio post.
+2. Add frontend/component tests for dashboard UX.
+3. Add reentrancy-oriented attack simulation tests.
+4. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.
+5. Add transaction history persistence.
+6. Consider live DeFi market data integration.

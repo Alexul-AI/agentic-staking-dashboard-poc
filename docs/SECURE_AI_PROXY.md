@@ -14,6 +14,8 @@ The main principle:
 Never expose AI API keys directly in frontend code.
 ```
 
+The AI layer is designed for decision support only. It must not execute wallet transactions or control user funds.
+
 ---
 
 ## 2. Current Implementation Status
@@ -41,6 +43,15 @@ to call the optional proxy endpoint.
 The default portfolio-safe mode remains the local mock agent.
 
 The optional proxy implementation is included to show a secure architecture path, not to make the dashboard fully autonomous.
+
+Current implementation status:
+
+- Local mock DeFi agent is the default mode.
+- Optional backend/serverless AI proxy file exists.
+- `.env.example` documents the required environment variables.
+- AI API keys are not exposed in frontend code.
+- The AI proxy is not required for the default local demo.
+- Blockchain execution remains user-approved through MetaMask.
 
 ---
 
@@ -108,6 +119,8 @@ Blockchain
 
 This keeps the AI layer separate from wallet execution.
 
+The AI can support reasoning, explanation, and recommendation formatting, but it must not have a direct path to blockchain execution.
+
 ---
 
 ## 5. Optional Implementation File
@@ -131,6 +144,26 @@ The proxy is designed to return the same decision shape as the local mock agent:
   "executionHint": "No wallet transaction is required for HOLD.",
   "riskNote": "This recommendation does not evaluate market or smart contract risk."
 }
+```
+
+The proxy also supports backend-provided mock DeFi context, such as:
+
+```text
+mockApy
+gasCondition
+poolHealth
+riskLevel
+liquidityStatus
+marketNote
+```
+
+This allows the AI recommendation layer to combine:
+
+```text
+on-chain staking state
++
+backend DeFi context
+→ structured recommendation
 ```
 
 ---
@@ -170,6 +203,20 @@ The `.env.example` file is safe to commit.
 
 The real `.env` file must not be committed.
 
+Recommended deployment rule:
+
+```text
+Set GEMINI_API_KEY only in the hosting provider's server-side environment settings.
+```
+
+For example:
+
+```text
+Vercel Project Settings
+  → Environment Variables
+  → GEMINI_API_KEY
+```
+
 ---
 
 ## 7. Data Sent to the AI Proxy
@@ -186,7 +233,15 @@ Example request payload:
   "stakedBalanceEth": "0.001",
   "earnedRewardsEth": "0.00000012",
   "contractBalanceEth": "0.003",
-  "lastTransactionHash": "0x..."
+  "lastTransactionHash": "0x...",
+  "marketContext": {
+    "mockApy": "4.2%",
+    "gasCondition": "LOW",
+    "poolHealth": "HEALTHY",
+    "riskLevel": "LOW",
+    "liquidityStatus": "SUFFICIENT",
+    "marketNote": "Mock DeFi context indicates stable staking conditions."
+  }
 }
 ```
 
@@ -199,6 +254,10 @@ The frontend should not send:
 - Unnecessary identity details
 - Browser cookies
 - Authentication tokens unrelated to the request
+- Full browser state
+- Full contract source code on every request
+
+Only minimal structured context should be sent.
 
 ---
 
@@ -270,87 +329,11 @@ Example fallback:
 
 This keeps failures safe.
 
----
-
-## 10. Human-Approved Execution
-
-The AI proxy should never directly execute wallet transactions.
-
-The safe execution pattern remains:
-
-```text
-AI recommends
-  → User reviews
-  → User clicks a dashboard action
-  → MetaMask opens
-  → User confirms or rejects
-  → Blockchain executes
-```
-
-This keeps the system:
-
-- Human-approved
-- Explainable
-- Auditable
-- Safer than fully autonomous wallet execution
-
-The AI layer should support decision-making, not control funds.
+Fallback must never become an executable transaction.
 
 ---
 
-## 11. Backend Responsibilities
-
-The backend / serverless proxy should:
-
-- Store AI API keys securely
-- Receive limited staking state from the frontend
-- Call the AI model
-- Enforce strict output format
-- Validate supported actions
-- Normalize model responses
-- Return only safe recommendation data to the frontend
-- Avoid executing blockchain transactions directly
-- Avoid storing wallet secrets
-- Avoid requesting private keys or seed phrases
-- Validate incoming request body
-- Apply rate limiting
-- Sanitize market context input
-
----
-
-## 12. Frontend Responsibilities
-
-The frontend should:
-
-- Collect visible staking state
-- Send only necessary data to the proxy
-- Display the AI recommendation
-- Show reasoning, confidence, next step, execution hint, and risk note
-- Keep wallet actions manual
-- Require MetaMask confirmation for every transaction
-- Show Etherscan links for transparency
-- Keep the mock-agent mode available as a safe default
-
----
-
-## 13. Security Boundaries
-
-The secure AI proxy architecture should preserve the following boundaries:
-
-- No API keys in frontend code
-- No private keys in backend code
-- No seed phrase handling
-- No autonomous wallet execution
-- No direct AI-to-blockchain transaction path
-- No financial advice claims
-- No production yield strategy without proper risk controls
-- All write actions remain user-confirmed through MetaMask
-
-The AI proxy may recommend an action, but it must not execute that action.
-
----
-
-## 14 Request Validation and Rate Limiting
+## 10. Request Validation and Rate Limiting
 
 The optional AI proxy implementation includes request validation before calling the AI model.
 
@@ -390,7 +373,128 @@ Invalid request or invalid AI response
   → no wallet transaction prepared
 ```
 
-## 15. Local Development Notes
+---
+
+## 11. Human-Approved Execution
+
+The AI proxy should never directly execute wallet transactions.
+
+The safe execution pattern remains:
+
+```text
+AI recommends
+  → User reviews
+  → User clicks a dashboard action
+  → MetaMask opens
+  → User confirms or rejects
+  → Blockchain executes
+```
+
+This keeps the system:
+
+- Human-approved
+- Explainable
+- Auditable
+- Safer than fully autonomous wallet execution
+
+The AI layer should support decision-making, not control funds.
+
+---
+
+## 12. Backend Responsibilities
+
+The backend / serverless proxy should:
+
+- Store AI API keys securely
+- Receive limited staking state from the frontend
+- Call the AI model
+- Enforce strict output format
+- Validate supported actions
+- Normalize model responses
+- Return only safe recommendation data to the frontend
+- Avoid executing blockchain transactions directly
+- Avoid storing wallet secrets
+- Avoid requesting private keys or seed phrases
+- Validate incoming request body
+- Apply rate limiting
+- Sanitize market context input
+- Return safe fallback responses when something fails
+
+The backend should remain a recommendation boundary, not a wallet execution layer.
+
+---
+
+## 13. Frontend Responsibilities
+
+The frontend should:
+
+- Collect visible staking state
+- Send only necessary data to the proxy
+- Display the AI recommendation
+- Show reasoning, confidence, context used, next step, execution hint, and risk note
+- Keep wallet actions manual
+- Require MetaMask confirmation for every transaction
+- Show Etherscan links for transparency
+- Keep the mock-agent mode available as a safe default
+- Provide public demo mode for users without a connected wallet
+- Provide mobile MetaMask browser guidance
+
+The frontend should not:
+
+- Store AI API keys
+- Store private keys
+- Store seed phrases
+- Execute transactions automatically
+- Hide transaction destination details from the user
+
+---
+
+## 14. Security Boundaries
+
+The secure AI proxy architecture should preserve the following boundaries:
+
+- No API keys in frontend code
+- No private keys in backend code
+- No seed phrase handling
+- No autonomous wallet execution
+- No direct AI-to-blockchain transaction path
+- No financial advice claims
+- No production yield strategy without proper risk controls
+- All write actions remain user-confirmed through MetaMask
+
+The AI proxy may recommend an action, but it must not execute that action.
+
+---
+
+## 15. AI Evaluation Guardrails
+
+The AI proxy should be evaluated with explicit guardrails.
+
+The detailed evaluation and fallback plan is documented here:
+
+```text
+docs/AI_EVALUATION_GUARDRAILS.md
+```
+
+The key evaluation principle:
+
+```text
+AI recommendations must be checked against deterministic safety rules.
+```
+
+Examples:
+
+- If rewards are too small, prefer `HOLD`.
+- If gas condition is high, discourage unnecessary transactions.
+- If the reward pool is underfunded, do not recommend claiming rewards without warning.
+- If risk level is high, require a strong risk note.
+- If AI output is invalid, fallback to `HOLD`.
+
+The AI recommendation layer should be evaluated as a decision-support system, not as an autonomous trading system.
+
+---
+
+## 16. Local Development Notes
 
 In a plain Vite development server, files under `api/` are not automatically executed as serverless functions.
 
@@ -411,9 +515,11 @@ VITE_USE_AI_PROXY=false
 
 This keeps the project running safely without requiring a backend or real AI API key.
 
+The local mock agent remains the safest default for development, demos, and GitHub review.
+
 ---
 
-## 16. Future Implementation Options
+## 17. Future Implementation Options
 
 Possible implementation options:
 
@@ -428,9 +534,20 @@ For this portfolio PoC, the current local mock agent is intentionally kept as th
 
 The optional proxy implementation is included as the recommended path for a future production-style AI integration.
 
+A production implementation should also include:
+
+- persistent rate limiting
+- structured logs
+- monitoring
+- AI response audit trail
+- request validation tests
+- fallback tests
+- API cost tracking
+- stricter access rules if user accounts are added
+
 ---
 
-## 17. AI Operator Value
+## 18. AI Operator Value
 
 This architecture demonstrates AI Operator judgment.
 
@@ -453,19 +570,11 @@ This supports a professional positioning around:
 - Human-in-the-loop execution
 - Crypto-native product workflows
 - Responsible AI-assisted DeFi UX
+- B2B-ready AI safety planning
 
 ---
 
-## 18. Current Status
-
-Current implementation status:
-
-- Local mock DeFi agent is the default mode.
-- Optional backend/serverless AI proxy file exists.
-- `.env.example` documents the required environment variables.
-- AI API keys are not exposed in frontend code.
-- The AI proxy is not required for the default local demo.
-- Blockchain execution remains user-approved through MetaMask.
+## 19. Production Deployment Notes
 
 Recommended next step for production-style deployment:
 
@@ -474,3 +583,40 @@ Deploy the frontend and proxy to a serverless environment,
 store GEMINI_API_KEY as a server-side environment variable,
 and keep VITE_USE_AI_PROXY=true only in that deployed environment.
 ```
+
+Production deployment should also include:
+
+- server-side secret management
+- persistent rate limiting
+- request validation tests
+- fallback behavior tests
+- monitoring and alerting
+- API cost monitoring
+- error logging
+- clear user-facing disclaimers
+- human-confirmed wallet execution
+
+The current Vercel public demo can remain in safe mock mode:
+
+```env
+VITE_USE_AI_PROXY=false
+```
+
+This keeps the public demo safe, stable, and free from external AI API dependency.
+
+---
+
+## 20. Summary
+
+The secure AI proxy architecture shows how the project can evolve from a safe local mock agent into a production-style AI-assisted Web3 system.
+
+The key boundaries remain:
+
+```text
+AI recommends.
+Rules validate.
+User confirms.
+Wallet executes.
+```
+
+This preserves user control while still allowing the dashboard to provide useful AI-assisted explanations and recommendations.

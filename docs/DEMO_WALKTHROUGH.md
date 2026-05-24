@@ -14,6 +14,8 @@ Solidity smart contract
   → MetaMask wallet flow
   → Sepolia blockchain transactions
   → Etherscan transparency
+  → Reward pool visibility
+  → Backend DeFi mock context
   → Mock DeFi agent recommendation
   → Human-approved execution
 ```
@@ -22,7 +24,7 @@ Solidity smart contract
 
 ## 2. One-Sentence Explanation
 
-This project is a portfolio PoC showing how an AI Operator can turn smart contract logic into a working Web3 dashboard with wallet interaction, transaction transparency, reward pool visibility, and an explainable DeFi recommendation layer.
+This project is a portfolio PoC showing how an AI Operator can turn smart contract logic into a working Web3 dashboard with wallet interaction, transaction transparency, reward pool visibility, backend DeFi context, and an explainable DeFi recommendation layer.
 
 ---
 
@@ -32,11 +34,15 @@ The following parts are real and working:
 
 - Deployed Solidity staking contract on Ethereum Sepolia
 - React / TypeScript dashboard
+- Public Vercel deployment
 - MetaMask wallet connection
+- Desktop MetaMask extension flow
+- Mobile MetaMask built-in browser flow
 - Sepolia network guard
 - Stake transaction
 - Withdraw transaction
 - Reward pool funding transaction
+- Reward claiming flow
 - Contract balance / reward pool display
 - Transaction lifecycle status
 - Sepolia Etherscan contract links
@@ -44,17 +50,24 @@ The following parts are real and working:
 - Event emissions from the smart contract
 - OpenZeppelin `ReentrancyGuard`
 - OpenZeppelin `Ownable`
+- Hardhat automated contract tests
 - Backend DeFi mock context endpoint
 - DeFi market context dashboard block
 - Public demo mode explanation for users without a connected wallet
 - Separate AI recommendation context display
+- Optional backend/serverless AI proxy implementation
+- AI proxy request validation and basic rate limiting
+- B2B readiness documentation layer
 
 These parts are implemented and working in the deployed demo.
 
 Important distinction:
 
 - The staking contract interactions are connected to a real deployed Sepolia testnet contract.
+- The dashboard is publicly deployed on Vercel.
 - The DeFi market context endpoint is real backend functionality, but the APY, gas, pool health, risk, and liquidity values are simulated mock data for portfolio demonstration.
+- The default AI Auto-Pilot mode is a safe local mock recommendation layer.
+- The optional AI proxy architecture exists for future real AI integration, but the public demo does not require a live AI API key.
 
 ---
 
@@ -68,6 +81,8 @@ The following parts are intentionally mocked or optional:
 - The project does not use a real DeFi yield source.
 - Rewards are calculated by the demo staking contract, not by a real market protocol.
 - APY, gas condition, pool health, risk level, and liquidity status are simulated backend values.
+- Event monitoring automation is documented as an architecture plan, not running as a production worker.
+- AI evaluation guardrails are documented as a B2B readiness layer, not as a full production evaluation system.
 
 This is intentional for portfolio safety.
 
@@ -81,31 +96,7 @@ Before starting the demo, choose one of the available demo modes.
 
 ---
 
-### Option A — Local Desktop Demo
-
-Use this option when running the project from VS Code.
-
-1. Open the project locally.
-2. Make sure MetaMask is installed in the desktop browser.
-3. Make sure MetaMask is connected to the same wallet used for testing.
-4. Make sure the wallet has Sepolia ETH.
-5. Run the app locally:
-
-```bash
-npm run dev
-```
-
-6. Open the local development URL:
-
-```text
-http://localhost:5173
-```
-
-7. Make sure the contract address in `src/App.tsx` matches the latest deployed Sepolia contract.
-
----
-
-### Option B — Public Vercel Demo
+### Option A — Public Vercel Demo
 
 Use this option when showing the project to another person.
 
@@ -135,6 +126,37 @@ Requires MetaMask wallet connection:
 
 ---
 
+### Option B — Local Desktop Demo
+
+Use this option when running the project from VS Code.
+
+1. Open the project locally.
+2. Make sure MetaMask is installed in the desktop browser.
+3. Make sure MetaMask is connected to the same wallet used for testing.
+4. Make sure the wallet has Sepolia ETH.
+5. Run the app locally:
+
+```bash
+npm run dev
+```
+
+6. Open the local development URL:
+
+```text
+http://localhost:5173
+```
+
+7. Make sure the contract address in `src/App.tsx` matches the latest deployed Sepolia contract.
+
+Recommended local verification commands:
+
+```bash
+npm run build
+npm run test:contracts
+```
+
+---
+
 ### Desktop Wallet Demo
 
 For full Web3 interaction on desktop:
@@ -155,7 +177,7 @@ https://agentic-staking-dashboard-poc.vercel.app
 
 ### Mobile Wallet Demo
 
-For mobile testing, open the deployed demo inside the MetaMask mobile app browser.
+For mobile testing, open the deployed demo inside the MetaMask mobile app built-in browser.
 
 Recommended mobile path:
 
@@ -186,14 +208,6 @@ Deployed demo URL:
 https://agentic-staking-dashboard-poc.vercel.app
 ```
 
-6. Open:
-
-```text
-http://localhost:5173
-```
-
-7. Make sure the contract address in `src/App.tsx` matches the latest deployed Sepolia contract.
-
 ---
 
 ## 6. Suggested Live Demo Flow
@@ -210,7 +224,7 @@ This is a Web3 staking dashboard connected to a deployed Sepolia smart contract.
 
 Point out:
 
-- Connected wallet
+- Connected wallet, if available
 - Public Demo Mode message, if wallet is not connected
 - Staked ETH
 - Earned rewards
@@ -380,7 +394,29 @@ Point out:
 
 ---
 
-### Step 7 — Run AI Auto-Pilot
+### Step 7 — Show Backend DeFi Mock Context
+
+Point out the DeFi Market Context section.
+
+Explain:
+
+```text
+This backend mock endpoint simulates DeFi market context such as APY, gas condition, pool health, risk level, and liquidity status.
+```
+
+The purpose is to show how the agent can combine:
+
+```text
+on-chain staking state
++
+backend DeFi context
+```
+
+This makes the dashboard closer to a product-style Agentic DeFi Dashboard rather than only a staking UI.
+
+---
+
+### Step 8 — Run AI Auto-Pilot
 
 Click:
 
@@ -392,7 +428,7 @@ Explain:
 
 ```text
 The current agent is a safe mock DeFi decision layer.
-It reads the visible staking state and returns a structured recommendation.
+It reads the visible staking state and backend mock DeFi context, then returns a structured recommendation.
 ```
 
 Point out:
@@ -425,26 +461,6 @@ The user must manually confirm blockchain actions through MetaMask.
 ```
 
 ---
-
-### Step 8 — Show Backend DeFi Mock Context
-
-Point out the DeFi Market Context section.
-
-Explain:
-
-```text
-This backend mock endpoint simulates DeFi market context such as APY, gas condition, pool health, risk level, and liquidity status.
-```
-
-The purpose is to show how the agent can combine:
-
-```text
-on-chain staking state
-+
-backend DeFi context
-```
-
-This makes the dashboard closer to a product-style Agentic DeFi Dashboard rather than only a staking UI.
 
 ### Step 9 — Explain Optional AI Proxy
 
@@ -481,6 +497,34 @@ No private keys or wallet secrets are exposed.
 
 ---
 
+### Step 10 — Show B2B Readiness Assets
+
+Open the documentation section in the repository.
+
+Point out:
+
+```text
+docs/AI_EVALUATION_GUARDRAILS.md
+docs/EVENT_MONITORING_AUTOMATION.md
+docs/B2B_PROJECT_PROPOSAL.md
+```
+
+Explain:
+
+```text
+These documents show how the PoC can be evaluated, monitored, automated, and packaged as a client-facing Web3 AI Operator service.
+```
+
+Key points:
+
+- AI recommendations are bounded by guardrails.
+- Invalid AI responses fall back to safe `HOLD`.
+- Smart contract events can trigger automation workflows.
+- The project includes a reusable B2B proposal template.
+- The system is framed as human-approved decision support, not autonomous fund management.
+
+---
+
 ## 7. How to Explain the DeFi Part
 
 This project is not a full DeFi protocol.
@@ -504,7 +548,7 @@ User withdraws
 The important product idea:
 
 ```text
-A DeFi dashboard should show not only user balance, but also reward liquidity, transaction state, and risk context.
+A DeFi dashboard should show not only user balance, but also reward liquidity, transaction state, risk context, and transparent execution history.
 ```
 
 ---
@@ -521,7 +565,10 @@ The AI Operator role includes:
 - Debugging generated code
 - Validating wallet and transaction flows
 - Adding safety boundaries
+- Adding backend mock context
+- Separating AI recommendation from wallet execution
 - Documenting architecture
+- Preparing B2B readiness assets
 - Turning a raw prototype into a portfolio-ready asset
 
 Main message:
@@ -539,54 +586,65 @@ Possible next product directions:
 
 - Real backend DeFi market context API
 - Real AI model integration through the serverless proxy
-- Automated tests for the Solidity contract
 - Event-based transaction history
+- Telegram / Discord event notifications
 - Better reward accounting
-- Role-based access control
+- Role-based access control if multiple privileged roles are introduced
 - More advanced risk scoring
 - Multi-contract Solidity-to-UI generation pipeline
 - Client-facing AI Operator service for Web3 teams
+- Production-grade persistent rate limiting
+- Frontend/component tests for dashboard UX
+- Reentrancy-oriented attack simulation tests
 
 ---
 
 ## 10. Questions to Ask During Technical Review
 
-Useful questions for a frontend team lead or Web3 reviewer:
+Useful questions for a frontend team lead, Web3 reviewer, or potential B2B client:
 
 1. Is the dashboard flow understandable?
 2. Is the wallet UX clear enough?
 3. Does the separation between mock AI and real on-chain flow make sense?
-4. What would make this feel more production-like?
-5. Is the backend DeFi mock layer the right next step?
-6. Would automated tests or transaction history be more valuable next?
-7. Does the project explain the AI Operator role clearly enough?
+4. Is the mobile MetaMask browser guidance clear enough?
+5. What would make this feel more production-like?
+6. Is the backend DeFi mock layer useful for understanding the agentic flow?
+7. Would event monitoring or transaction history be more valuable next?
+8. Does the AI guardrail document answer the main safety concerns?
+9. Does the project explain the AI Operator role clearly enough?
+10. Could this be adapted into a client-facing Web3 dashboard service?
 
 ---
 
 ## 11. Current Suggested Next Step
 
-Based on technical review feedback, the next useful implementation step is:
+The project is now strong enough for a first portfolio / LinkedIn case study post.
+
+Recommended next step:
 
 ```text
-Add automated tests for staking, reward pool, events, and access-control flows.
+Prepare LinkedIn / portfolio case study post.
 ```
 
-This would make the agent recommendation layer more product-like by adding mock market context such as:
+Useful follow-up implementation steps:
 
 ```text
-mock APY
-gas condition
-pool health
-risk level
-liquidity status
+Add frontend/component tests for dashboard UX.
+Add reentrancy-oriented attack simulation tests.
+Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.
+Add event-based transaction history.
 ```
 
-Then the AI Auto-Pilot could explain recommendations using both:
+The project can now be presented as:
 
 ```text
-on-chain staking state
-+
-backend DeFi context
+Agentic Staking Dashboard PoC
+  → live Vercel demo
+  → deployed Sepolia contract
+  → MetaMask wallet flow
+  → AI Auto-Pilot recommendation layer
+  → backend DeFi mock context
+  → OpenZeppelin security patterns
+  → automated contract tests
+  → B2B readiness documentation
 ```
-
-This would make the project easier to understand as an Agentic DeFi Dashboard rather than only a staking UI.

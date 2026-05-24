@@ -18,9 +18,49 @@ These events make contract activity observable and allow external systems, AI ag
 
 The goal is to show how a Web3 AI Operator can connect blockchain events to automated business logic.
 
+The core idea:
+
+```text
+Smart contract emits event
+  → backend / worker detects it
+  → automation layer processes it
+  → AI agent explains it
+  → user or operator receives a useful notification
+```
+
 ---
 
-## 2. Why Events Matter
+## 2. Current Contract Context
+
+The current staking contract is deployed on Ethereum Sepolia.
+
+Live demo:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
+Current deployed contract:
+
+```text
+0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
+```
+
+Sepolia Etherscan:
+
+```text
+https://sepolia.etherscan.io/address/0xA8Ac339504973AB21c1206F753C5BAF0350ba08d
+```
+
+Note:
+
+```text
+If the contract is redeployed, update the contract address in this document and in the monitoring script example.
+```
+
+---
+
+## 3. Why Events Matter
 
 Smart contract events are a reliable way to expose on-chain activity to off-chain systems.
 
@@ -39,9 +79,19 @@ User claims rewards
 
 This turns blockchain activity into operational workflows.
 
+For a B2B client, event monitoring can support:
+
+- user notifications
+- protocol monitoring
+- internal operations
+- analytics dashboards
+- support workflows
+- risk alerts
+- AI-generated activity reports
+
 ---
 
-## 3. Events Emitted by the Contract
+## 4. Events Emitted by the Contract
 
 The staking contract currently emits:
 
@@ -65,7 +115,7 @@ event RewardRateUpdated(uint256 oldRate, uint256 newRate);
 
 ---
 
-## 4. High-Level Monitoring Architecture
+## 5. High-Level Monitoring Architecture
 
 ```text
 Sepolia Smart Contract
@@ -98,7 +148,7 @@ The event listener can be implemented with:
 
 ---
 
-## 5. Example Business Workflow
+## 6. Example Business Workflow
 
 ### Reward Claim Report
 
@@ -130,7 +180,7 @@ Risk note: This is a testnet demonstration, not financial advice.
 
 ---
 
-## 6. Example Event Listener with viem
+## 7. Example Event Listener with viem
 
 This is a lightweight example showing how an external script could watch staking contract events.
 
@@ -138,7 +188,7 @@ This is a lightweight example showing how an external script could watch staking
 import { createPublicClient, http, formatEther } from "viem";
 import { sepolia } from "viem/chains";
 
-const CONTRACT_ADDRESS = "PASTE_DEPLOYED_CONTRACT_ADDRESS_HERE";
+const CONTRACT_ADDRESS = "0xA8Ac339504973AB21c1206F753C5BAF0350ba08d";
 
 const stakingAbi = [
   {
@@ -201,6 +251,11 @@ client.watchContractEvent({
         console.log("Amount:", formatEther(log.args.amount), "ETH");
       }
 
+      if (log.eventName === "Withdrawn") {
+        console.log("User:", log.args.user);
+        console.log("Amount:", formatEther(log.args.amount), "ETH");
+      }
+
       if (log.eventName === "RewardClaimed") {
         console.log("User:", log.args.user);
         console.log("Claimed:", formatEther(log.args.amount), "ETH");
@@ -210,25 +265,58 @@ client.watchContractEvent({
         console.log("Funder:", log.args.funder);
         console.log("Amount:", formatEther(log.args.amount), "ETH");
       }
+
+      if (log.eventName === "RewardRateUpdated") {
+        console.log("Old rate:", log.args.oldRate?.toString());
+        console.log("New rate:", log.args.newRate?.toString());
+      }
     }
   },
 });
 ```
 
-This script is intentionally simple. A production event listener would also include:
+This script is intentionally simple.
+
+A production event listener would also include:
 
 - RPC provider configuration
 - retry logic
 - database persistence
 - duplicate event protection
 - alerting
-- logging
+- structured logging
 - monitoring
 - failure recovery
+- confirmation waiting
+- error reporting
 
 ---
 
-## 7. n8n / No-Code Automation Option
+## 8. Possible File Location for a Future Listener
+
+A future implementation could add a script such as:
+
+```text
+scripts/watch-staking-events.ts
+```
+
+Possible command:
+
+```bash
+npm run watch:events
+```
+
+Or through a Makefile:
+
+```bash
+make watch-events
+```
+
+For the current portfolio PoC, this document describes the architecture and provides a lightweight script example without adding a running worker process to the deployed dashboard.
+
+---
+
+## 9. n8n / No-Code Automation Option
 
 The same workflow can be implemented with a no-code or low-code automation tool such as n8n.
 
@@ -260,7 +348,7 @@ This demonstrates how a Web3 event can become a business automation trigger.
 
 ---
 
-## 8. AI Agent Workflow on Top of Events
+## 10. AI Agent Workflow on Top of Events
 
 An AI agent should not blindly act on events.
 
@@ -282,6 +370,8 @@ Recommended AI responsibilities:
 - generate portfolio-friendly reports
 - flag unusual behavior
 - suggest manual review when needed
+- explain reward pool changes
+- summarize protocol activity
 
 AI should not:
 
@@ -290,10 +380,12 @@ AI should not:
 - approve transactions
 - hide failed events
 - claim financial certainty
+- bypass operator review
+- trigger wallet actions directly
 
 ---
 
-## 9. Business Use Cases
+## 11. Business Use Cases
 
 ### User Notifications
 
@@ -334,10 +426,12 @@ Use event logs to build:
 - reward claim history
 - liquidity monitoring
 - protocol health indicators
+- event-driven user timelines
+- protocol operations reports
 
 ---
 
-## 10. Monitoring Risks
+## 12. Monitoring Risks
 
 Event monitoring systems should handle:
 
@@ -349,6 +443,9 @@ Event monitoring systems should handle:
 - incorrect ABI configuration
 - rate limits from RPC providers
 - private user data handling
+- failed notification delivery
+- worker crashes
+- database write failures
 
 Production monitoring should wait for a safe number of confirmations before treating an event as final.
 
@@ -365,7 +462,7 @@ For a portfolio PoC, immediate event detection is acceptable for demonstration.
 
 ---
 
-## 11. Recommended Production Pattern
+## 13. Production Monitoring Pattern
 
 ```text
 Blockchain RPC Provider
@@ -393,10 +490,87 @@ Recommended production components:
 - alerting service
 - AI summarization layer
 - notification integrations
+- operational dashboard
+- error tracking
 
 ---
 
-## 12. Portfolio Positioning
+## 14. Example Event-to-Notification Payload
+
+A backend worker could normalize an event into a structured payload before sending it to an AI reporting layer.
+
+```json
+{
+  "eventName": "RewardClaimed",
+  "network": "sepolia",
+  "contractAddress": "0xA8Ac339504973AB21c1206F753C5BAF0350ba08d",
+  "transactionHash": "0x...",
+  "user": "0x35B40...",
+  "amountEth": "0.0012",
+  "timestamp": "2026-05-24T10:00:00.000Z",
+  "context": {
+    "rewardPoolStatus": "SUFFICIENT",
+    "gasCondition": "LOW",
+    "riskLevel": "LOW"
+  }
+}
+```
+
+The AI layer could then generate a plain-language explanation:
+
+```text
+Your reward claim was confirmed on Sepolia.
+
+You claimed 0.0012 ETH from the staking contract.
+The reward pool still appears sufficiently funded.
+This is a testnet demonstration and not financial advice.
+```
+
+---
+
+## 15. B2B Delivery Option
+
+For a client project, event monitoring can be delivered in phases.
+
+### Phase 1 — Event Mapping
+
+```text
+Identify contract events
+Map events to business meaning
+Define notification and analytics requirements
+```
+
+### Phase 2 — Listener Prototype
+
+```text
+Create lightweight listener
+Parse logs
+Print structured events
+Validate ABI and contract address
+```
+
+### Phase 3 — Automation Workflow
+
+```text
+Store events
+Trigger notifications
+Generate AI summaries
+Send reports to Telegram / Discord / Slack
+```
+
+### Phase 4 — Production Hardening
+
+```text
+Add database
+Add retry queue
+Add confirmations
+Add deduplication
+Add monitoring and alerting
+```
+
+---
+
+## 16. Portfolio Positioning
 
 This document shows that the project can go beyond a frontend demo.
 
@@ -409,6 +583,7 @@ It demonstrates AI Operator thinking around:
 - AI-generated reporting
 - user notifications
 - protocol monitoring
+- B2B automation design
 
 The main idea:
 

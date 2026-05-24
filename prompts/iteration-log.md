@@ -914,26 +914,28 @@ Do not add role-based AccessControl yet.
 
 Reasoning:
 
-The current contract has only one privileged operation: setRewardRate.
-A single-owner model is sufficient for the current portfolio PoC.
-Adding role-based AccessControl now would increase complexity without meaningful product value.
-AccessControl should be considered later only if the protocol introduces multiple privileged roles.
+- The current contract has only one privileged operation: `setRewardRate`.
+- A single-owner model is sufficient for the current portfolio PoC.
+- Adding role-based `AccessControl` now would increase complexity without meaningful product value.
+- `AccessControl` should be considered later only if the protocol introduces multiple privileged roles.
 
 Possible future roles:
 
-- REWARD_MANAGER_ROLE
-- PAUSER_ROLE
-- TREASURY_ROLE
-- BACKEND_OPERATOR_ROLE
-- DEFAULT_ADMIN_ROLE
+```text
+REWARD_MANAGER_ROLE
+PAUSER_ROLE
+TREASURY_ROLE
+BACKEND_OPERATOR_ROLE
+DEFAULT_ADMIN_ROLE
+```
 
 Purpose:
 
-avoid overengineering
-document the access-control reasoning
-show architectural judgment
-keep the PoC focused and understandable
-preserve a clear future path for production-grade role design
+- avoid overengineering
+- document the access-control reasoning
+- show architectural judgment
+- keep the PoC focused and understandable
+- preserve a clear future path for production-grade role design
 
 Updated roadmap decision:
 
@@ -941,6 +943,8 @@ Updated roadmap decision:
 Ownable now.
 AccessControl later only if multiple privileged roles are introduced.
 ```
+
+---
 
 ## Iteration 34 — Expanded Automated Contract Tests
 
@@ -990,6 +994,8 @@ Future test improvements:
 - larger multi-user reward accounting scenarios
 - frontend/component tests for dashboard UX
 - AI proxy validation tests
+
+---
 
 ## Iteration 35 — Public Demo UX and AI Context Display
 
@@ -1084,6 +1090,64 @@ Validated behavior:
 
 ---
 
+## Iteration 37 — B2B Readiness Documentation and Automation
+
+A B2B readiness layer was added to make the project look more like a client-ready delivery framework rather than only a technical PoC.
+
+Added documents:
+
+```text
+docs/AI_EVALUATION_GUARDRAILS.md
+docs/EVENT_MONITORING_AUTOMATION.md
+docs/B2B_PROJECT_PROPOSAL.md
+```
+
+Added automation file:
+
+```text
+Makefile
+```
+
+Purpose:
+
+- define AI recommendation evaluation guardrails
+- document fallback behavior and response validation
+- describe AI cost / token-budget control
+- explain how smart contract events can trigger business automations
+- show how event logs can support notifications, analytics, and AI-generated reports
+- provide a reusable B2B proposal template for Web3 client work
+- make the project easier to verify with simple operational commands
+
+B2B positioning added:
+
+```text
+AI Operator
++
+Web3 dashboard delivery
++
+smart contract integration
++
+AI recommendation guardrails
++
+event-driven automation
++
+client-ready proposal structure
+```
+
+Operational commands added through Makefile:
+
+```text
+make install
+make dev
+make build
+make test-contracts
+make verify
+```
+
+This improves the repository as a portfolio asset for technical review, client conversations, and future Web3 AI Operator opportunities.
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -1106,7 +1170,7 @@ The project currently includes:
 - Secure AI proxy architecture documentation
 - Solidity production security notes
 - Staking contract event emissions
-- OpenZeppelin-based ReentrancyGuard and Ownable
+- OpenZeppelin-based `ReentrancyGuard` and `Ownable`
 - Technical demo walkthrough
 - Backend DeFi mock context API
 - DeFi market context dashboard UI
@@ -1117,8 +1181,12 @@ The project currently includes:
 - Public demo onboarding UX
 - Separate AI recommendation context display
 - Public Vercel deployment
-- Public demo onboarding UX
 - Mobile MetaMask browser guidance
+- B2B readiness documentation
+- AI evaluation guardrails
+- Event monitoring automation plan
+- B2B project proposal template
+- Project automation Makefile
 
 ---
 

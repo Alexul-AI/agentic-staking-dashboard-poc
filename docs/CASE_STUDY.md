@@ -4,7 +4,7 @@
 
 This project was built as part of my transition toward AI Operator / AI Solutions Developer work with a Web3 focus.
 
-The goal was not only to build a staking dashboard, but to demonstrate an AI-assisted operator workflow that connects smart contract logic, frontend integration, wallet UX, transaction transparency, reward pool visibility, and an explainable DeFi agent recommendation layer.
+The goal was not only to build a staking dashboard, but to demonstrate an AI-assisted operator workflow that connects smart contract logic, frontend integration, wallet UX, transaction transparency, reward pool visibility, backend DeFi context, and an explainable DeFi agent recommendation layer.
 
 The project is designed as a portfolio Proof of Concept for remote / international Web3 opportunities, including crypto-paid work.
 
@@ -27,6 +27,7 @@ Common tasks include:
 - Creating usable UI components
 - Documenting safety boundaries
 - Preparing a safe path for AI-assisted decision support
+- Turning on-chain activity into business automation triggers
 
 This creates friction between smart contract development and actual dApp usability.
 
@@ -48,6 +49,7 @@ The dashboard allows the user to:
 - Run a safe DeFi agent recommendation layer
 - Understand the public demo mode before connecting a wallet
 - View AI recommendation context separately from the main reasoning
+- Review backend-provided mock DeFi market context
 
 The DeFi agent layer does not execute wallet actions automatically. It provides an explainable recommendation and leaves execution under user control through MetaMask.
 
@@ -71,7 +73,7 @@ The operator workflow included:
 8. Connecting the frontend to a live Sepolia contract.
 9. Adding Etherscan transparency.
 10. Adding an explainable mock DeFi agent layer.
-11. Hardening the smart contract with a reentrancy guard.
+11. Hardening the smart contract with reentrancy protection.
 12. Adding Sepolia network guard behavior.
 13. Improving transaction status UX.
 14. Improving reward pool visibility and funding UX.
@@ -81,10 +83,16 @@ The operator workflow included:
 18. Documenting a secure AI proxy architecture for future production-style integration.
 19. Documenting Solidity security boundaries and production-readiness limitations.
 20. Adding an optional backend/serverless AI proxy implementation.
-21. Replacing custom security logic with OpenZeppelin `ReentrancyGuard` and `Ownable`.
-22. Adding automated Hardhat tests for core staking contract flows.
-23. Adding request validation and basic rate limiting to the optional AI proxy.
-24. Making an explicit access-control decision to keep `Ownable` for the current PoC instead of overengineering with role-based `AccessControl`.
+21. Adding backend DeFi mock context for APY, gas, risk, liquidity, and pool-health signals.
+22. Replacing custom security logic with OpenZeppelin `ReentrancyGuard` and `Ownable`.
+23. Adding smart contract event emissions.
+24. Adding automated Hardhat tests for core staking contract flows.
+25. Expanding automated contract tests for rewards, events, access control, and edge cases.
+26. Adding request validation and basic rate limiting to the optional AI proxy.
+27. Making an explicit access-control decision to keep `Ownable` for the current PoC instead of overengineering with role-based `AccessControl`.
+28. Improving public demo UX for users without a connected wallet.
+29. Improving mobile MetaMask browser guidance.
+30. Adding B2B readiness documentation and automation assets.
 
 ---
 
@@ -100,8 +108,10 @@ Solidity Staking Contract
   → Sepolia Transaction
   → Etherscan Transparency
   → Reward Pool Visibility
+  → Backend DeFi Mock Context
   → Safe Mock Agent / Optional AI Proxy
   → Agentic Recommendation Layer
+  → Human-Approved Execution
 ```
 
 The full architecture diagram is available in:
@@ -112,7 +122,7 @@ The full architecture diagram is available in:
 
 ## 6. What Was Validated
 
-The following flows were tested:
+The following flows were tested or validated:
 
 - MetaMask wallet connection
 - Sepolia contract deployment
@@ -132,10 +142,13 @@ The following flows were tested:
 - Reward pool funding transaction
 - Withdraw transaction
 - Etherscan transaction link
-- Mock DeFi agent recommendation rendering
 - Safe mock-agent default mode
+- Mock DeFi agent recommendation rendering
 - Optional AI proxy fallback behavior
 - Server-side AI proxy architecture path
+- Backend DeFi mock context API
+- DeFi market context dashboard rendering
+- AI recommendation enriched with mock market context
 - Human-approved execution pattern
 - OpenZeppelin-based reentrancy protection
 - OpenZeppelin-based ownership protection
@@ -161,6 +174,8 @@ The following flows were tested:
 - Public demo onboarding UX
 - Read-only demo behavior without wallet connection
 - Separate AI recommendation context rendering
+- Mobile MetaMask browser flow through the MetaMask Explore / Browser tab
+- B2B documentation layer for AI guardrails, event monitoring, and proposal framing
 
 ---
 
@@ -179,11 +194,13 @@ Current boundaries:
 - No real financial advice is provided
 - No autonomous fund management is implemented
 - AI recommendations do not directly execute wallet actions
+- Optional AI proxy responses are validated and normalized
+- Fallback behavior defaults to safe `HOLD`
 
 The intended safety model is:
 
 ```text
-AI suggests → User reviews → MetaMask confirms → Blockchain executes
+AI suggests → Rules validate → User reviews → MetaMask confirms → Blockchain executes
 ```
 
 ---
@@ -201,7 +218,10 @@ Potential value:
 - Clearer reward liquidity visibility
 - Safer human-in-the-loop execution
 - Better transaction transparency
-- A production-safe path for AI API integration
+- Backend-driven mock DeFi market context
+- Production-safe path for AI API integration
+- Event-driven automation planning
+- B2B-ready delivery documentation
 - Portfolio-ready Web3 automation workflows
 
 The value is not only the dashboard itself, but the repeatable process behind it.
@@ -226,6 +246,12 @@ These screenshots demonstrate:
 - Etherscan transaction proof
 - AI Auto-Pilot recommendation output
 
+The project also includes a deployed Vercel demo:
+
+```text
+https://agentic-staking-dashboard-poc.vercel.app
+```
+
 ---
 
 ## 10. Documentation Assets
@@ -237,8 +263,13 @@ The project includes supporting documentation:
 - [`Secure AI Proxy Architecture`](SECURE_AI_PROXY.md)
 - [`Security Notes`](SECURITY_NOTES.md)
 - [`Demo Walkthrough`](DEMO_WALKTHROUGH.md)
+- [`AI Evaluation Guardrails`](AI_EVALUATION_GUARDRAILS.md)
+- [`Event Monitoring Automation`](EVENT_MONITORING_AUTOMATION.md)
+- [`B2B Project Proposal Template`](B2B_PROJECT_PROPOSAL.md)
 
-These documents explain the technical architecture, AI Operator workflow, secure AI integration path, Solidity production-readiness boundaries, and safety constraints.
+These documents explain the technical architecture, AI Operator workflow, secure AI integration path, Solidity production-readiness boundaries, safety constraints, event-driven automation options, and B2B delivery framing.
+
+The B2B documentation layer explains how the system could be evaluated, monitored, automated, packaged, and proposed as a client-facing Web3 AI Operator service.
 
 ---
 
@@ -285,7 +316,69 @@ This shows how the project can evolve from a local mock agent into a real AI-ass
 
 ---
 
-## 12. Portfolio Positioning
+## 12. Event-Driven Automation Potential
+
+The staking contract emits events such as:
+
+```text
+Staked
+Withdrawn
+RewardClaimed
+RewardsFunded
+RewardRateUpdated
+```
+
+These events can be used by external automation systems to trigger workflows such as:
+
+- Telegram / Discord notifications
+- reward claim reports
+- staking activity summaries
+- liquidity monitoring alerts
+- operator dashboards
+- AI-generated explanations of user activity
+
+This turns the smart contract from a passive backend into an observable automation source.
+
+The event automation plan is documented in:
+
+[`Event Monitoring Automation`](EVENT_MONITORING_AUTOMATION.md)
+
+---
+
+## 13. B2B Readiness Layer
+
+The project includes B2B-oriented assets that show how the PoC could be evaluated, monitored, automated, packaged, and offered as a client-facing service.
+
+B2B readiness assets include:
+
+- AI evaluation guardrails
+- fallback behavior
+- token / API cost-control thinking
+- event monitoring automation plan
+- commercial proposal template
+- project automation commands through `Makefile`
+
+This layer helps position the project as more than a technical demo.
+
+It presents the project as a reusable delivery framework for Web3 teams that need:
+
+```text
+AI Operator
++
+Web3 dashboard delivery
++
+smart contract integration
++
+AI recommendation guardrails
++
+event-driven automation
++
+client-ready proposal structure
+```
+
+---
+
+## 14. Portfolio Positioning
 
 This project positions me as an AI Operator / Web3 Solutions Developer who can combine:
 
@@ -297,6 +390,10 @@ This project positions me as an AI Operator / Web3 Solutions Developer who can c
 - Secure AI proxy architecture
 - Security awareness
 - Human-approved automation
+- B2B solution packaging
+- AI evaluation and guardrail planning
+- Event-driven automation design
+- Commercial proposal framing
 
 The main message:
 
@@ -307,12 +404,11 @@ I am designing AI-assisted Web3 workflows that turn smart contract logic into us
 
 ---
 
-## 13. Current Status
+## 15. Current Status
 
 Completed:
 
 - Deployed Sepolia staking contract
-- Hardened staking contract with a custom `nonReentrant` guard
 - React staking dashboard
 - MetaMask wallet flow
 - Staking and withdrawal interaction
@@ -329,22 +425,31 @@ Completed:
 - Reward pool visibility and funding UX
 - Solidity production security notes
 - Optional backend/serverless AI proxy implementation
+- Backend DeFi mock context API
 - OpenZeppelin-based `ReentrancyGuard` and `Ownable`
+- Staking contract event emissions
 - Technical demo walkthrough
 - Automated staking contract tests
+- Expanded automated staking contract tests
 - AI proxy request validation and rate limiting
 - Documented access-control decision
-- Expanded automated staking contract tests
 - Public demo onboarding UX
 - Separate AI recommendation context display
+- Mobile MetaMask browser guidance
+- Vercel live demo deployment
+- B2B readiness documentation
+- AI evaluation guardrails
+- Event monitoring automation plan
+- B2B project proposal template
+- Project automation Makefile
 
 ---
 
-## 14. Next Improvements
+## 16. Next Improvements
 
 Planned next steps:
 
-- Add reentrancy-oriented attack simulation tests
-- Add frontend/component tests for dashboard UX
-- Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting
 - Prepare LinkedIn / portfolio post
+- Add frontend/component tests for dashboard UX
+- Add reentrancy-oriented attack simulation tests
+- Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting

@@ -50,9 +50,21 @@ to:
 Smart contract logic
   → connected React dashboard
   → wallet UX
-  → Etherscan transparency
+  → transaction transparency
   → optional AI recommendation layer
   → human-approved execution
+```
+
+The main value is not only the frontend implementation, but the complete workflow:
+
+```text
+contract understanding
+  → UI design
+  → wallet interaction
+  → backend safety layer
+  → AI recommendation guardrails
+  → documentation
+  → deployable demo
 ```
 
 ---
@@ -73,6 +85,8 @@ Common problems:
 - No clear fallback exists when AI fails.
 - DeFi context is not explained to users.
 - Smart contract events are not used for automation.
+- Mobile wallet behavior is not clearly documented.
+- Technical demos are difficult for non-Web3 stakeholders to understand.
 
 This proposal solves those problems by delivering a structured Web3 dashboard and AI Operator workflow.
 
@@ -88,6 +102,7 @@ The proposed system includes:
 - transaction lifecycle UX
 - Etherscan contract and transaction links
 - network guard
+- mobile wallet guidance
 - reward / liquidity / pool visibility where relevant
 - optional backend DeFi context API
 - optional AI recommendation layer
@@ -96,6 +111,7 @@ The proposed system includes:
 - event monitoring automation plan
 - automated smart contract tests
 - deployment-ready frontend
+- demo walkthrough and handoff documentation
 
 The execution model remains human-approved:
 
@@ -108,17 +124,19 @@ AI suggests
   → blockchain executes
 ```
 
+The AI layer is designed as decision support, not as autonomous fund management.
+
 ---
 
 ## 5. Delivery Phases
 
-## Phase 1 — Discovery and Technical Audit
+### Phase 1 — Discovery and Technical Audit
 
-### Goal
+#### Goal
 
 Understand the client’s smart contract, frontend needs, wallet flow, risk boundaries, and business goals.
 
-### Activities
+#### Activities
 
 - Review smart contract ABI and available functions.
 - Identify user-facing actions.
@@ -128,16 +146,17 @@ Understand the client’s smart contract, frontend needs, wallet flow, risk boun
 - Review existing frontend if available.
 - Identify AI / automation opportunities.
 - Define what AI is allowed and not allowed to do.
+- Define safety, fallback, and human-approval boundaries.
 
-### Deliverables
+#### Deliverables
 
 - Integration map
-- function-to-UI action mapping
-- wallet UX requirements
+- Function-to-UI action mapping
+- Wallet UX requirements
 - AI safety boundaries
-- implementation roadmap
+- Implementation roadmap
 
-### Estimated Time
+#### Estimated Time
 
 ```text
 2–5 business days
@@ -145,13 +164,13 @@ Understand the client’s smart contract, frontend needs, wallet flow, risk boun
 
 ---
 
-## Phase 2 — Solidity-to-UI Integration
+### Phase 2 — Solidity-to-UI Integration
 
-### Goal
+#### Goal
 
 Build a working frontend dashboard connected to the client’s smart contract.
 
-### Activities
+#### Activities
 
 - Build React / TypeScript UI.
 - Configure wagmi / viem integration.
@@ -164,16 +183,16 @@ Build a working frontend dashboard connected to the client’s smart contract.
 - Add error states.
 - Add mobile wallet guidance.
 
-### Deliverables
+#### Deliverables
 
-- working dashboard
-- wallet connection flow
-- contract interaction hooks
-- transaction UX
-- testnet deployment
-- demo walkthrough
+- Working dashboard
+- Wallet connection flow
+- Contract interaction hooks
+- Transaction UX
+- Testnet deployment
+- Demo walkthrough
 
-### Estimated Time
+#### Estimated Time
 
 ```text
 1–2 weeks
@@ -181,13 +200,13 @@ Build a working frontend dashboard connected to the client’s smart contract.
 
 ---
 
-## Phase 3 — AI Recommendation Layer
+### Phase 3 — AI Recommendation Layer
 
-### Goal
+#### Goal
 
 Add an explainable AI decision-support layer without giving AI direct wallet control.
 
-### Activities
+#### Activities
 
 - Define AI decision schema.
 - Design system prompt.
@@ -199,15 +218,15 @@ Add an explainable AI decision-support layer without giving AI direct wallet con
 - Add AI recommendation UI.
 - Add cost-control strategy.
 
-### Deliverables
+#### Deliverables
 
 - AI Auto-Pilot / recommendation panel
-- structured AI output schema
-- backend AI proxy architecture
-- validation and fallback logic
+- Structured AI output schema
+- Backend AI proxy architecture
+- Validation and fallback logic
 - AI evaluation guardrails
 
-### Estimated Time
+#### Estimated Time
 
 ```text
 1–2 weeks
@@ -215,13 +234,13 @@ Add an explainable AI decision-support layer without giving AI direct wallet con
 
 ---
 
-## Phase 4 — Backend / DeFi Context Layer
+### Phase 4 — Backend / DeFi Context Layer
 
-### Goal
+#### Goal
 
 Add backend context that improves recommendations and product behavior.
 
-### Activities
+#### Activities
 
 - Add backend market context endpoint.
 - Add mock or live APY data.
@@ -232,15 +251,15 @@ Add backend context that improves recommendations and product behavior.
 - Add caching and rate limiting.
 - Add request validation.
 
-### Deliverables
+#### Deliverables
 
-- backend context API
+- Backend context API
 - DeFi context UI
-- enriched AI recommendations
-- rate-limited API endpoint
-- validation strategy
+- Enriched AI recommendations
+- Rate-limited API endpoint
+- Validation strategy
 
-### Estimated Time
+#### Estimated Time
 
 ```text
 1–2 weeks
@@ -248,13 +267,13 @@ Add backend context that improves recommendations and product behavior.
 
 ---
 
-## Phase 5 — Event Monitoring and Automation
+### Phase 5 — Event Monitoring and Automation
 
-### Goal
+#### Goal
 
 Use smart contract events as automation triggers for notifications, analytics, and operational workflows.
 
-### Activities
+#### Activities
 
 - Identify emitted events.
 - Build event monitoring architecture.
@@ -264,14 +283,14 @@ Use smart contract events as automation triggers for notifications, analytics, a
 - Define analytics use cases.
 - Add monitoring risks and confirmation strategy.
 
-### Deliverables
+#### Deliverables
 
-- event monitoring architecture
-- example event listener
-- automation workflow plan
-- notification/reporting design
+- Event monitoring architecture
+- Example event listener
+- Automation workflow plan
+- Notification / reporting design
 
-### Estimated Time
+#### Estimated Time
 
 ```text
 3–7 business days
@@ -279,13 +298,13 @@ Use smart contract events as automation triggers for notifications, analytics, a
 
 ---
 
-## Phase 6 — Testing and Deployment
+### Phase 6 — Testing and Deployment
 
-### Goal
+#### Goal
 
 Improve delivery quality and prepare the system for external review.
 
-### Activities
+#### Activities
 
 - Add smart contract tests.
 - Add frontend checks where needed.
@@ -295,17 +314,17 @@ Improve delivery quality and prepare the system for external review.
 - Prepare demo script.
 - Prepare documentation.
 
-### Deliverables
+#### Deliverables
 
-- automated tests
-- production / preview deployment
+- Automated tests
+- Production / preview deployment
 - README
-- architecture documentation
-- demo walkthrough
-- security notes
-- handoff package
+- Architecture documentation
+- Demo walkthrough
+- Security notes
+- Handoff package
 
-### Estimated Time
+#### Estimated Time
 
 ```text
 3–7 business days
@@ -315,13 +334,13 @@ Improve delivery quality and prepare the system for external review.
 
 ## 6. Scope Options
 
-## Option A — Frontend Integration Package
+### Option A — Frontend Integration Package
 
-### Best for
+#### Best For
 
 Teams that already have a smart contract and need a usable dashboard.
 
-### Includes
+#### Includes
 
 - React dashboard
 - wallet connection
@@ -332,13 +351,13 @@ Teams that already have a smart contract and need a usable dashboard.
 - testnet deployment
 - basic documentation
 
-### Estimated Timeline
+#### Estimated Timeline
 
 ```text
 1–2 weeks
 ```
 
-### Indicative Price Range
+#### Indicative Price Range
 
 ```text
 2,000–5,000 USDT / USDC
@@ -346,13 +365,13 @@ Teams that already have a smart contract and need a usable dashboard.
 
 ---
 
-## Option B — AI-Assisted Web3 Dashboard
+### Option B — AI-Assisted Web3 Dashboard
 
-### Best for
+#### Best For
 
 Teams that want AI recommendation UX on top of contract interaction.
 
-### Includes
+#### Includes
 
 Everything in Option A, plus:
 
@@ -364,13 +383,13 @@ Everything in Option A, plus:
 - backend DeFi mock context
 - improved demo documentation
 
-### Estimated Timeline
+#### Estimated Timeline
 
 ```text
 2–4 weeks
 ```
 
-### Indicative Price Range
+#### Indicative Price Range
 
 ```text
 5,000–12,000 USDT / USDC
@@ -378,13 +397,13 @@ Everything in Option A, plus:
 
 ---
 
-## Option C — Agentic DeFi Automation PoC
+### Option C — Agentic DeFi Automation PoC
 
-### Best for
+#### Best For
 
 Teams that want a stronger product prototype with automation architecture.
 
-### Includes
+#### Includes
 
 Everything in Option B, plus:
 
@@ -396,13 +415,13 @@ Everything in Option B, plus:
 - production-readiness notes
 - technical handoff
 
-### Estimated Timeline
+#### Estimated Timeline
 
 ```text
 4–6 weeks
 ```
 
-### Indicative Price Range
+#### Indicative Price Range
 
 ```text
 12,000–25,000 USDT / USDC
@@ -410,13 +429,13 @@ Everything in Option B, plus:
 
 ---
 
-## Option D — Custom Production Track
+### Option D — Custom Production Track
 
-### Best for
+#### Best For
 
 Teams moving beyond PoC into production planning.
 
-### May include
+#### May Include
 
 - production backend
 - real AI provider integration
@@ -430,7 +449,7 @@ Teams moving beyond PoC into production planning.
 - infrastructure planning
 - support retainer
 
-### Pricing
+#### Pricing
 
 ```text
 Custom scope
@@ -449,6 +468,7 @@ A complete client delivery may include:
 - transaction lifecycle UX
 - Etherscan transparency
 - network guard
+- mobile wallet guidance
 - backend context API
 - AI recommendation layer
 - secure AI proxy
@@ -524,7 +544,42 @@ AI recommends
 
 ---
 
-## 10. Assumptions
+## 10. Commercial Delivery Model
+
+A commercial engagement can be structured as:
+
+```text
+Discovery
+  → technical audit
+  → dashboard implementation
+  → AI / backend layer
+  → testing
+  → deployment
+  → handoff
+```
+
+Recommended communication rhythm:
+
+- kickoff call
+- weekly progress update
+- demo after each milestone
+- final handoff call
+- short written summary after delivery
+
+Recommended acceptance criteria:
+
+- dashboard loads successfully
+- wallet connects on supported environments
+- contract reads display correctly
+- write actions open wallet confirmation
+- transactions are visible on explorer
+- AI recommendation layer follows defined guardrails
+- documentation is delivered
+- deployment link is working
+
+---
+
+## 11. Assumptions
 
 This proposal assumes:
 
@@ -535,10 +590,11 @@ This proposal assumes:
 - The client confirms whether AI integration is mock, optional, or production.
 - The client provides API keys only through secure server-side configuration.
 - The client understands that production DeFi requires audits and legal review.
+- The client reviews and approves risk-related product copy before public launch.
 
 ---
 
-## 11. Out of Scope Unless Explicitly Added
+## 12. Out of Scope Unless Explicitly Added
 
 The following are not included unless agreed separately:
 
@@ -554,10 +610,12 @@ The following are not included unless agreed separately:
 - regulatory compliance
 - paid infrastructure costs
 - long-term monitoring after handoff
+- market-making or trading strategy
+- production incident response unless included in a support agreement
 
 ---
 
-## 12. Client Responsibilities
+## 13. Client Responsibilities
 
 The client is responsible for:
 
@@ -569,10 +627,11 @@ The client is responsible for:
 - approving deployment targets
 - providing server-side API keys if real AI is used
 - arranging legal, tax, compliance, and audit review where relevant
+- confirming final copy, disclaimers, and risk notices
 
 ---
 
-## 13. Milestone Payment Example
+## 14. Milestone Payment Example
 
 Example payment structure:
 
@@ -603,7 +662,7 @@ Preferred network and wallet details should be agreed in writing before the proj
 
 ---
 
-## 14. Support Options
+## 15. Support Options
 
 Possible support packages:
 
@@ -635,12 +694,12 @@ technical product support
 
 ---
 
-## 15. Example Client Pitch
+## 16. Example Client Pitch
 
 ```text
 I help Web3 teams turn smart contract logic into usable, AI-assisted dashboards.
 
-The service includes frontend integration, wallet UX, transaction transparency, optional AI recommendation support, and safe human-approved execution.
+The service includes frontend integration, wallet UX, transaction transparency, optional AI recommendation support, safe backend proxy design, and human-approved execution.
 
 The goal is not to let AI control funds.
 
@@ -649,7 +708,7 @@ The goal is to help users understand contract actions, risks, transaction status
 
 ---
 
-## 16. Portfolio Reference
+## 17. Portfolio Reference
 
 Reference implementation:
 
@@ -683,11 +742,13 @@ The reference project demonstrates:
 - Hardhat tests
 - Vercel deployment
 - mobile MetaMask guidance
+- AI evaluation guardrails
+- event monitoring automation plan
 - B2B documentation layer
 
 ---
 
-## 17. Notes for Customization
+## 18. Notes for Customization
 
 Before sending this proposal to a real client, customize:
 
@@ -703,5 +764,8 @@ Before sending this proposal to a real client, customize:
 - legal disclaimers
 - communication channels
 - acceptance criteria
+- wallet support requirements
+- deployment target
+- monitoring and support expectations
 
 This template should be treated as a starting point, not a final legal contract.

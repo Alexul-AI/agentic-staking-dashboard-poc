@@ -2,11 +2,11 @@
 
 ## 1. Purpose
 
-This document describes the current security boundaries, known limitations, and production-readiness considerations for the Solidity staking contract, React dashboard, wallet flow, reward pool UX, and optional AI proxy architecture.
+This document describes the current security boundaries, known limitations, and production-readiness considerations for the Solidity staking contract, React dashboard, wallet flow, reward pool UX, backend mock context layer, and optional AI proxy architecture.
 
 This project is a portfolio Proof of Concept running on Ethereum Sepolia.
 
-It is not a production DeFi protocol and should not be used with real funds without a full security review and professional audit.
+It is not a production DeFi protocol and should not be used with real funds without a full security review, professional audit, and production-grade infrastructure review.
 
 ---
 
@@ -18,11 +18,18 @@ Current safety boundaries:
 - The frontend does not store private keys.
 - The frontend does not request or handle seed phrases.
 - All blockchain write actions require MetaMask confirmation.
+- The dashboard includes a Sepolia network guard.
+- The dashboard provides transaction lifecycle visibility.
+- The dashboard provides Etherscan links for contract and transaction transparency.
+- The smart contract uses OpenZeppelin `ReentrancyGuard`.
+- The smart contract uses OpenZeppelin `Ownable`.
+- The smart contract emits events for key staking actions.
+- The default AI agent mode is a local safe mock agent.
+- The optional AI proxy keeps API keys server-side.
+- The optional AI proxy validates request bodies.
+- The optional AI proxy includes basic in-memory rate limiting.
 - The AI agent layer is recommendation-only.
 - The AI agent does not execute wallet actions automatically.
-- The default agent mode is a local safe mock agent.
-- The optional AI proxy keeps API keys server-side.
-- Etherscan links are provided for contract and transaction transparency.
 - No real financial advice is provided.
 - No autonomous fund management is implemented.
 
@@ -40,7 +47,7 @@ The current staking contract includes several basic safety improvements.
 
 ### Reentrancy Guard
 
-The contract uses a custom `nonReentrant` guard to protect functions that modify state and interact with ETH transfers.
+The contract uses OpenZeppelin `ReentrancyGuard` to protect functions that modify state and interact with ETH transfers.
 
 Protected functions include:
 
@@ -48,6 +55,7 @@ Protected functions include:
 stake
 withdraw
 claimReward
+fundRewards
 ```
 
 This is important because ETH transfers use low-level `.call{value: amount}("")`, which can pass execution control to the receiver.
@@ -66,8 +74,6 @@ setRewardRate
 
 This prevents arbitrary users from changing the reward rate.
 
----
-
 ### Access Control Decision
 
 The contract currently uses OpenZeppelin `Ownable` rather than role-based `AccessControl`.
@@ -82,15 +88,17 @@ setRewardRate
 
 Because of that, a single-owner model is sufficient for the current PoC.
 
-Role-based AccessControl would be more appropriate if the project introduced multiple privileged roles, for example:
+Role-based `AccessControl` would be more appropriate if the project introduced multiple privileged roles, for example:
 
+```text
 REWARD_MANAGER_ROLE
 PAUSER_ROLE
 TREASURY_ROLE
 BACKEND_OPERATOR_ROLE
 DEFAULT_ADMIN_ROLE
+```
 
-For the current portfolio version, adding AccessControl would increase complexity without adding meaningful product value.
+For the current portfolio version, adding `AccessControl` would increase complexity without adding meaningful product value.
 
 The access-control decision is therefore:
 
@@ -119,6 +127,20 @@ The reward rate can only be changed by the contract owner.
 
 This avoids arbitrary users modifying reward logic.
 
+### Event Emissions
+
+The contract emits events for key actions:
+
+```text
+Staked
+Withdrawn
+RewardClaimed
+RewardsFunded
+RewardRateUpdated
+```
+
+These events improve transparency, Etherscan readability, future monitoring, and automated workflow support.
+
 ### Reward Pool Visibility
 
 The contract exposes contract balance through `getContractBalance`, allowing the frontend to show reward pool liquidity.
@@ -135,19 +157,22 @@ Known limitations:
 
 - No professional audit.
 - No formal verification.
-- No automated Solidity test suite yet.
-- No event emissions for stake, withdraw, claim, or funding actions.
-- No pause / emergency stop mechanism.
-- No role-based access control beyond a simple owner check.
+- No mainnet deployment readiness.
+- No emergency pause / circuit breaker mechanism.
+- No role-based access control beyond `Ownable`.
 - No upgrade strategy.
 - No protection against poor owner configuration.
 - No advanced reward accounting model.
 - No time-weighted or proportional multi-user reward distribution.
 - No slashing, lock period, or withdrawal delay.
 - No production-grade economic model.
-- No mainnet deployment readiness.
 - No protection against intentionally unsustainable reward settings.
-- No off-chain monitoring or alerting.
+- No production off-chain monitoring or alerting.
+- No production-grade event indexer.
+- No database-backed transaction history.
+- No production incident response process.
+
+The current automated tests cover many core flows, but this does not replace a professional smart contract audit.
 
 ---
 
@@ -195,6 +220,9 @@ The frontend improves safety by:
 - Keeping AI recommendations separate from execution.
 - Keeping API keys out of frontend code.
 - Using a local mock agent as the default safe mode.
+- Displaying public demo onboarding guidance.
+- Displaying mobile MetaMask browser guidance.
+- Keeping backend mock DeFi context separate from wallet execution.
 
 The frontend does not:
 
@@ -249,7 +277,27 @@ The dashboard also provides Etherscan links for:
 
 ---
 
-## 9. AI Agent Safety Boundaries
+## 9. Mobile Wallet Safety
+
+Regular mobile browsers such as Chrome, Safari, or Mi Browser may not expose the injected wallet provider required by wagmi / MetaMask.
+
+For mobile wallet actions, the recommended path is:
+
+```text
+MetaMask app
+  → Explore / Browser
+  → open deployed Vercel demo URL
+  → connect wallet
+  → use Sepolia network
+```
+
+The dashboard includes mobile guidance to reduce confusion around provider-related errors.
+
+This improves demo reliability and makes the wallet connection flow clearer for mobile reviewers.
+
+---
+
+## 10. AI Agent Safety Boundaries
 
 The current AI agent layer is a safe recommendation module.
 
@@ -284,7 +332,7 @@ The repository includes an optional backend/serverless AI proxy implementation, 
 
 The proxy keeps AI API keys server-side and does not create an AI-to-wallet execution path.
 
-The optional AI proxy now includes request validation and basic in-memory rate limiting.
+The optional AI proxy includes request validation and basic in-memory rate limiting.
 
 The proxy validates:
 
@@ -299,7 +347,7 @@ The proxy also normalizes AI responses and falls back to a safe `HOLD` recommend
 
 ---
 
-## 10. Optional AI Proxy Security
+## 11. Optional AI Proxy Security
 
 The optional proxy implementation is located at:
 
@@ -342,7 +390,7 @@ It should not execute wallet transactions.
 
 ---
 
-## 11. AI Response Validation
+## 12. AI Response Validation
 
 The AI model response should not be trusted blindly.
 
@@ -382,83 +430,99 @@ This keeps failure states conservative.
 
 ---
 
-## 12. Production Readiness Checklist
+## 13. Backend DeFi Mock Context Security
 
-Before any mainnet deployment, the following steps would be required:
-
-- Expand the current smart contract test suite to cover reward claiming, emitted events, edge cases, and access-control flows.
-- Add tests for staking, withdrawal, reward claiming, and reward pool funding.
-- Add event emissions for important contract actions.
-- Add professional security audit.
-- OpenZeppelin `ReentrancyGuard` is already used.
-- OpenZeppelin `Ownable` is already used.
-- Revisit role-based `AccessControl` only if the system introduces multiple privileged roles.
-- Add emergency pause functionality.
-- Define a real reward funding model.
-- Add stronger reward accounting.
-- Add monitoring and alerting.
-- Add frontend network and transaction error coverage.
-- Add backend security if using an AI proxy.
-- Ensure no API keys are exposed in frontend code.
-- Add secure deployment configuration.
-- Add rate limiting for AI proxy endpoints.
-- Add request validation for backend endpoints.
-- Add logging and observability.
-- Add legal and financial disclaimers where relevant.
-- Replace in-memory AI proxy rate limiting with persistent production-grade rate limiting.
-- Add tests for AI proxy request validation and fallback behavior.
-
----
-
-## 13. Out of Scope for This PoC
-
-The following are intentionally out of scope:
-
-- Mainnet deployment.
-- Real fund management.
-- Autonomous DeFi execution.
-- Production yield optimization.
-- Real financial advice.
-- Audited smart contract security.
-- Institutional-grade backend security.
-- Persistent user accounts.
-- Database-backed transaction history.
-- Tax, legal, or investment compliance.
-- Fully autonomous AI portfolio management.
-
-This scope keeps the project safe as a portfolio demonstration.
-
----
-
-## 14. Responsible AI + Web3 Pattern
-
-The project follows a conservative AI + Web3 pattern:
+The project includes a backend mock DeFi context endpoint:
 
 ```text
-on-chain data
-  → agent recommendation
-  → user review
-  → MetaMask confirmation
-  → blockchain execution
+api/defi-market-context.ts
 ```
 
-This is intentionally different from:
+This endpoint returns simulated context such as:
 
 ```text
-AI decides
-  → AI signs
-  → AI moves funds
+mockApy
+gasCondition
+poolHealth
+riskLevel
+liquidityStatus
+marketNote
+updatedAt
 ```
 
-The second pattern is not implemented in this PoC.
+This data is used for portfolio demonstration only.
 
-The project demonstrates AI-assisted decision support, not autonomous financial control.
+It should not be treated as live market data, financial advice, or production risk scoring.
+
+Production versions should replace mock context with properly validated, sourced, monitored, and cached data.
 
 ---
 
-## 15 Automated Test Coverage
+## 14. AI Evaluation Guardrails
 
-The project includes an initial Hardhat-based automated test setup for the staking contract.
+The project includes a dedicated AI evaluation guardrails document:
+
+```text
+docs/AI_EVALUATION_GUARDRAILS.md
+```
+
+That document defines:
+
+- AI decision boundaries
+- allowed recommendation actions
+- deterministic validation rules
+- accuracy scenarios
+- fallback behavior
+- response validation
+- cost / token-budget considerations
+- human-in-the-loop execution rules
+- production checklist for real AI usage
+
+The core principle is:
+
+```text
+AI recommends.
+Rules validate.
+User confirms.
+Wallet executes.
+```
+
+---
+
+## 15. Event Monitoring and Automation
+
+The project includes an event monitoring automation plan:
+
+```text
+docs/EVENT_MONITORING_AUTOMATION.md
+```
+
+The smart contract emits events that can support future automation:
+
+```text
+Staked
+Withdrawn
+RewardClaimed
+RewardsFunded
+RewardRateUpdated
+```
+
+Potential future automation workflows include:
+
+- user notifications
+- reward reports
+- operator alerts
+- event-driven analytics
+- AI-generated summaries
+- Telegram / Discord / email notifications
+
+The current PoC documents this architecture but does not implement a production event listener.
+
+---
+
+## 16. Automated Test Coverage
+
+The project includes a Hardhat-based automated test setup for the staking contract.
 
 Current test coverage includes:
 
@@ -484,8 +548,86 @@ Additional test coverage that could still be added before production use:
 - long-duration reward accumulation scenarios
 - frontend/component tests for dashboard UX
 - AI proxy validation tests
+- event listener automation tests
 
-## 16. Portfolio Positioning
+---
+
+## 17. Production Readiness Checklist
+
+Before any mainnet deployment, the following steps would be required:
+
+- Complete a professional smart contract security audit.
+- Add formal verification or deeper invariant testing where relevant.
+- Add emergency pause functionality if appropriate.
+- Define a real reward funding model.
+- Add stronger reward accounting.
+- Add a production-grade economic model.
+- Add monitoring and alerting.
+- Add event indexing and event deduplication.
+- Add frontend network and transaction error coverage.
+- Add frontend/component tests.
+- Add backend security review if using an AI proxy.
+- Ensure no API keys are exposed in frontend code.
+- Add secure deployment configuration.
+- Replace in-memory AI proxy rate limiting with persistent production-grade rate limiting.
+- Add tests for AI proxy request validation and fallback behavior.
+- Add logging and observability.
+- Add incident response procedures.
+- Add legal and financial disclaimers where relevant.
+- Revisit role-based `AccessControl` only if the system introduces multiple privileged roles.
+
+---
+
+## 18. Out of Scope for This PoC
+
+The following are intentionally out of scope:
+
+- Mainnet deployment.
+- Real fund management.
+- Autonomous DeFi execution.
+- Production yield optimization.
+- Real financial advice.
+- Audited smart contract security.
+- Institutional-grade backend security.
+- Persistent user accounts.
+- Database-backed transaction history.
+- Tax, legal, or investment compliance.
+- Fully autonomous AI portfolio management.
+- Production event listener.
+- Real market-data provider integration.
+
+This scope keeps the project safe as a portfolio demonstration.
+
+---
+
+## 19. Responsible AI + Web3 Pattern
+
+The project follows a conservative AI + Web3 pattern:
+
+```text
+on-chain data
+  → backend / mock context
+  → agent recommendation
+  → user review
+  → MetaMask confirmation
+  → blockchain execution
+```
+
+This is intentionally different from:
+
+```text
+AI decides
+  → AI signs
+  → AI moves funds
+```
+
+The second pattern is not implemented in this PoC.
+
+The project demonstrates AI-assisted decision support, not autonomous financial control.
+
+---
+
+## 20. Portfolio Positioning
 
 These security notes are included to make the PoC more transparent and professionally framed.
 
@@ -495,37 +637,48 @@ The purpose is to demonstrate:
 
 - Security awareness
 - use of standard OpenZeppelin security primitives
-- Clear limitation mapping
+- clear limitation mapping
 - Web3 risk understanding
-- Safe human-in-the-loop execution design
+- safe human-in-the-loop execution design
 - AI Operator judgment
-- Responsible AI-assisted DeFi UX
-- Professional portfolio presentation
+- responsible AI-assisted DeFi UX
+- event-driven automation awareness
+- B2B readiness thinking
+- professional portfolio presentation
 
 This supports the broader goal of building practical AI Operator / Web3 Solutions Developer portfolio assets.
 
 ---
 
-## 17. Current Security Status
+## 21. Current Security Status
 
 Current status:
 
 - Runs on Sepolia only.
 - Uses a hardened but unaudited Solidity contract.
-- Uses custom `nonReentrant` guard.
+- Uses OpenZeppelin `ReentrancyGuard`.
+- Uses OpenZeppelin `Ownable`.
+- Uses event emissions for key staking actions.
 - Uses MetaMask-confirmed execution.
 - Uses Sepolia network guard.
 - Uses transaction lifecycle UX.
 - Uses reward pool visibility.
+- Uses backend mock DeFi context.
 - Uses a local mock DeFi agent by default.
 - Includes optional backend/serverless AI proxy path.
+- Includes request validation and basic rate limiting for the optional AI proxy.
 - Does not expose AI API keys in frontend code.
 - Does not implement autonomous transaction execution.
+- Includes Hardhat automated contract tests.
+- Includes AI evaluation guardrails.
+- Includes event monitoring automation plan.
+- Includes B2B readiness documentation.
 
 Recommended next security-focused improvements:
 
-- Add automated tests.
-- Add event emissions.
-- Add OpenZeppelin-based security patterns.
-- Add production-grade access control.
-- Add backend request validation and rate limiting for the optional AI proxy.
+- Add reentrancy-oriented attack simulation tests.
+- Add frontend/component tests for dashboard UX.
+- Add AI proxy validation tests.
+- Add production-grade persistent rate limiting.
+- Add production event monitoring implementation.
+- Add production observability and alerting.
