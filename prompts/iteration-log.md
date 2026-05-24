@@ -1148,6 +1148,70 @@ This improves the repository as a portfolio asset for technical review, client c
 
 ---
 
+## Iteration 38 — Portfolio Case Study Post
+
+A portfolio post document was added to package the project for external presentation.
+
+Added file:
+
+```text
+docs/PORTFOLIO_POST.md
+```
+
+The document includes:
+
+```text
+main LinkedIn post
+short LinkedIn version
+GitHub pinned repository description
+technical review pitch
+message to brother / team lead
+30-second pitch
+2-minute technical walkthrough
+real vs mock explanation
+main portfolio positioning
+```
+
+Purpose:
+
+- prepare the project for public portfolio presentation
+- make the work easier to explain to non-Web3 technical reviewers
+- support LinkedIn and GitHub positioning
+- create a reusable pitch for Web3 client conversations
+- connect the technical implementation to AI Operator positioning
+- clearly explain what is real, what is mocked, and what is production-oriented architecture
+
+Main positioning:
+
+```text
+AI Operator
++
+Web3 frontend integration
++
+smart contract UX
++
+safe recommendation layer
++
+human-approved wallet execution
++
+B2B-ready documentation
+```
+
+External presentation assets now include:
+
+```text
+live Vercel demo
+GitHub repository
+technical demo walkthrough
+portfolio case study
+LinkedIn post draft
+B2B proposal template
+AI guardrails
+event monitoring automation plan
+```
+
+---
+
 ## Current Status
 
 The project currently includes:
@@ -1187,6 +1251,7 @@ The project currently includes:
 - Event monitoring automation plan
 - B2B project proposal template
 - Project automation Makefile
+- Portfolio case study post
 
 ---
 
@@ -1194,7 +1259,8 @@ The project currently includes:
 
 Planned next steps:
 
-1. Prepare LinkedIn / portfolio post.
-2. Add frontend/component tests for dashboard UX.
-3. Add reentrancy-oriented attack simulation tests.
-4. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.
+1. Publish or adapt the LinkedIn / portfolio post.
+2. Share the live demo with a technical reviewer.
+3. Add frontend/component tests for dashboard UX.
+4. Add reentrancy-oriented attack simulation tests.
+5. Replace in-memory AI proxy rate limiting with production-grade persistent rate limiting.

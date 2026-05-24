@@ -266,6 +266,7 @@ The project includes supporting documentation:
 - [`AI Evaluation Guardrails`](AI_EVALUATION_GUARDRAILS.md)
 - [`Event Monitoring Automation`](EVENT_MONITORING_AUTOMATION.md)
 - [`B2B Project Proposal Template`](B2B_PROJECT_PROPOSAL.md)
+- [`Portfolio Post`](PORTFOLIO_POST.md)
 
 These documents explain the technical architecture, AI Operator workflow, secure AI integration path, Solidity production-readiness boundaries, safety constraints, event-driven automation options, and B2B delivery framing.
 
@@ -442,6 +443,7 @@ Completed:
 - Event monitoring automation plan
 - B2B project proposal template
 - Project automation Makefile
+- Portfolio case study post
 
 ---
 

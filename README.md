@@ -589,6 +589,7 @@ Current documentation:
 - [`AI Evaluation Guardrails`](docs/AI_EVALUATION_GUARDRAILS.md)
 - [`Event Monitoring Automation`](docs/EVENT_MONITORING_AUTOMATION.md)
 - [`B2B Project Proposal Template`](docs/B2B_PROJECT_PROPOSAL.md)
+- [`Portfolio Post`](docs/PORTFOLIO_POST.md)
 - `prompts/system-instruction.md`
 - `prompts/iteration-log.md`
 - `prompts/defi-context.md`
@@ -663,6 +664,7 @@ Completed:
 - Event monitoring automation plan
 - B2B project proposal template
 - Project automation Makefile
+- Portfolio case study post
 
 Next planned improvements:
 
